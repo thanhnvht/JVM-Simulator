@@ -1,0 +1,79 @@
+.root
+{
+    -fx-background-color: #39444e; 
+    -fx-color : #FFF;
+}
+
+
+.button
+{
+    -fx-background-color: #A4A6BF;
+}
+
+.button:hover
+{
+     -fx-background-color: #449d44;
+}
+
+#MEMORYPANE
+{
+    -fx-background-color: #999; 
+}
+
+#FRAME
+{
+    
+    -fx-border-color: black;
+    -fx-background-color: #398439; 
+    -fx-min-width: 300px;
+    -fx-min-height: 50px;
+}
+
+#FRAME:hover
+{
+     -fx-background-color: #449d44;
+}
+
+#STACK
+{    
+    -fx-border-color: black;
+    -fx-background-color: #0093ff; 
+    -fx-min-width: 300px;
+    -fx-min-height: 50px;
+}
+
+.list-cell
+{
+    -fx-background-color: #FFF; 
+    -fx-border-bottom : #FFF;
+    -fx-text-fill: red;
+   
+}
+
+.list-cell:filled:selected
+{
+    -fx-text-fill: red;
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected 
+{
+    -fx-background-color: yellowgreen;
+     
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #0093ff;
+}
+
+#ASSEMBLY
+{
+    -fx-font-family: Consolas, monaco, monospace;
+        
+}
+
+#REGISTER
+{
+    -fx-font-family: Consolas, monaco, monospace;
+    -fx-font-size : 32px;
+    
+}
