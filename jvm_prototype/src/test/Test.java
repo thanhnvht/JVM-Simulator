@@ -1,26 +1,23 @@
 
 package test;
 
-import main.com.rfrench.jvm.java.JVMFileReader;
+import main.com.rfrench.jvm.java.ClassLoader;
 import main.com.rfrench.jvm.java.Memory;
 
 public class Test {
     
     public static void main(String [] args)
     {
-        String FILE_PATH = "/main/resources/while_test2.txt";
+        String FILE_PATH = "/main/resources/main_method_raw.txt";
                 
         Memory M = new Memory();
         
-        JVMFileReader A = new JVMFileReader(M);
+        ClassLoader A = new ClassLoader(M);
            
-        A.readFile(FILE_PATH);
+        A.readFileTest(FILE_PATH);
         
-        int x = (int)A.getLineNumbers().get("14");
-        
-        System.out.println(x);
-        
-        //A.readFileTest(FILE_PATH);
+        A.printAllMethodsBytecode();
+
         
     }
     

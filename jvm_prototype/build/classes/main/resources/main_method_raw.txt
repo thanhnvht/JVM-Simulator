@@ -1,0 +1,74 @@
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/Documents/example_bytecode/If_bytecode.class
+  Last modified 08-Nov-2016; size 349 bytes
+  MD5 checksum 6daed86d9c7fd6c0087ec72429d48dac
+  Compiled from "If_bytecode.java"
+public class If_bytecode
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #3.#13         // java/lang/Object."<init>":()V
+   #2 = Class              #14            // If_bytecode
+   #3 = Class              #15            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               main
+   #9 = Utf8               ([Ljava/lang/String;)V
+  #10 = Utf8               StackMapTable
+  #11 = Utf8               SourceFile
+  #12 = Utf8               If_bytecode.java
+  #13 = NameAndType        #4:#5          // "<init>":()V
+  #14 = Utf8               If_bytecode
+  #15 = Utf8               java/lang/Object
+{
+  public If_bytecode();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 11: 0
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=2, args_size=1
+         0: bipush        10
+         2: istore_1
+         3: iload_1
+         4: iconst_5
+         5: if_icmpge     14
+         8: bipush        30
+        10: istore_1
+        11: goto          28
+        14: iload_1
+        15: bipush        9
+        17: if_icmpne     25
+        20: iconst_1
+        21: istore_1
+        22: goto          28
+        25: bipush        50
+        27: istore_1
+        28: return
+      LineNumberTable:
+        line 19: 0
+        line 21: 3
+        line 22: 8
+        line 24: 14
+        line 25: 20
+        line 28: 25
+        line 30: 28
+      StackMapTable: number_of_entries = 3
+        frame_type = 252 /* append */
+          offset_delta = 14
+          locals = [ int ]
+        frame_type = 10 /* same */
+        frame_type = 2 /* same */
+}
+SourceFile: "If_bytecode.java"

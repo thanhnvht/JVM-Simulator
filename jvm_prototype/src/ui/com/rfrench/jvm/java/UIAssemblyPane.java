@@ -9,7 +9,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
-import main.com.rfrench.jvm.java.JVMFileReader;
+import main.com.rfrench.jvm.java.ClassLoader;
 import main.com.rfrench.jvm.java.Memory;
 
 /*
@@ -40,17 +40,17 @@ public class UIAssemblyPane
     
     private TextArea code_area;
         
-    public UIAssemblyPane(JVMFileReader input_file, String[] frame_names, Memory M)
+    public UIAssemblyPane(ClassLoader class_loader, String[] frame_names, Memory M)
     {                  
         
-        setupHex(input_file, M);
+        setupHex(class_loader, M);
         
         setupTabs();
         initialiseToolTipHashMap();
         setupListView();  
                                              
         
-        setupLabels(input_file);        
+        setupLabels(class_loader);        
     }
     
     private void setupListView()
@@ -102,20 +102,23 @@ public class UIAssemblyPane
         bytecode_tool_tips.put("RETURN", "RETURN - Return void from method");
     }
     
-    private void setupLabels(JVMFileReader input_file)
+    private void setupLabels(ClassLoader class_loader)
     {          
-        bytecode = input_file.getProgram();
+        bytecode = class_loader.getProgram();
                 
         bytecode_tab.setContent(assembly_listview);  
+        
+        class_loader.printProgramBytecode();
+        
+        System.out.println("bytecode.size() : " + bytecode.size());
         
         assembly_pane_labels = new Label[bytecode.size()];
         
         int index = 0;
-
         
-        for(int i = 0; i < input_file.getNoOpcodes(); i++)
+        for(int i = 0; i < class_loader.getNoOpcodes(); i++)
         {                        
-            String mem_add = "0000x" + Integer.toHexString(input_file.getOpcodeMemoryLocation(i)).toUpperCase();                                    
+            String mem_add = "0000x" + Integer.toHexString(class_loader.getOpcodeMemoryLocation(i)).toUpperCase();                                    
             assembly_pane_labels[i] = new Label(bytecode.get(index) + "\t" + mem_add + "\t" + bytecode.get(index+1));
             assembly_listview.getItems().add(assembly_pane_labels[i]);  
             index += 2;
@@ -123,10 +126,10 @@ public class UIAssemblyPane
                                 
         int line = 0;
         
-        for(int i = 0; i < input_file.getNoOpcodes(); i++)
+        for(int i = 0; i < class_loader.getNoOpcodes(); i++)
         {     
             
-            String word = input_file.getOpcodeProgram(i);
+            String word = class_loader.getOpcodeProgram(i);
                         
             if(bytecode_tool_tips.containsKey(word))
             {                                   
@@ -159,22 +162,7 @@ public class UIAssemblyPane
         
     private void setupJavaCodeField()
     {
-        String java_code = "*";
-        
-//        String java_code = "i = j + k;\n"
-//                         + "\n"
-//                         + "if(i == 3)\n"
-//                         + "    k = 0;\n"
-//                         + "else\n"
-//                         + "    j = j - 1;";
-        
-//        String java_code = "int x = 10;\n\n"                 
-//                         + "if (x < 5)\n"
-//                         + "    x = 30\n"
-//                         + "else if(x == 9)\n"
-//                         + "    x = 1;\n"
-//                         + "else\n"
-//                         + "    x = 50;";
+        String java_code = "*";        
         
         code_area = new TextArea();
         code_area.setText(java_code);
@@ -183,7 +171,7 @@ public class UIAssemblyPane
         
     }
         
-    private void setupHex(JVMFileReader input_file, Memory M)
+    private void setupHex(ClassLoader input_file, Memory M)
     {
         hex_listview = new ListView();
         hex_listview.setId(CSS_ASSEMBLY_ID);

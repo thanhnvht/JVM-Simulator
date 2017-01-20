@@ -14,9 +14,10 @@ import javafx.stage.Stage;
     Version: 1.0
 */
 
-public class JVM extends Application
+public class Main extends Application
 {    
-    public static final String FILE_PATH = "/main/resources/while_test2.txt";    
+    //public static final String FILE_PATH = "/main/resources/while_test2.txt";    
+    public static final String FILE_PATH = "/main/resources/main_method.txt";   
     
     private Memory memory;
     
@@ -27,15 +28,15 @@ public class JVM extends Application
         
     private MainScene main_scene;
     private MainSceneController main_scene_controller;
-    private JVMInstructionSet jvm_instruction_logic;        
-    private JVMFileReader assembly_data;
+    private ExecutionEngine jvm_instruction_logic;        
+    private ClassLoader assembly_data;
                                 
     @Override
     public void start(Stage primaryStage)
     {      
         memory = new Memory();      
         
-        assembly_data = new JVMFileReader(memory);
+        assembly_data = new ClassLoader(memory);
         
         assembly_data.readFile(FILE_PATH);
         
@@ -45,7 +46,7 @@ public class JVM extends Application
         
         main_scene_controller = new MainSceneController(main_scene);
                 
-        jvm_instruction_logic = new JVMInstructionSet(main_scene, main_scene_controller, memory, assembly_data);                                       
+        jvm_instruction_logic = new ExecutionEngine(main_scene, main_scene_controller, memory, assembly_data);                                       
                         
         Scene scene = new Scene(main_scene.getMainPane(), MainScene.WIDTH_TENTH*10, MainScene.HEIGHT_TENTH*10);
         

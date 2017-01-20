@@ -16,14 +16,14 @@ import ui.com.rfrench.jvm.java.MainScene;
     TODO : Fix Functionality of Branching Opertations e.g. GOTO, IF_ICMPGE...
 */
 
-public class JVMInstructionSet 
+public class ExecutionEngine 
 {
     private final int HEX = 16;
     
     private MainSceneController main_scene_controller;
     
     private Memory mem;
-    private JVMFileReader assembly_data;
+    private ClassLoader assembly_data;
     
     private Register LV;
     private Register PC;
@@ -40,7 +40,7 @@ public class JVMInstructionSet
      * @param mem
      * @param assembly_data 
      */
-    public JVMInstructionSet(MainScene m, MainSceneController main_scene_controller, Memory mem, JVMFileReader assembly_data) 
+    public ExecutionEngine(MainScene m, MainSceneController main_scene_controller, Memory mem, ClassLoader assembly_data) 
     {                
         this.main_scene_controller = main_scene_controller;
         this.mem = mem;

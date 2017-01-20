@@ -1,7 +1,7 @@
 
 package ui.com.rfrench.jvm.java;
 
-import main.com.rfrench.jvm.java.JVMFileReader;
+import main.com.rfrench.jvm.java.ClassLoader;
 import main.com.rfrench.jvm.java.Memory;
 
 import javafx.geometry.Rectangle2D;
@@ -9,7 +9,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import main.com.rfrench.jvm.java.JVM;
+import main.com.rfrench.jvm.java.Main;
 
 /*
     Program Title: MainScene.java
@@ -29,7 +29,7 @@ public class MainScene
     private GridPane grid_pane; 
     private BorderPane memory_pane;
     
-    private JVMFileReader input_file;
+    private ClassLoader input_file;
     
     private UIRegisterPane rp;
     private UIStackPane sp;
@@ -39,7 +39,7 @@ public class MainScene
     private UIMenu m;
     private UIButtonPane bp;
           
-    public MainScene(Memory M, JVMFileReader input_file, Stage stage)
+    public MainScene(Memory M, ClassLoader input_file, Stage stage)
     {
         main_pane = new BorderPane();       
         this.input_file = input_file;
