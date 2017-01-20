@@ -1,0 +1,227 @@
+
+{
+	"bytecodes": 
+	[
+	    {
+	        "Name":"ICONST_0",
+	        "Opcode":"3",
+	        "Total Operands":0
+	    },
+
+	    {
+	        "Name":"ICONST_1",
+	        "Opcode":"4",
+	        "Total Operands": 0     
+	    },
+
+	    {
+	        "Name":"ICONST_2",
+	        "Opcode":"5",
+	        "Total Operands":0  
+	    },
+
+	    {
+	        "Name":"ICONST_3",
+	        "Opcode":"6",
+	        "Total Operands":0 
+	    },
+
+	    {
+	        "Name":"ICONST_4",
+	        "Opcode":"7",
+	        "Total Operands":0    
+	    },
+
+	    {
+	        "Name":"ICONST_5",
+	        "Opcode":"8",
+	        "Total Operands":0     
+	    },
+
+	    {
+	        "Name":"BIPUSH",
+	        "Opcode":"10",
+	        "Total Operands":1     
+	    },
+
+	    {
+	        "Name":"ILOAD",
+	        "Opcode":"15",
+	        "Total Operands":1     
+	    },
+
+	    {
+	        "Name":"ILOAD_0",
+	        "Opcode":"1A",
+	        "Total Operands":0   
+	    },
+
+	    {
+	        "Name":"ILOAD_1",
+	        "Opcode":"1B",
+	        "Total Operands":0   
+	    },
+
+	    {
+	        "Name":"ILOAD_2",
+	        "Opcode":"1C",
+	        "Total Operands":0   
+	    },
+
+	    {
+	        "Name":"ILOAD_3",
+	        "Opcode":"1D",
+	        "Total Operands":0   
+	    },	    
+
+	    {
+	        "Name":"ISTORE",
+	        "Opcode":"36",
+	        "Total Operands": 1   
+	    },	
+
+	    {
+	        "Name":"ISTORE_0",
+	        "Opcode":"3B",
+	        "Total Operands": 0
+	    },
+
+	    {
+	        "Name":"ISTORE_1",
+	        "Opcode":"3C",
+	        "Total Operands": 0
+	    },
+
+	    {
+	        "Name":"ISTORE_2",
+	        "Opcode":"3D",
+	        "Total Operands": 0
+	    },	   
+
+	    {
+	        "Name":"ISTORE_3",
+	        "Opcode":"3E",
+	        "Total Operands": 0
+	    },    
+
+	    {
+	        "Name":"IADD",
+	        "Opcode":"60",
+	        "Total Operands": 0
+	    },  
+
+	    {
+	        "Name":"ISUB",
+	        "Opcode":"64",
+	        "Total Operands": 0
+	    },  
+
+	    {
+	        "Name":"DUP",
+	        "Opcode":"59",
+	        "Total Operands": 0
+	    },  	    
+
+	    {
+	        "Name":"IAND",
+	        "Opcode":"7E",
+	        "Total Operands": 0
+	    },  	    
+
+	    {
+	        "Name":"IFEQ",
+	        "Opcode":"99",
+	        "Total Operands": 2
+	    },  	    
+
+	    {
+	        "Name":"IFLT",
+	        "Opcode":"9B",
+	        "Total Operands": 2
+	    },  
+
+	    {
+	        "Name":"IINC",
+	        "Opcode":"84",
+	        "Total Operands": 3
+	    },  	    
+
+	    {
+	        "Name":"LDC_W",
+	        "Opcode":"13",
+	        "Total Operands": 2
+	    },  	    
+
+	    {
+	        "Name":"NOP",
+	        "Opcode":"0",
+	        "Total Operands": 0
+	    },  	    
+
+	    {
+	        "Name":"POP",
+	        "Opcode":"57",
+	        "Total Operands": 0
+	    },  	    
+
+	    {
+	        "Name":"SWAP",
+	        "Opcode":"5F",
+	        "Total Operands": 0
+	    },  	    
+
+	    {
+	        "Name":"IF_ICMPGQ",
+	        "Opcode":"0000",
+	        "Total Operands": 2
+	    },  
+
+	    {
+	        "Name":"IF_ICMPGE",
+	        "Opcode":"A2",
+	        "Total Operands": 2
+	    },  
+
+	    {
+	        "Name":"IF_ICMPNE",
+	        "Opcode":"A0",
+	        "Total Operands": 2
+	    },  
+
+	    {
+	        "Name":"IF_ICMPEQ",
+	        "Opcode":"9F",
+	        "Total Operands": 2
+	    },  	    
+
+	    {
+	        "Name":"GOTO",
+	        "Opcode":"A7",
+	        "Total Operands": 2
+	    },  	    
+
+	    {
+	        "Name":"WIDE",
+	        "Opcode":"C4",
+	        "Total Operands": 5
+	    }, 
+
+	    {
+	        "Name":"RETURN",
+	        "Opcode":"B1",
+	        "Total Operands": 0
+	    }, 	    
+
+	    {
+	        "Name":"ALOAD_0",
+	        "Opcode":"2A",
+	        "Total Operands": 0
+	    }, 	    
+
+	    {
+	        "Name":"INVOKESPECIAL",
+	        "Opcode":"B7",
+	        "Total Operands": 2
+	    }
+	]
+}

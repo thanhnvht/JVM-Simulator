@@ -562,49 +562,49 @@ public class ClassLoader
         final int THREE_PARAMETERS = 3;
         
         //last parameter in opcodes is how many memory slots needed for that bytecode
-        final int WORD_SIZE_1 = 1;
-        final int WORD_SIZE_2 = 2;
-        final int WORD_SIZE_3 = 3;                
+        final int OPTION_1 = 1;
+        final int OPTION_2 = 2;
+        final int OPTION_3 = 3;                
         
         opcodes = new HashMap(OPCODE_HASHMAP_SIZE);  
         
-        opcodes.put("ICONST_0", new int[]{Integer.valueOf("3", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ICONST_1", new int[]{Integer.valueOf("4", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ICONST_2", new int[]{Integer.valueOf("5", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ICONST_3", new int[]{Integer.valueOf("6", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ICONST_4", new int[]{Integer.valueOf("7", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ICONST_5", new int[]{Integer.valueOf("8", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("BIPUSH", new int[]{Integer.valueOf("10", HEX), ONE_PARAMETER, WORD_SIZE_2});
-        opcodes.put("ILOAD", new int[]{Integer.valueOf("15", HEX), ONE_PARAMETER, WORD_SIZE_2});
-        opcodes.put("ILOAD_0", new int[]{Integer.valueOf("1A", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ILOAD_1", new int[]{Integer.valueOf("1B", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ILOAD_2", new int[]{Integer.valueOf("1C", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ILOAD_3", new int[]{Integer.valueOf("1D", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ISTORE", new int[]{Integer.valueOf("36", HEX), ONE_PARAMETER, WORD_SIZE_2});
-        opcodes.put("ISTORE_0", new int[]{Integer.valueOf("3B", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ISTORE_1", new int[]{Integer.valueOf("3C", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ISTORE_2", new int[]{Integer.valueOf("3D", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ISTORE_3", new int[]{Integer.valueOf("3E", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("IADD", new int[]{Integer.valueOf("60", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("ISUB", new int[]{Integer.valueOf("64", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("DUP", new int[]{Integer.valueOf("59", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("IAND", new int[]{Integer.valueOf("7E", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("IFEQ", new int[]{Integer.valueOf("99", HEX), TWO_PARAMETERS, WORD_SIZE_3});
-        opcodes.put("IFLT", new int[]{Integer.valueOf("9B", HEX), TWO_PARAMETERS, WORD_SIZE_3});
-        opcodes.put("IINC", new int[]{Integer.valueOf("84", HEX), THREE_PARAMETERS, WORD_SIZE_3});
-        opcodes.put("LDC_W", new int[]{Integer.valueOf("13", HEX), TWO_PARAMETERS, WORD_SIZE_3});
-        opcodes.put("NOP", new int[]{Integer.valueOf("0", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("POP", new int[]{Integer.valueOf("57", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("SWAP", new int[]{Integer.valueOf("5F", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
-        opcodes.put("IF_ICMPGQ", new int[]{159, TWO_PARAMETERS, WORD_SIZE_3});
-        opcodes.put("IF_ICMPGE", new int[]{Integer.valueOf("A2", HEX), TWO_PARAMETERS, WORD_SIZE_3});
-        opcodes.put("IF_ICMPNE", new int[]{Integer.valueOf("A0", HEX), TWO_PARAMETERS, WORD_SIZE_3});
-        opcodes.put("IF_ICMPEQ", new int[]{Integer.valueOf("9F", HEX), TWO_PARAMETERS, WORD_SIZE_3});
-        opcodes.put("GOTO", new int[]{Integer.valueOf("A7", HEX), TWO_PARAMETERS, WORD_SIZE_3});
+        opcodes.put("ICONST_0", new int[]{Integer.valueOf("3", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ICONST_1", new int[]{Integer.valueOf("4", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ICONST_2", new int[]{Integer.valueOf("5", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ICONST_3", new int[]{Integer.valueOf("6", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ICONST_4", new int[]{Integer.valueOf("7", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ICONST_5", new int[]{Integer.valueOf("8", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("BIPUSH", new int[]{Integer.valueOf("10", HEX), ONE_PARAMETER, OPTION_2});
+        opcodes.put("ILOAD", new int[]{Integer.valueOf("15", HEX), ONE_PARAMETER, OPTION_2});
+        opcodes.put("ILOAD_0", new int[]{Integer.valueOf("1A", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ILOAD_1", new int[]{Integer.valueOf("1B", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ILOAD_2", new int[]{Integer.valueOf("1C", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ILOAD_3", new int[]{Integer.valueOf("1D", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ISTORE", new int[]{Integer.valueOf("36", HEX), ONE_PARAMETER, OPTION_2});
+        opcodes.put("ISTORE_0", new int[]{Integer.valueOf("3B", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ISTORE_1", new int[]{Integer.valueOf("3C", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ISTORE_2", new int[]{Integer.valueOf("3D", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ISTORE_3", new int[]{Integer.valueOf("3E", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("IADD", new int[]{Integer.valueOf("60", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("ISUB", new int[]{Integer.valueOf("64", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("DUP", new int[]{Integer.valueOf("59", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("IAND", new int[]{Integer.valueOf("7E", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("IFEQ", new int[]{Integer.valueOf("99", HEX), TWO_PARAMETERS, OPTION_3});
+        opcodes.put("IFLT", new int[]{Integer.valueOf("9B", HEX), TWO_PARAMETERS, OPTION_3});
+        opcodes.put("IINC", new int[]{Integer.valueOf("84", HEX), THREE_PARAMETERS, OPTION_3});
+        opcodes.put("LDC_W", new int[]{Integer.valueOf("13", HEX), TWO_PARAMETERS, OPTION_3});
+        opcodes.put("NOP", new int[]{Integer.valueOf("0", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("POP", new int[]{Integer.valueOf("57", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("SWAP", new int[]{Integer.valueOf("5F", HEX), ZERO_PARAMETERS, OPTION_1});
+        opcodes.put("IF_ICMPGQ", new int[]{159, TWO_PARAMETERS, OPTION_3});
+        opcodes.put("IF_ICMPGE", new int[]{Integer.valueOf("A2", HEX), TWO_PARAMETERS, OPTION_3});
+        opcodes.put("IF_ICMPNE", new int[]{Integer.valueOf("A0", HEX), TWO_PARAMETERS, OPTION_3});
+        opcodes.put("IF_ICMPEQ", new int[]{Integer.valueOf("9F", HEX), TWO_PARAMETERS, OPTION_3});
+        opcodes.put("GOTO", new int[]{Integer.valueOf("A7", HEX), TWO_PARAMETERS, OPTION_3});
         opcodes.put("WIDE", new int[]{Integer.valueOf("C4", HEX), 5, 5});
-        opcodes.put("RETURN", new int[] {Integer.valueOf("B1", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("RETURN", new int[] {Integer.valueOf("B1", HEX), ZERO_PARAMETERS, OPTION_1});
         
-        opcodes.put("ALOAD_0", new int[] {Integer.valueOf("2A", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ALOAD_0", new int[] {Integer.valueOf("2A", HEX), ZERO_PARAMETERS, OPTION_1});
        // opcodes.put("INVOKESPECIAL", new int[] {Integer.valueOf("B7", HEX), TWO_PARAMETERS, WORD_SIZE_3});
     } 
     
