@@ -1,3 +1,4 @@
+Code:
        0: iconst_0
        1: istore_1
        2: iload_1

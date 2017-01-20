@@ -21,19 +21,22 @@ public class ClassLoader
     private final static int HEX = 16; //Hex Base
     
     private int NUMBER_OPCODES_PROGRAM; //number of different opcode instructions in javap file
+    private int NUMBER_OF_METHODS;
     private int MEM_PROGRAM_SIZE; //number of memory elements used by javap program
     private int max_local_variable; //maximum size of local variable frame
-    private int number_of_methods;
     
     private Memory M; //Memory of JVM
     private HashMap opcodes; //Helper Hashmap containing information on what actions to take when reading opcodes   
     private HashMap line_numbers; //Helper Hashmap
+        
+    private ArrayList<String> bytecode_strings;     
     
-    
-    private ArrayList<String> bytecode_strings; 
     private ArrayList<ArrayList<String>> method_bytecodes;
     
+    private ArrayList<ArrayList<String>> opcodes_list;
     
+    private int[] method_start_address_array;
+        
     private List<int[]> method_details_list;
     
     private int[] opcode_memory_locations;
@@ -76,17 +79,18 @@ public class ClassLoader
             extractMethodDetails(file_name);
         
         createByteCodeDisplayArrayTest(file_name);
-        assembleOpcodeProgramArray();
-        writeOpcodeMemoryLocations();
-        writeByteCodeToMemory();       
+        assembleOpcodeProgramArrayTest();
+        writeOpcodeMemoryLocationsTest();
+        writeByteCodeToMemoryTest();       
         initialiseLineNumbers();
-        findMaxLocalVariable();
     }   
     
     
     private void extractNumberOfMethods(String file_name)
     {
         Scanner sc = new Scanner(getClass().getResourceAsStream(file_name));
+        
+        int method_count = 0;
         
         method_details_list = new ArrayList<int[]>();
                       
@@ -96,10 +100,17 @@ public class ClassLoader
             
             if(word.equals("Code:"))
             {
+                method_count++;
                 method_details_list.add(new int[]{0, 0, 0});
             }            
+        }                
 
-        }                        
+        NUMBER_OF_METHODS = method_count;
+        
+//        if(method_count == 0)
+//        {
+//            throw new InvalidJavaPFileException("No Code keyword");
+//        }
     }
     
     private void extractMethodDetails(String file_name)
@@ -233,9 +244,20 @@ public class ClassLoader
             previous_word = word_upper;
         }             
            
-        method_bytecodes.add(bytecode_strings);
+        method_bytecodes.add(bytecode_strings);                
         
-        NUMBER_OPCODES_PROGRAM = bytecode_strings.size() / 2;        
+        calculateTotalNumberofOpcodes();
+    }
+    
+    private void calculateTotalNumberofOpcodes()
+    {
+        
+        for(int i = 0; i < NUMBER_OF_METHODS; i++)
+        {
+            NUMBER_OPCODES_PROGRAM += method_bytecodes.get(i).size();
+        }
+        
+        NUMBER_OPCODES_PROGRAM /= NUMBER_OF_METHODS;
     }
     
     
@@ -245,10 +267,12 @@ public class ClassLoader
      */
     private void assembleOpcodeProgramArray()
     {
+        System.out.println(NUMBER_OPCODES_PROGRAM);
+        
         program_opcodes_list = new String[NUMBER_OPCODES_PROGRAM];
         
         int index = 1;
-        
+                
         for(int i = 0; i < NUMBER_OPCODES_PROGRAM; i++)
         {
             program_opcodes_list[i] = bytecode_strings.get(index);
@@ -256,6 +280,28 @@ public class ClassLoader
         }
     }
         
+    private void assembleOpcodeProgramArrayTest()
+    {
+        opcodes_list = new ArrayList<ArrayList<String>>();
+                
+        for(int i = 0; i < NUMBER_OF_METHODS; i++)
+        {
+            ArrayList<String> program_opcodes_list_new = new ArrayList<String>();
+            
+            int number_opcodes_method = method_bytecodes.get(i).size() / 2;
+            
+            int index = 1;
+            
+            for(int j = 0; j < number_opcodes_method;j++)
+            {
+                program_opcodes_list_new.add(method_bytecodes.get(i).get(index));
+                index += 2;
+            }
+            
+            opcodes_list.add(program_opcodes_list_new);
+        }        
+    }
+    
     private void writeOpcodeMemoryLocations()
     {
         opcode_memory_locations = new int[NUMBER_OPCODES_PROGRAM];
@@ -266,15 +312,12 @@ public class ClassLoader
         {
             String word = program_opcodes_list[i];
             
-            //WHY IS THIS HERE?
-            /*            
-            System.out.println("word before: " + word);
             
-            if(word.indexOf(' ') != -1)            
+            if(word.indexOf(' ') != -1)      //REMOVE TRAILING CHARACTERS
+            {
                word = word.substring(0, word.indexOf(' '));                           
-                        
-            System.out.println("word after: " + word);
-            */
+            }
+
             
             if(opcodes.containsKey(word))
             {
@@ -284,7 +327,46 @@ public class ClassLoader
                 memory_location += opcode_meta_data[2];
             }                                                            
         }                        
-    }       
+    }     
+    
+    private void writeOpcodeMemoryLocationsTest()
+    {
+        int memory_location = 0;
+        int count = 0;
+        int OPCODES_INDEX = 2;
+        
+        opcode_memory_locations = new int[NUMBER_OPCODES_PROGRAM];
+        method_start_address_array = new int[NUMBER_OF_METHODS];
+                
+        for(int i = 0; i < NUMBER_OF_METHODS; i++)
+        {
+            int method_opcodes_total = opcodes_list.get(i).size();
+            
+            method_start_address_array[i] = memory_location;
+            
+            for(int j = 0; j < method_opcodes_total; j++)
+            {
+                String word = opcodes_list.get(i).get(j);
+                
+                if(word.indexOf(' ') != -1)            
+                {
+                    word = word.substring(0, word.indexOf(' '));   
+                }
+                
+                if(opcodes.containsKey(word))
+                {
+                    opcode_memory_locations[count] = memory_location;
+                    count++;
+                    int[] opcode_meta_data = (int[])opcodes.get(word);                                               
+                    memory_location += opcode_meta_data[OPCODES_INDEX];
+                }
+                else
+                {
+                    System.out.println("Invalid Opcode: " + word);
+                }
+            }
+        }                                      
+    }  
     
     /**
      * Write bytecode opcode and parameters into Memory method area
@@ -298,11 +380,15 @@ public class ClassLoader
             String word = program_opcodes_list[i];         
             String parameter = "";
             
+            
+            
             if(word.indexOf(' ') != -1)            
             {
                parameter = word.substring(word.indexOf(' ') + 1, word.length());
                word = word.substring(0, word.indexOf(' '));                              
             }
+            
+
 
             if(opcodes.containsKey(word))
             {
@@ -323,6 +409,49 @@ public class ClassLoader
            MEM_PROGRAM_SIZE = memory_location; 
         }           
     }
+    
+    private void writeByteCodeToMemoryTest()
+    {                                                                      
+        int memory_location = 0;
+  
+        for(int i = 0; i < NUMBER_OF_METHODS; i++)
+        {
+            int method_opcodes_total = opcodes_list.get(i).size();
+            
+            for(int j = 0; j < method_opcodes_total; j++)
+            {
+                String word = opcodes_list.get(i).get(j);               
+                
+                String parameter = "";
+                                
+                if(word.indexOf(' ') != -1)            
+                {
+                    parameter = word.substring(word.indexOf(' ') + 1, word.length());
+                    word = word.substring(0, word.indexOf(' '));                              
+                }                
+                
+                //DETECT INVOKE SPECIAL
+                
+                if(opcodes.containsKey(word))
+                {
+                    int[] opcodes_meta_data = (int[])opcodes.get(word);
+
+                    M.setMemoryAddress(memory_location, opcodes_meta_data[0]);
+                    memory_location++;
+
+                    int[] return_values = getValuesFromOpcode(opcodes_meta_data, parameter);               
+
+                    for(int k = 0; k < return_values.length; k++)
+                    {
+                        M.setMemoryAddress(memory_location, return_values[k]);                 
+                        memory_location++;
+                    }
+                }
+                        
+                MEM_PROGRAM_SIZE = memory_location; 
+            }
+        }         
+    }
             
     /**
      * WriteBytecodeToMemory helper method. Decipher how to action
@@ -336,6 +465,7 @@ public class ClassLoader
         final int INDEX_NUMBER_OF_PARAMETERS = 1;
         final int MAX_BYTE_VALUE = 255;
         int[] parameter_values;
+        
         
         switch(opcodes_meta_data[INDEX_NUMBER_OF_PARAMETERS])
         {
@@ -354,6 +484,7 @@ public class ClassLoader
                         {
                             parameter_values = new int[]{offset - MAX_BYTE_VALUE, MAX_BYTE_VALUE};                            
                         }
+                        
                         else
                         {
                             parameter_values = new int[]{0, offset};                                                                 
@@ -391,7 +522,7 @@ public class ClassLoader
             line_numbers.put(line_number, i);
             index += 2;
         }
-    } 
+    }         
     
     private void findMaxLocalVariable()
     {
@@ -424,50 +555,57 @@ public class ClassLoader
     {               
         final int OPCODE_HASHMAP_SIZE = 255;        
         
+        //how many parameters the opcode has
         final int ZERO_PARAMETERS = 0;
         final int ONE_PARAMETER = 1;
         final int TWO_PARAMETERS = 2;
+        final int THREE_PARAMETERS = 3;
+        
+        //last parameter in opcodes is how many memory slots needed for that bytecode
+        final int WORD_SIZE_1 = 1;
+        final int WORD_SIZE_2 = 2;
+        final int WORD_SIZE_3 = 3;                
         
         opcodes = new HashMap(OPCODE_HASHMAP_SIZE);  
         
-        opcodes.put("ICONST_0", new int[]{Integer.valueOf("3", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ICONST_1", new int[]{Integer.valueOf("4", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ICONST_2", new int[]{Integer.valueOf("5", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ICONST_3", new int[]{Integer.valueOf("6", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ICONST_4", new int[]{Integer.valueOf("7", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ICONST_5", new int[]{Integer.valueOf("8", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("BIPUSH", new int[]{Integer.valueOf("10", HEX), ONE_PARAMETER, 2});
-        opcodes.put("ILOAD", new int[]{Integer.valueOf("15", HEX), ONE_PARAMETER, 2});
-        opcodes.put("ILOAD_0", new int[]{Integer.valueOf("1A", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ILOAD_1", new int[]{Integer.valueOf("1B", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ILOAD_2", new int[]{Integer.valueOf("1C", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ILOAD_3", new int[]{Integer.valueOf("1D", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ISTORE", new int[]{Integer.valueOf("36", HEX), ONE_PARAMETER, 2});
-        opcodes.put("ISTORE_0", new int[]{Integer.valueOf("3B", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ISTORE_1", new int[]{Integer.valueOf("3C", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ISTORE_2", new int[]{Integer.valueOf("3D", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ISTORE_3", new int[]{Integer.valueOf("3E", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("IADD", new int[]{Integer.valueOf("60", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("ISUB", new int[]{Integer.valueOf("64", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("DUP", new int[]{Integer.valueOf("59", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("IAND", new int[]{Integer.valueOf("7E", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("IFEQ", new int[]{Integer.valueOf("99", HEX), TWO_PARAMETERS, 3});
-        opcodes.put("IFLT", new int[]{Integer.valueOf("9B", HEX), TWO_PARAMETERS, 3});
-        opcodes.put("IINC", new int[]{Integer.valueOf("84", HEX), 3, 3});
-        opcodes.put("LDC_W", new int[]{Integer.valueOf("13", HEX), TWO_PARAMETERS, 3});
-        opcodes.put("NOP", new int[]{Integer.valueOf("0", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("POP", new int[]{Integer.valueOf("57", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("SWAP", new int[]{Integer.valueOf("5F", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("IF_ICMPGQ", new int[]{159, TWO_PARAMETERS, 3});
-        opcodes.put("IF_ICMPGE", new int[]{Integer.valueOf("A2", HEX), TWO_PARAMETERS, 3});
-        opcodes.put("IF_ICMPNE", new int[]{Integer.valueOf("A0", HEX), TWO_PARAMETERS, 3});
-        opcodes.put("IF_ICMPEQ", new int[]{Integer.valueOf("9F", HEX), TWO_PARAMETERS, 3});
-        opcodes.put("GOTO", new int[]{Integer.valueOf("A7", HEX), TWO_PARAMETERS, 3});
+        opcodes.put("ICONST_0", new int[]{Integer.valueOf("3", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ICONST_1", new int[]{Integer.valueOf("4", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ICONST_2", new int[]{Integer.valueOf("5", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ICONST_3", new int[]{Integer.valueOf("6", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ICONST_4", new int[]{Integer.valueOf("7", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ICONST_5", new int[]{Integer.valueOf("8", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("BIPUSH", new int[]{Integer.valueOf("10", HEX), ONE_PARAMETER, WORD_SIZE_2});
+        opcodes.put("ILOAD", new int[]{Integer.valueOf("15", HEX), ONE_PARAMETER, WORD_SIZE_2});
+        opcodes.put("ILOAD_0", new int[]{Integer.valueOf("1A", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ILOAD_1", new int[]{Integer.valueOf("1B", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ILOAD_2", new int[]{Integer.valueOf("1C", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ILOAD_3", new int[]{Integer.valueOf("1D", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ISTORE", new int[]{Integer.valueOf("36", HEX), ONE_PARAMETER, WORD_SIZE_2});
+        opcodes.put("ISTORE_0", new int[]{Integer.valueOf("3B", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ISTORE_1", new int[]{Integer.valueOf("3C", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ISTORE_2", new int[]{Integer.valueOf("3D", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ISTORE_3", new int[]{Integer.valueOf("3E", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("IADD", new int[]{Integer.valueOf("60", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("ISUB", new int[]{Integer.valueOf("64", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("DUP", new int[]{Integer.valueOf("59", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("IAND", new int[]{Integer.valueOf("7E", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("IFEQ", new int[]{Integer.valueOf("99", HEX), TWO_PARAMETERS, WORD_SIZE_3});
+        opcodes.put("IFLT", new int[]{Integer.valueOf("9B", HEX), TWO_PARAMETERS, WORD_SIZE_3});
+        opcodes.put("IINC", new int[]{Integer.valueOf("84", HEX), THREE_PARAMETERS, WORD_SIZE_3});
+        opcodes.put("LDC_W", new int[]{Integer.valueOf("13", HEX), TWO_PARAMETERS, WORD_SIZE_3});
+        opcodes.put("NOP", new int[]{Integer.valueOf("0", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("POP", new int[]{Integer.valueOf("57", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("SWAP", new int[]{Integer.valueOf("5F", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+        opcodes.put("IF_ICMPGQ", new int[]{159, TWO_PARAMETERS, WORD_SIZE_3});
+        opcodes.put("IF_ICMPGE", new int[]{Integer.valueOf("A2", HEX), TWO_PARAMETERS, WORD_SIZE_3});
+        opcodes.put("IF_ICMPNE", new int[]{Integer.valueOf("A0", HEX), TWO_PARAMETERS, WORD_SIZE_3});
+        opcodes.put("IF_ICMPEQ", new int[]{Integer.valueOf("9F", HEX), TWO_PARAMETERS, WORD_SIZE_3});
+        opcodes.put("GOTO", new int[]{Integer.valueOf("A7", HEX), TWO_PARAMETERS, WORD_SIZE_3});
         opcodes.put("WIDE", new int[]{Integer.valueOf("C4", HEX), 5, 5});
-        opcodes.put("RETURN", new int[] {Integer.valueOf("B1", HEX), ZERO_PARAMETERS, 1});
+        opcodes.put("RETURN", new int[] {Integer.valueOf("B1", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
         
-        opcodes.put("ALOAD_0", new int[] {Integer.valueOf("2A", HEX), ZERO_PARAMETERS, 1});
-        opcodes.put("INVOKESPECIAL", new int[] {Integer.valueOf("B7", HEX), TWO_PARAMETERS, 1});
+        opcodes.put("ALOAD_0", new int[] {Integer.valueOf("2A", HEX), ZERO_PARAMETERS, WORD_SIZE_1});
+       // opcodes.put("INVOKESPECIAL", new int[] {Integer.valueOf("B7", HEX), TWO_PARAMETERS, WORD_SIZE_3});
     } 
     
     public int getMaxLocalVariable()
@@ -498,8 +636,21 @@ public class ClassLoader
     
     public void printProgramBytecode()
     {
-        for(int i = 0; i < NUMBER_OPCODES_PROGRAM; i++)
-            System.out.println(program_opcodes_list[i]);
+        for(int i = 0; i < NUMBER_OF_METHODS; i++)
+        {
+            int method_size = opcodes_list.get(i).size();
+            
+            System.out.println("**********");
+            
+            for(int j = 0; j < method_size; j++)
+            {
+                System.out.println(opcodes_list.get(i).get(j));
+            }
+        }
+        
+        
+//        for(int i = 0; i < NUMBER_OPCODES_PROGRAM; i++)
+//            System.out.println(program_opcodes_list[i]);
     }
     
     public void printAllMethodsBytecode()
@@ -509,16 +660,18 @@ public class ClassLoader
         
         for(int i = 0; i < NUMBER_OF_METHODS; i++)
         {
-            int number_of_bytecodes = method_bytecodes.get(i).size();
+            int number_of_bytecodes = method_bytecodes.get(i).size() / 2;
             
             System.out.println("******");
+            int count = 0;
             
             for(int j = 0; j < number_of_bytecodes; j++)
             {
-                System.out.println(method_bytecodes.get(i).get(j));
+                System.out.print(method_bytecodes.get(i).get(count) + " ");
+                System.out.println(method_bytecodes.get(i).get(count+1));
+                count += 2;
             }
             
-            System.out.println("");
         }
     }
     
@@ -539,6 +692,14 @@ public class ClassLoader
                 System.out.println(method_detail_titles[j] + ": " + method_details_list.get(i)[j]);
             }
             System.out.println("");
+        }
+    }
+    
+    public void printOpcodeMemoryLocations()
+    {
+        for(int i = 0; i < opcode_memory_locations.length; i++)
+        {
+            System.out.println(opcode_memory_locations[i]);
         }
     }
     
