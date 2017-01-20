@@ -1,0 +1,14 @@
+TODO
+
+
+invoke and return from methods
+ - Call Stack
+ - Read 2 different methods from javap file
+
+read class files
+
+read constant pool data
+
+change memory class to better resemble java runtime data areas
+
+use JSON instead of hashmaps
