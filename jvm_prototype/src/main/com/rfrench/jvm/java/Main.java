@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 public class Main extends Application
 {    
     //public static final String FILE_PATH = "/main/resources/while_test2.txt";    
-    public static final String FILE_PATH = "/main/resources/main_method.txt";   
+    public static final String FILE_PATH = "/main/resources/javap/main_method.txt";   
     
     private Memory memory;
     

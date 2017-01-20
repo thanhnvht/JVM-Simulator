@@ -71,7 +71,7 @@ public class MainScene
 //        main_pane.setTop(menu_bar.getMenuBar());
         main_pane.setCenter(grid_pane);
 
-        main_pane.getStylesheets().add(getClass().getResource("/main/resources/style.css").toString());
+        main_pane.getStylesheets().add(getClass().getResource("/main/resources/css/style.css").toString());
     }
     
     public BorderPane getMainPane()
