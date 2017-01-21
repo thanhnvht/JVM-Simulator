@@ -1,6 +1,8 @@
 
 package main.com.rfrench.jvm.java;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +10,10 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /*
     Program Title: Input.java
@@ -26,8 +32,11 @@ public class ClassLoader
     private int max_local_variable; //maximum size of local variable frame
     
     private Memory M; //Memory of JVM
+    
     private HashMap opcodes; //Helper Hashmap containing information on what actions to take when reading opcodes   
     private HashMap line_numbers; //Helper Hashmap
+    
+    private HashMap bytecode_details_map;
         
     private ArrayList<String> bytecode_strings;     
     
@@ -61,29 +70,86 @@ public class ClassLoader
      * @param file_name name/location of file to read
      */
     public void readFile(String file_name)
-    {                     
-        createByteCodeDisplayArray(file_name);
-        assembleOpcodeProgramArray();
-        writeOpcodeMemoryLocations();
-        writeByteCodeToMemory();       
-        initialiseLineNumbers();
-        findMaxLocalVariable();
+    {          
+        try
+        {
+            JSONArray bytecode_json = createJSONParser();
+            createByteCodeDetailsHashMap(bytecode_json);
+            
+            createByteCodeDisplayArray(file_name);
+            assembleOpcodeProgramArray();
+            writeOpcodeMemoryLocations();
+            writeByteCodeToMemory();       
+            initialiseLineNumbers();
+            findMaxLocalVariable();
+        }
+        
+        catch(IOException | ParseException e)
+        {
+            e.printStackTrace();
+        }
     }       
 
     //DEBUGGING METHOD
     public void readFileTest(String file_name)
-    {                     
-        extractNumberOfMethods(file_name);
+    {          
         
-        if(method_details_list.size() > 0)
-            extractMethodDetails(file_name);
+        try
+        {                        
+            JSONArray bytecode_json = createJSONParser();
+            
+            createByteCodeDetailsHashMap(bytecode_json);
+            
+            extractNumberOfMethods(file_name);
+                                
+            if(method_details_list.size() > 0)
+                extractMethodDetails(file_name);
         
-        createByteCodeDisplayArrayTest(file_name);
-        assembleOpcodeProgramArrayTest();
-        writeOpcodeMemoryLocationsTest();
-        writeByteCodeToMemoryTest();       
-        initialiseLineNumbers();
+            createByteCodeDisplayArrayTest(file_name);
+            assembleOpcodeProgramArrayTest();
+            writeOpcodeMemoryLocationsTest();
+            writeByteCodeToMemoryTest();     
+            
+           // initialiseLineNumbers();
+        }
+        catch(Exception e) //change to filenotfoundexception
+        {
+            e.printStackTrace();
+        }
     }   
+    
+    
+    private JSONArray createJSONParser() throws IOException, ParseException
+    {                        
+        JSONParser parser = new JSONParser();
+            
+        Object obj = parser.parse(new InputStreamReader(getClass().getResourceAsStream("/main/resources/json/bytecodes.json")));
+
+        JSONObject jsonObject = (JSONObject) obj;
+            
+        JSONArray bytecode = (JSONArray) jsonObject.get("bytecodes");
+        
+        return bytecode;
+    }
+    
+    private void createByteCodeDetailsHashMap(JSONArray bytecode_json)
+    {
+        final int MAX_BYTECODES = 255;
+        
+        final String BYTECODE_ATTRIBUTE_NAME = "Name"; //Name of Attribute taking
+        
+        bytecode_details_map = new HashMap(MAX_BYTECODES);                      
+        
+        final int JSON_MAX_SIZE = bytecode_json.size();
+        
+        for(int i = 0; i < JSON_MAX_SIZE; i++)
+        {
+            JSONObject bytecode_element = (JSONObject) bytecode_json.get(i);
+            
+            bytecode_details_map.put(bytecode_element.get(BYTECODE_ATTRIBUTE_NAME), i);
+            
+        }
+    }
     
     
     private void extractNumberOfMethods(String file_name)
@@ -227,6 +293,16 @@ public class ClassLoader
             String word_upper = word.toUpperCase();                                        
                                                                        
             int[]opcode_values = (int[])opcodes.get(word_upper);
+            
+            
+            if(bytecode_details_map.containsKey(word_upper))
+            {
+                int bytecode_operands = (int)bytecode_details_map.get(word_upper);
+                System.out.println(word_upper + " " + bytecode_operands);                
+            }
+            
+            
+            
                 
             if(opcode_values != null)
             {       
@@ -726,5 +802,10 @@ public class ClassLoader
     public HashMap getLineNumbers()
     {
         return line_numbers;
+    }
+    
+    public HashMap getByteCodeDetails()
+    {
+        return bytecode_details_map;
     }
 }

@@ -1,6 +1,8 @@
 
 package ui.com.rfrench.jvm.java;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import javafx.scene.control.Label;
@@ -11,6 +13,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import main.com.rfrench.jvm.java.ClassLoader;
 import main.com.rfrench.jvm.java.Memory;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /*
     Program Title: UIAssemblyPane.java
@@ -46,10 +52,7 @@ public class UIAssemblyPane
         setupHex(class_loader, M);
         
         setupTabs();
-        initialiseToolTipHashMap();
-        setupListView();  
-                                             
-        
+        setupListView();                                                       
         setupLabels(class_loader);        
     }
     
@@ -61,46 +64,7 @@ public class UIAssemblyPane
         assembly_listview.setId(CSS_ASSEMBLY_ID);     
     }
     
-    private void initialiseToolTipHashMap()
-    {
-        bytecode_tool_tips = new HashMap(TOOLTIP_HASHMAP_SIZE);
-        
-        bytecode_tool_tips.put("ICONST_0", "ICONST_0 - Load the value 0 onto the stack");
-        bytecode_tool_tips.put("ICONST_1", "ICONST_1 - Load the value 1 onto the stack");
-        bytecode_tool_tips.put("ICONST_2", "ICONST_2 - Load the value 2 onto the stack");
-        bytecode_tool_tips.put("ICONST_3", "ICONST_3 - Load the value 3 onto the stack");
-        bytecode_tool_tips.put("ICONST_4", "ICONST_4 - Load the value 4 onto the stack");
-        bytecode_tool_tips.put("ICONST_5", "ICONST_5 - Load the value 5 onto the stack");
-        bytecode_tool_tips.put("BIPUSH", "BIPUSH - Push a value onto the stack");
-        bytecode_tool_tips.put("ILOAD", "ILOAD - Load a value from given index of Local Variable Frame");
-        bytecode_tool_tips.put("ILOAD_0", "ILOAD_0 - Load a value from Local Variable Frame 0");
-        bytecode_tool_tips.put("ILOAD_1", "ILOAD_1 - Load a value from Local Variable Frame 1");
-        bytecode_tool_tips.put("ILOAD_2", "ILOAD_2 - Load a value from Local Variable Frame 2");
-        bytecode_tool_tips.put("ILOAD_3", "ILOAD_3 - Load a value from Local Variable Frame 3");
-        bytecode_tool_tips.put("ISTORE", "ISTORE - Store Value from top of Stack into given index of Local Variable Frame");
-        bytecode_tool_tips.put("ISTORE_0", "ISTORE_0 - Store Value from top of Stack into Local Variable Frame 0");
-        bytecode_tool_tips.put("ISTORE_1", "ISTORE_1 - Store Value from top of Stack into Local Variable Frame 1");
-        bytecode_tool_tips.put("ISTORE_2", "ISTORE_2 - Store Value from top of Stack into Local Variable Frame 2");
-        bytecode_tool_tips.put("ISTORE_3", "ISTORE_3 - Store Value from top of Stack into Local Variable Frame 3");
-        bytecode_tool_tips.put("IADD", "IADD - Add together the 2 integers on the top of Stack. Push the Result onto the Stack");
-        bytecode_tool_tips.put("ISUB", "ISUB - Sub together the 2 integers on the top of Stack. Push the Result onto the Stack");
-        bytecode_tool_tips.put("IF_ICMPEQ", "IF_ICMPEQ - Branch to given line number if the variables on the top of Stack are equal");
-        bytecode_tool_tips.put("GOTO", "GOTO - Branch to the given line number");
-        bytecode_tool_tips.put("DUP", "DUP - Duplicate the value on the top of the Stack");
-        bytecode_tool_tips.put("IAND", "IAND - Perform AND operation on the 2 values on the top of Stack");
-        bytecode_tool_tips.put("IFEQ", "IFEQ - If value is 0, branch to the line number given");
-        bytecode_tool_tips.put("IFLT", "IFLT - If value is less than 0, branch to the line number given");
-        bytecode_tool_tips.put("IINC", "IINC - Increment the chosen local variable by given number");
-        bytecode_tool_tips.put("LDC_W", "LDC_W - Push constant from constant pool onto Stack");
-        bytecode_tool_tips.put("NOP", "NOP - Perform no operation");
-        bytecode_tool_tips.put("POP", "POP - Discard the top value on the Stack");
-        bytecode_tool_tips.put("SWAP", "SWAP - Swap the top 2 values on the Stack");
-        bytecode_tool_tips.put("IF_ICMPGQ", "");
-        bytecode_tool_tips.put("IF_ICMPGE", "IF_ICMPGE - If first value is greater than or equal to the second value, then branch");
-        bytecode_tool_tips.put("IF_ICMPNE", "IF_ICMPNE - If the two values are not equal, then branch");
-        bytecode_tool_tips.put("WIDE", "WIDE - Used for when the opcode is 16-bits long");
-        bytecode_tool_tips.put("RETURN", "RETURN - Return void from method");
-    }
+
     
     private void setupLabels(ClassLoader class_loader)
     {          
@@ -123,22 +87,57 @@ public class UIAssemblyPane
             assembly_listview.getItems().add(assembly_pane_labels[i]);  
             index += 2;
         }
-                                
-        int line = 0;
-        
-        for(int i = 0; i < class_loader.getNoOpcodes(); i++)
-        {     
+                                                
+        try
+        {
+            final String attribute_name = "Tooltip";
+         
+            int current_line = 0;
             
-            String word = class_loader.getOpcodeProgram(i);
-                        
-            if(bytecode_tool_tips.containsKey(word))
-            {                                   
-                Tooltip tool_tip = new Tooltip();
-                tool_tip.setText((String)bytecode_tool_tips.get(word));        
-                assembly_pane_labels[line].setTooltip(tool_tip);      
-                line++;
-            }            
-        }           
+            JSONParser parser = new JSONParser();            
+            Object obj = parser.parse(new InputStreamReader(getClass().getResourceAsStream("/main/resources/json/bytecodes.json")));
+            JSONObject jsonObject = (JSONObject) obj;            
+            JSONArray bytecode_json_array = (JSONArray) jsonObject.get("bytecodes");
+            
+            HashMap bytecode_details_map = class_loader.getByteCodeDetails();
+            
+            for(int i = 0; i < class_loader.getNoOpcodes(); i++)
+            {                                     
+                String word = class_loader.getOpcodeProgram(i);
+                
+                //Remove Operand from Bytecode
+                if(word.indexOf(' ') != - 1)
+                {
+                    word = word.substring(0, word.indexOf(' '));
+                }
+                
+                //Gather Tooltip text from JSON
+                if(bytecode_details_map.containsKey(word))
+                {                                        
+                    Tooltip tooltip = new Tooltip();
+                    
+                    int bytecode_index = (int)bytecode_details_map.get(word);
+                    
+                    JSONObject bytecode_element = (JSONObject) bytecode_json_array.get(bytecode_index);
+
+                    
+                    String tooltip_text = (String)bytecode_element.get(attribute_name);
+                    
+                    tooltip.setText(tooltip_text);
+                    
+                    assembly_pane_labels[current_line].setTooltip(tooltip);      
+                    
+                    current_line++;
+                }
+         
+            }        
+        }
+        catch(IOException | ParseException e)
+        {
+            System.out.println("Error - JSON Tooltips");
+            
+            e.printStackTrace();
+        }
     }
     
     private void setupTabs()

@@ -14,10 +14,10 @@ import org.json.simple.parser.JSONParser;
  *
  * @author Ryan
  */
-public class Test2 
+public class JsonParseTest 
 {
     
-    public Test2()
+    public JsonParseTest()
     {
                 JSONParser parser = new JSONParser();
         

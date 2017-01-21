@@ -4,9 +4,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Ryan/Google%20Drive/Bangor/_Y03/ICP%203099/jvm_prototype/src/main/com/rfrench/jvm/java/ClassLoader.java</file>
+            <file>file:/C:/Users/Ryan/Google%20Drive/Bangor/_Y03/ICP%203099/jvm_prototype/src/main/com/rfrench/jvm/java/ExecutionEngine.java</file>
+            <file>file:/C:/Users/Ryan/Google%20Drive/Bangor/_Y03/ICP%203099/jvm_prototype/src/main/com/rfrench/jvm/java/Main.java</file>
             <file>file:/C:/Users/Ryan/Google%20Drive/Bangor/_Y03/ICP%203099/jvm_prototype/src/test/Test.java</file>
             <file>file:/C:/Users/Ryan/Google%20Drive/Bangor/_Y03/ICP%203099/jvm_prototype/src/ui/com/rfrench/jvm/java/UIAssemblyPane.java</file>
-            <file>file:/C:/Users/Ryan/Google%20Drive/Bangor/_Y03/ICP%203099/jvm_prototype/src/main/resources/main_method_raw.txt</file>
+            <file>file:/C:/Users/Ryan/Google%20Drive/Bangor/_Y03/ICP%203099/jvm_prototype/src/test/Test2.java</file>
+            <file>file:/C:/Users/Ryan/Google%20Drive/Bangor/_Y03/ICP%203099/jvm_prototype/src/main/com/rfrench/jvm/java/InvalidJavapFileException.java</file>
+            <file>file:/C:/Users/Ryan/Google%20Drive/Bangor/_Y03/ICP%203099/jvm_prototype/src/ui/com/rfrench/jvm/java/MainScene.java</file>
         </group>
     </open-files>
 </project-private>
