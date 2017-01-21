@@ -63,7 +63,7 @@ public class Memory
         }
     }
   
-    public void setMemoryAddress(int address, int value)
+    public void setMemoryElementValue(int address, int value)
     {
         memory[address] = value;
     }

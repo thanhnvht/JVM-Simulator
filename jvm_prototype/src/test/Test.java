@@ -9,8 +9,8 @@ public class Test {
     @SuppressWarnings("unchecked")
     public static void main(String [] args)
     {
-        String FILE_PATH = "/main/resources/javap/main_method_raw.txt";
-        //String FILE_PATH = "/main/resources/javap/while_test2.txt"; 
+        //String FILE_PATH = "/main/resources/javap/main_method_raw.txt";
+        String FILE_PATH = "/main/resources/javap/while_test2.txt"; 
         
         Memory M = new Memory();
         

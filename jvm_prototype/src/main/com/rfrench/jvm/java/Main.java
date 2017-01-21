@@ -16,8 +16,11 @@ import javafx.stage.Stage;
 
 public class Main extends Application
 {    
-    public static final String FILE_PATH = "/main/resources/javap/while_test2.txt";    
-    //public static final String FILE_PATH = "/main/resources/javap/main_method.txt";   
+    //public static final String FILE_PATH = "/main/resources/javap/while_test2.txt";   
+    public static final String FILE_PATH = "/main/resources/javap/main_method.txt";  
+    
+    public static final String JSON_FILE_PATH = "/main/resources/json/bytecodes.json";
+     
     
     private Memory memory;
     
@@ -28,7 +31,7 @@ public class Main extends Application
         
     private MainScene main_scene;
     private MainSceneController main_scene_controller;
-    private ExecutionEngine jvm_instruction_logic;        
+    private ExecutionEngine execution_engine;        
     private ClassLoader assembly_data;
                                 
     @Override
@@ -46,7 +49,7 @@ public class Main extends Application
         
         main_scene_controller = new MainSceneController(main_scene);
                 
-        jvm_instruction_logic = new ExecutionEngine(main_scene, main_scene_controller, memory, assembly_data);                                       
+        execution_engine = new ExecutionEngine(main_scene, main_scene_controller, memory, assembly_data);                                       
                         
         Scene scene = new Scene(main_scene.getMainPane(), MainScene.WIDTH_TENTH*10, MainScene.HEIGHT_TENTH*10);
         
