@@ -1,7 +1,7 @@
 
 package test;
 
-import main.com.rfrench.jvm.java.Memory;
+import main.com.rfrench.jvm.java.MethodArea;
 import main.com.rfrench.jvm.java.ClassLoader;
 
 public class Test {
@@ -9,10 +9,10 @@ public class Test {
 
     public static void main(String [] args)
     {
-        //String FILE_PATH = "/main/resources/javap/main_method_raw.txt";
-        String FILE_PATH = "/main/resources/javap/while_test2.txt"; 
+        String FILE_PATH = "/main/resources/javap/MultipleMethodTest.txt";
+        //String FILE_PATH = "/main/resources/javap/while_test_verbose.txt";   
         
-        Memory M = new Memory();
+        MethodArea M = new MethodArea();
         
         ClassLoader A = new ClassLoader(M);
            

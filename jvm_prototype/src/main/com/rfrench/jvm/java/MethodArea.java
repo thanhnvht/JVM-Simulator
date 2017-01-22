@@ -1,6 +1,9 @@
 
 package main.com.rfrench.jvm.java;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 /*
     Program Title: Memory.java
     Author: Ryan French
@@ -8,18 +11,20 @@ package main.com.rfrench.jvm.java;
     Version: 1.0
 */
 
-public class Memory 
+public class MethodArea 
 {                
     private final Register LV;
     private int LV_size;
     
     private int[] memory;
     
+    private ArrayList<String> constant_pool;
+    
     // Frame Memory
     // Operand Stack Memory
         
             
-    public Memory()
+    public MethodArea()
     {     
         memory = new int[3000];        
         
@@ -32,6 +37,9 @@ public class Memory
 
         
         LV_size = 3;
+        
+        constant_pool = new ArrayList<String>();
+        
     }
                
     public int getMemoryAddress(int address)
@@ -75,4 +83,9 @@ public class Memory
         SP.dec();      
         return memory[SP.get() + 1];                
     }           
+    
+    public ArrayList<String> getConstantPool()
+    {
+        return constant_pool;
+    }
 }

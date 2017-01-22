@@ -1,5 +1,5 @@
 
-import main.com.rfrench.jvm.java.Memory;
+import main.com.rfrench.jvm.java.MethodArea;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,7 +15,7 @@ public class MemoryTest {
     
     public static void main(String[]args)
     {
-        Memory M = new Memory();
+        MethodArea M = new MethodArea();
         
         System.out.println(M.getMethodMemoryElement(2000));
         System.out.println(M.getMethodMemoryElement(2001));

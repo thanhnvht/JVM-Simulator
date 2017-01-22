@@ -5,7 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
-import main.com.rfrench.jvm.java.Memory;
+import main.com.rfrench.jvm.java.MethodArea;
 import main.com.rfrench.jvm.java.Register;
 
 /*
@@ -32,7 +32,7 @@ public class UIFramePane
         frame_labels = new Label[100];                
     }
     
-    public void addFrameUI(int index, Memory M)
+    public void addFrameUI(int index, MethodArea M)
     {                        
         Label f_label = new Label(frame_names[index] + " = " + M.getLocalFrameElement(new Register(2000), index));
         f_label.setId(CSS_FRAME_ID);

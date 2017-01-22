@@ -18,7 +18,7 @@ public class ExecutionEngine
     
     private MainSceneController main_scene_controller;
     
-    private Memory mem;
+    private MethodArea mem;
     private ClassLoader class_loader;
         
     private Register LV;
@@ -35,7 +35,7 @@ public class ExecutionEngine
      * @param mem
      * @param class_loader 
      */
-    public ExecutionEngine(MainScene m, MainSceneController main_scene_controller, Memory mem, ClassLoader class_loader) 
+    public ExecutionEngine(MainScene m, MainSceneController main_scene_controller, MethodArea mem, ClassLoader class_loader) 
     {                
         this.main_scene_controller = main_scene_controller;
         

@@ -2,7 +2,7 @@
 package ui.com.rfrench.jvm.java;
 
 import main.com.rfrench.jvm.java.ClassLoader;
-import main.com.rfrench.jvm.java.Memory;
+import main.com.rfrench.jvm.java.MethodArea;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.BorderPane;
@@ -38,7 +38,7 @@ public class MainScene
     private UIMenu m;
     private UIButtonPane bp;
           
-    public MainScene(Memory M, ClassLoader class_loader, Stage stage)
+    public MainScene(MethodArea method_area, ClassLoader class_loader, Stage stage)
     {
         
         main_pane = new BorderPane();       
@@ -55,14 +55,14 @@ public class MainScene
         
         for(int i = 0; i < MAX_LOCAL_VAR; i++)
         {
-            fp.addFrameUI(i+1, M);
+            fp.addFrameUI(i+1, method_area);
         }
           
         sp = new UIStackPane(mp.getPane());        
                 
-        ap = new UIAssemblyPane(class_loader, new String[]{"", "i", "j", "k"}, M);
+        ap = new UIAssemblyPane(class_loader, new String[]{"", "i", "j", "k"}, method_area);
         grid_pane.add(ap.getTabPane(), 2, 1, 2, 2);
-        cp = new UIConstantPoolPane();      
+        cp = new UIConstantPoolPane(method_area);      
         grid_pane.add(cp.getTabPane(), 0, 1, 1, 2);        
                           
         rp = new UIRegisterPane();       

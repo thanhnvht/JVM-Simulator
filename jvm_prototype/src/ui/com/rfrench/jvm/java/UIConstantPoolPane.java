@@ -12,6 +12,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
 import javafx.stage.Screen;
+import main.com.rfrench.jvm.java.MethodArea;
 
 /*
     Program Title: UIConstantPoolPane.java
@@ -21,37 +22,51 @@ import javafx.stage.Screen;
 */
 
 public class UIConstantPoolPane 
-{
-    
+{    
     private TabPane memory_tabpane;
     private ListView constantpool_listview;
-    
+    private MethodArea method_area;    
     
     Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
     
-    public UIConstantPoolPane()
+    public UIConstantPoolPane(MethodArea method_area)
     {
+        this.method_area = method_area;        
         
         memory_tabpane = new TabPane();
         Tab cpp_memory = new Tab();
-        cpp_memory.setText("CPP");
+        cpp_memory.setText("Constant Pool");
         
-        
-        constantpool_listview = new ListView();
-        
+        addConstantPoolInfo();
+                        
         cpp_memory.setContent(constantpool_listview);
-        memory_tabpane.setMinWidth(MainScene.WIDTH_TENTH * 2);
+        memory_tabpane.setMinWidth(MainScene.WIDTH_TENTH * 3);
         memory_tabpane.setMinHeight(MainScene.HEIGHT_TENTH * 2);
         memory_tabpane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-        
-        constantpool_listview.getItems().add(new Label("CPP"));
-        
+                        
         Tooltip tool_tip = new Tooltip();
         tool_tip.setText("Constant Pool Memory Area");
         
         constantpool_listview.setTooltip(tool_tip);
         
         memory_tabpane.getTabs().add(cpp_memory);
+    }
+    
+    private void addConstantPoolInfo()
+    {
+        constantpool_listview = new ListView();
+        
+        final int CONSTANT_POOL_SIZE = method_area.getConstantPool().size();
+        
+        for(int i = 0; i < CONSTANT_POOL_SIZE; i++)
+        {
+            String method_ref = method_area.getConstantPool().get(i);
+            Label l = new Label(method_ref);
+            constantpool_listview.getItems().add(l);
+        }
+        
+        
+        
     }
     
     public TabPane getTabPane()

@@ -29,13 +29,15 @@ public class ClassLoader
     private JSONArray bytecode_json_array;
     
     private ArrayList<Method> methods;
+    
+    private MethodArea method_area;
         
     /**
      * JVMFileReader Constructor
     */
-    public ClassLoader(Memory M)
+    public ClassLoader(MethodArea method_area)
     {          
-        
+        this.method_area = method_area;
     }
                                   
     /**
@@ -50,6 +52,8 @@ public class ClassLoader
             JSONArray bytecode_json = createJSONParser();
             
             createByteCodeDetailsHashMap(bytecode_json);                
+            
+            parseConstantPoolData(file_name);
             
             extractNumberOfMethods(file_name);
             
@@ -76,7 +80,7 @@ public class ClassLoader
     {                  
         try
         {        
-
+            parseConstantPoolData(file_name);
             
         }
         
@@ -116,6 +120,27 @@ public class ClassLoader
             bytecode_details_map.put(bytecode_name, i);    
         }
     }    
+    
+    private void parseConstantPoolData(String file_name)
+    {
+        Scanner sc = new Scanner(getClass().getResourceAsStream(file_name));
+                
+        while(sc.hasNext())
+        {
+            String word = sc.next();
+            
+            if(word.equals("Methodref"))
+            {
+                sc.next(); //Skip next 2 tokens
+                sc.next(); //
+                
+                String method_reference = sc.next();
+                
+                method_area.getConstantPool().add(method_reference);
+                
+            }
+        }
+    }
     
     /**
      * Parse through entire javap file. Look for keyword 'Code:'. This indicates

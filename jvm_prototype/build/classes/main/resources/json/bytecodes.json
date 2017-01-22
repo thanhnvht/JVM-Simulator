@@ -251,14 +251,22 @@
 	        "Name":"ALOAD_0",
 	        "Opcode":"2A",
 	        "Total Operands": 0,
-	        "Tooltip" : "*Aload_0 Tooltip*"
+	        "Tooltip" : "ALOAD_0 - Load a Reference from local variable 0"
 	    }, 	    
 
 	    {
 	        "Name":"INVOKESPECIAL",
 	        "Opcode":"B7",
 	        "Total Operands": 2,
-	        "Tooltip" : "*Invokespecial Tooltip*"
+	        "Tooltip" : "INVOKESPECIAL - Invoke instance method (Constructor). Includes an operand. Operand is reference in constant pool to method to invoke."
+	    },
+
+	    {
+	    	"Name" : "INVOKESTATIC",
+	    	"Opcode" : "B8",
+	    	"Total Operands" : 2,
+	    	"Tooltip" : "INVOKESTATIC - Invoke a static method. Includes an operand. Operand is reference to constant pool to method to invoke."
+
 	    }
 	]
 }
