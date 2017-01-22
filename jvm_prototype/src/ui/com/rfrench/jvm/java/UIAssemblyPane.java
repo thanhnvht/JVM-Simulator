@@ -30,68 +30,89 @@ public class UIAssemblyPane
 {
     
     private final String CSS_ASSEMBLY_ID = "ASSEMBLY";
-
-    private ArrayList<String> bytecode_assembly_text;
+   
     
-    private ArrayList<String> bytecode_strings;
-    private ArrayList<ArrayList<String>> method_bytecodes;
     
-    private Label[] assembly_pane_labels;
+    private ArrayList<ArrayList<Label>> java_program_labels_list;    
+    private ArrayList<Label> java_program_labels;
+            
     private Label[] hex_labels;
-    private ArrayList<Label> bytecode_info_labels;
-    
-    private ListView assembly_listview;
+
+    private final int NUMBER_OF_METHODS;
+   
+    private ArrayList<ListView> java_program_listview_list;
+    private ListView java_program_listview;
     private ListView hex_listview;
-    private ListView bytecode_info_listview;
+
         
     private TabPane assembly_tabpane;
+    private ArrayList<Tab> bytecode_tab_list;
     private Tab bytecode_tab;
     
     private TextArea code_area;
+    
+    private ClassLoader class_loader;
         
     public UIAssemblyPane(ClassLoader class_loader, String[] frame_names, Memory M)
     {                          
+        this.class_loader = class_loader;
+        
+        NUMBER_OF_METHODS = class_loader.getNumberOfMethods();
+        
         //setupHex(class_loader, M);        
         setupTabs();
         setupListView();                                                       
-        setupLabels(class_loader);   
-        setupTooltips(class_loader);
+        setupLabels();   
+        setupTooltips();
     }
     
     private void setupListView()
     {
-        assembly_listview = new ListView();
-        assembly_listview.setMinWidth(MainScene.WIDTH_TENTH * 3);
-        assembly_listview.setMinHeight(MainScene.HEIGHT_TENTH * 7);
-        assembly_listview.setId(CSS_ASSEMBLY_ID);     
+        java_program_listview_list = new ArrayList<ListView>();
+                
+        for(int i = 0; i < NUMBER_OF_METHODS; i++)
+        {
+            java_program_listview = new ListView();
+            java_program_listview.setMinWidth(MainScene.WIDTH_TENTH * 3);
+            java_program_listview.setMinHeight(MainScene.HEIGHT_TENTH * 7);
+            java_program_listview.setId(CSS_ASSEMBLY_ID);  
+            
+            java_program_listview_list.add(java_program_listview);
+        }   
     }        
     
-    private void setupLabels(ClassLoader class_loader)
-    {       
-        ArrayList<String> bytecode_text = class_loader.getMethods().get(0).getMethodBytecode();
-        
-        ArrayList<String> line_numbers = class_loader.getMethods().get(0).getMethodLineNumbers();
-       
-        bytecode_tab.setContent(assembly_listview);  
-        
-        int NUMBER_OF_BYTECODES = bytecode_text.size();
-           
-        assembly_pane_labels = new Label[NUMBER_OF_BYTECODES];
+    private void setupLabels()
+    {               
+        for (int i = 0; i < NUMBER_OF_METHODS; i++) 
+        {
+            ArrayList<String> bytecode_text = class_loader.getMethods().get(i).getMethodBytecode();
 
-        for(int i = 0; i < NUMBER_OF_BYTECODES; i++)
-        {                        
-            String line_number = line_numbers.get(i);
-            
-            String bytecode = bytecode_text.get(i);
-            
-            assembly_pane_labels[i] = new Label(line_number + "\t" + bytecode);
-            
-            assembly_listview.getItems().add(assembly_pane_labels[i]);  
+            ArrayList<String> line_numbers = class_loader.getMethods().get(i).getMethodLineNumbers();
 
-        } 
+            ListView listview = java_program_listview_list.get(i);
+            
+            Tab tab = bytecode_tab_list.get(i);
+            
+            tab.setContent(listview);
+                                    
+            int NUMBER_OF_BYTECODES = bytecode_text.size();
+
+            java_program_labels = new ArrayList<Label>();
+
+            for (int j = 0; j < NUMBER_OF_BYTECODES; j++) 
+            {
+                String line_number = line_numbers.get(j);
+
+                String bytecode = bytecode_text.get(j);
+                
+                java_program_labels.add(new Label(line_number + "\t" + bytecode));
+                
+                listview.getItems().add(java_program_labels.get(j));
+            }
+        }
     }
     
-    private void setupTooltips(ClassLoader class_loader)
+    private void setupTooltips()
     {
         try
         {
@@ -131,7 +152,7 @@ public class UIAssemblyPane
                     
                     tooltip.setText(tooltip_text);
                     
-                    assembly_pane_labels[i].setTooltip(tooltip);      
+                    java_program_labels.get(i).setTooltip(tooltip);      
                 }        
             }        
         }
@@ -146,10 +167,19 @@ public class UIAssemblyPane
     
     private void setupTabs()
     {
+                
         assembly_tabpane = new TabPane();
-        bytecode_tab = new Tab();
-        bytecode_tab.setText("Bytecode");
         
+        bytecode_tab_list = new ArrayList<Tab>();
+        
+        for(int i = 0; i < NUMBER_OF_METHODS; i++)
+        {
+            bytecode_tab = new Tab();
+            bytecode_tab.setText("Method " + (i+1));
+            bytecode_tab_list.add(bytecode_tab);
+            assembly_tabpane.getTabs().add(bytecode_tab);
+        }
+                        
         Tab java_code_tab = new Tab();
         java_code_tab.setText("Java Code");
         setupJavaCodeField();
@@ -158,27 +188,13 @@ public class UIAssemblyPane
         Tab hex_tab = new Tab();
         hex_tab.setText("Hex Code");
         hex_tab.setContent(hex_listview);
-        
-        Tab bytecode_info_tab = new Tab();
-        bytecode_info_tab.setText("Bytecode Information");
-        bytecode_info_tab.setContent(bytecode_info_listview);
-        setupBytecodeInfoTab();
-        
-                                
-        assembly_tabpane.getTabs().addAll(bytecode_tab, java_code_tab, hex_tab, bytecode_info_tab);
+                                               
+        //assembly_tabpane.getTabs().addAll(bytecode_tab, java_code_tab, hex_tab);
+                
+        assembly_tabpane.getTabs().addAll(java_code_tab, hex_tab);
         assembly_tabpane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     }
         
-    private void setupBytecodeInfoTab()
-    {
-        bytecode_info_listview = new ListView();
-        
-        bytecode_info_labels = new ArrayList<Label>();
-        
-        bytecode_info_labels.add(new Label("Test"));
-        
-        bytecode_info_listview.getItems().add(bytecode_info_labels);
-    }
     
     private void setupJavaCodeField()
     {
@@ -221,7 +237,7 @@ public class UIAssemblyPane
     
     public ListView getListView()
     {
-        return assembly_listview;
+        return java_program_listview;
     }
     
     public TabPane getTabPane()
@@ -231,6 +247,6 @@ public class UIAssemblyPane
     
     public void highlightLine(int index)
     {        
-        assembly_listview.getSelectionModel().select(index);
+        java_program_listview.getSelectionModel().select(index);
     }    
 }

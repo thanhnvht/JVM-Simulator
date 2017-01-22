@@ -6,7 +6,7 @@ import javafx.event.ActionEvent;
 import ui.com.rfrench.jvm.java.MainScene;
 
 /*
-    Program Title: InstructionSet.java
+    Program Title: ExecutionEngine.java
     Author: Ryan French
     Created: 19-Oct-2016
     Version: 1.0
@@ -20,14 +20,13 @@ public class ExecutionEngine
     
     private Memory mem;
     private ClassLoader class_loader;
-    
+        
     private Register LV;
-    private Register PC;
+    private int PC;
     private Register SP;
     private Register CPP;
     
     private int LV_size;     
-    private int current_line = 0;
             
     /**
      * Constructor for InstructionSet Logic
@@ -39,20 +38,18 @@ public class ExecutionEngine
     public ExecutionEngine(MainScene m, MainSceneController main_scene_controller, Memory mem, ClassLoader class_loader) 
     {                
         this.main_scene_controller = main_scene_controller;
+        
         this.mem = mem;
                 
         this.class_loader = class_loader;
-       
-       //LV_size = class_loader.getMaxLocalVariable();
-       
+              
         LV_size = class_loader.getMethods().get(0).getLocalSize();
-        
-        PC = new Register(0);                     
+            
+        PC = 0;
         LV = new Register(2000);        
         SP = new Register(LV.get() + LV_size); 
         CPP = new Register(0);
-                        
-        
+                                       
         main_scene_controller.getMainScene().getButton().getNextInstructionButton().setOnAction((ActionEvent event) -> 
         {
             executeInstruction();
@@ -75,18 +72,12 @@ public class ExecutionEngine
             //Change PC to index into memory_opcodes in Method Class
             
             int NUMBER_OF_OPCODES = class_loader.getMethods().get(0).getNumberOfOpcodes();
-            
-            //if(PC.get() < class_loader.getTotalMemorySpotsUsed()-1)
-            
-            if(PC.get() < NUMBER_OF_OPCODES)
+                        
+            if(PC < NUMBER_OF_OPCODES)
             {            
                 main_scene_controller.updateRegisterLabels(PC, SP, LV, CPP);    
-                
-               // main_scene_controller.getMainScene().getAssembly().highlightLine(current_line);  
 
-                //String bytecode = Integer.toHexString(mem.getMethodMemoryElement(PC.get())).toUpperCase();
-
-                String bytecode = Integer.toHexString(class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get())).toUpperCase();
+                String bytecode = Integer.toHexString(class_loader.getMethods().get(0).getMethodOpcodes().get(PC)).toUpperCase();
                 
                 System.out.println(bytecode);
                 
@@ -133,8 +124,7 @@ public class ExecutionEngine
                     case ("B1"):  RETURN();        break;
                 }                         
 
-                PC.inc();
-                current_line++;                               
+                PC++;                           
             }
 
             //No more instructions to read in program
@@ -161,8 +151,7 @@ public class ExecutionEngine
     public void resetProgram()
     {
         SP.set(LV.get() + LV_size);         
-        PC.set(0);        
-        current_line = 0;
+        PC = 0;      
         
         main_scene_controller.getMainScene().getAssembly().highlightLine(-1);                   
         main_scene_controller.removeAllStack();               
@@ -191,14 +180,9 @@ public class ExecutionEngine
      */
     private void BIPUSH() 
     {        
-        PC.inc();
-        
-        //int value = mem.getMethodMemoryElement(PC.get()); 
-        
-        int value = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
-        
-        mem.pushStackMem(SP, value);
-                        
+        PC++;              
+        int value = class_loader.getMethods().get(0).getMethodOpcodes().get(PC);        
+        mem.pushStackMem(SP, value);                        
         main_scene_controller.BIPUSH(Integer.toString(value));       
     }
     
@@ -208,15 +192,13 @@ public class ExecutionEngine
      */
     private void GOTO() 
     {
-        PC.inc();
-        
-        //int first_parameter = mem.getMethodMemoryElement(PC.get());
-        
-        int first_operand = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
+        PC++;
                 
-        PC.inc();
+        int first_operand = class_loader.getMethods().get(0).getMethodOpcodes().get(PC);
+                
+        PC++;
         
-        int second_operand = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
+        int second_operand = class_loader.getMethods().get(0).getMethodOpcodes().get(PC);
         
         int offset = first_operand + second_operand;    
         
@@ -257,15 +239,15 @@ public class ExecutionEngine
      */
     private void IF_ICMPEQ() 
     {           
-        PC.inc();
+        PC++;
         
-        int first_parameter = mem.getMethodMemoryElement(PC.get());       
+        int first_operand = mem.getMethodMemoryElement(PC);       
         
-        PC.inc();
+        PC++;
         
-        int second_parameter = mem.getMethodMemoryElement(PC.get());
+        int second_operand = mem.getMethodMemoryElement(PC);
         
-        int offset = first_parameter + second_parameter;         
+        int offset = first_operand + second_operand;         
 
         int stack_element_1 = mem.popStackMem(SP);        
         
@@ -283,9 +265,9 @@ public class ExecutionEngine
     {               
         if(frame_index < 0)
         {            
-            PC.inc();  
+            PC++;
             
-            frame_index = mem.getMethodMemoryElement(PC.get());                
+            frame_index = mem.getMethodMemoryElement(PC);                
         }
                         
         int value = mem.getLocalFrameElement(LV, frame_index);        
@@ -304,11 +286,8 @@ public class ExecutionEngine
     {        
         if(frame_index < 0)
         {
-            PC.inc();
-            
-            //frame_index = mem.getMethodMemoryElement(PC.get());
-            
-            frame_index = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
+            PC++;            
+            frame_index = class_loader.getMethods().get(0).getMethodOpcodes().get(PC);
         }
             
         int value = mem.popStackMem(SP);   
@@ -333,7 +312,7 @@ public class ExecutionEngine
 
     private void LDC_W()
     {
-//        PC.inc();
+//        PC++;;
 //        int constant_pool_index = mem.getMethodMemoryElement(PC);
 //        int value = mem.getConstantPool(constant_pool_index);
 //        
@@ -371,54 +350,50 @@ public class ExecutionEngine
     
     private void IFEQ()
     {
-        PC.inc();
+        PC++;
         
-        int offset = mem.getMethodMemoryElement(PC.get());
+        int offset = mem.getMethodMemoryElement(PC);
         
-        PC.inc();
+        PC++;
         
-        offset += mem.getMethodMemoryElement(PC.get());
+        offset += mem.getMethodMemoryElement(PC);
         
         int x = mem.popStackMem(SP);        
         
         if (x == 0)            
         {
-            PC.set(PC.get() + offset - 3);
+            PC = (PC + offset - 3);
         }
            
     }
     
     private void IFLT()
     {
-        PC.inc();
+        PC++;
         
-        int offset = mem.getMethodMemoryElement(PC.get());
+        int offset = mem.getMethodMemoryElement(PC);
         
-        PC.inc();
+        PC++;
         
-        offset += mem.getMethodMemoryElement(PC.get());
+        offset += mem.getMethodMemoryElement(PC);
         
         int x = mem.popStackMem(SP);
         
         if (x < 0)            
         {
-            PC.set(PC.get() + offset - 3);
+            PC = (PC + offset - 3);
         }
     }
     
     private void IINC()
     {
-        PC.inc();
+        PC++;
+                
+        int frame_index = class_loader.getMethods().get(0).getMethodOpcodes().get(PC);
         
-        //int frame_index = mem.getMethodMemoryElement(PC.get());
+        PC++;      
         
-        int frame_index = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
-        
-        PC.inc();
-        
-        //int value = mem.getMethodMemoryElement(PC.get()) + mem.getLocalFrameElement(LV, frame_index); 
-        
-        int value = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get()) + mem.getLocalFrameElement(LV, frame_index);
+        int value = class_loader.getMethods().get(0).getMethodOpcodes().get(PC) + mem.getLocalFrameElement(LV, frame_index);
         
         mem.setLocalFrameElement(LV, frame_index, value);
         
@@ -447,17 +422,13 @@ public class ExecutionEngine
     
     private void IF_ICMPGE()
     {
-        PC.inc();
+        PC++;
         
-        //int offset = mem.getMethodMemoryElement(PC.get());
+        int offset = class_loader.getMethods().get(0).getMethodOpcodes().get(PC);
         
-        int offset = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
+        PC++;   
         
-        PC.inc();
-        
-        //offset += mem.getMethodMemoryElement(PC.get());      
-        
-        offset += class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
+        offset += class_loader.getMethods().get(0).getMethodOpcodes().get(PC);
 
         int x = mem.popStackMem(SP);        
         
@@ -473,13 +444,13 @@ public class ExecutionEngine
     
     private void IF_ICMPNE()
     {
-        PC.inc();
+        PC++;
         
-        int offset = mem.getMethodMemoryElement(PC.get());
+        int offset = mem.getMethodMemoryElement(PC);
         
-        PC.inc();
+        PC++;
         
-        offset += mem.getMethodMemoryElement(PC.get());        
+        offset += mem.getMethodMemoryElement(PC);        
         
         
         int x = mem.popStackMem(SP);        
@@ -496,25 +467,7 @@ public class ExecutionEngine
     
     private void calculateBranch(int offset)
     {
-            //PC.set(offset - 1);             
-        
-            System.out.println("Branch to: " + offset);
-            
-            //String line_number = (String)assembly_data.getProgram().get((current_line * 2) + 1);        
-            
-            //String test_line_number = (String)assembly_data.
-            
-            //line_number = line_number.replaceAll("[^0-9]", "");        
-            
-            //System.out.println("line number: " + line_number);
-            
-            //Change to get line number from another array
-            
-            
-            
-            //current_line = (int)assembly_data.getLineNumbers().get(line_number) - 1;
-            
-            //System.out.println("'Current Line' " + current_line);
+        PC = offset - 1; //-1 to negate the PC increment at end of execution                                     
     }
     
     private void RETURN()

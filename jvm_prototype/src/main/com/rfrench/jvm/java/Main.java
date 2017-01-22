@@ -16,16 +16,14 @@ import javafx.stage.Stage;
 
 public class Main extends Application
 {    
-    public static final String FILE_PATH = "/main/resources/javap/while_test2.txt";   
-    //public static final String FILE_PATH = "/main/resources/javap/main_method.txt";  
+    public static final String FILE_PATH = "/main/resources/javap/while_test_verbose.txt";   
+    //public static final String FILE_PATH = "/main/resources/javap/while_test2.txt";  
     
     public static final String JSON_FILE_PATH = "/main/resources/json/bytecodes.json";
-     
-    
+         
     private Memory memory;
     
     private Register SP;
-    private Register PC;
     private Register CPP;
     private Register LV;
         
@@ -61,9 +59,7 @@ public class Main extends Application
     
     private void createRegisters()
     {                
-        int LV_size = class_loader.getMethods().get(0).getLocalSize();
-        
-        PC = new Register(0);                     
+        int LV_size = class_loader.getMethods().get(0).getLocalSize();                        
         
         LV = new Register(2000);        
         
@@ -84,14 +80,6 @@ public class Main extends Application
 
     public void setSP(Register SP) {
         this.SP = SP;
-    }
-
-    public Register getPC() {
-        return PC;
-    }
-
-    public void setPC(Register PC) {
-        this.PC = PC;
     }
 
     public Register getCPP() {

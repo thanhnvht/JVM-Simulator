@@ -1,15 +1,16 @@
 TODO
 
+Add Timer to play through file 
 
-Read 2 different methods from javap file
-READ 2 DIFFERENT METHODS FROM JAVAP FILE
 
 invoke and return from methods
  - Call Stack
- - 
+
 
 read class files
 
 read constant pool data
 
 change memory class to better resemble java runtime data areas
+
+change JSON to use relative paths instead of absolute

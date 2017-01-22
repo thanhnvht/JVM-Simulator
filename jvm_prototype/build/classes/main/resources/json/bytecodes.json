@@ -251,14 +251,14 @@
 	        "Name":"ALOAD_0",
 	        "Opcode":"2A",
 	        "Total Operands": 0,
-	        "Tooltip" : ""
+	        "Tooltip" : "*Aload_0 Tooltip*"
 	    }, 	    
 
 	    {
 	        "Name":"INVOKESPECIAL",
 	        "Opcode":"B7",
 	        "Total Operands": 2,
-	        "Tooltip" : ""
+	        "Tooltip" : "*Invokespecial Tooltip*"
 	    }
 	]
 }

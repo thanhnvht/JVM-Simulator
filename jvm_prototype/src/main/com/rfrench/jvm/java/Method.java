@@ -10,6 +10,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+/*
+    Program Title: Method.java
+    Author: Ryan French
+    Created: 22-Jan-2017
+    Version: 1.0
+*/
+
 public class Method 
 {
     private final int HEX = 16;
@@ -17,7 +24,7 @@ public class Method
     private ArrayList<String> parsed_method_data;
     private ArrayList<String> method_bytecode;
     private ArrayList<String> method_line_numbers;
-    private ArrayList<Integer> method_opcode;
+    private ArrayList<Integer> method_opcode;    
     
     private int MAX_STACK_SIZE;
     private int MAX_LOCAL_VAR_SIZE;

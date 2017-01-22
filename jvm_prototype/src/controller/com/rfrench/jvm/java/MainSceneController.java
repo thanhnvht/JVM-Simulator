@@ -27,14 +27,14 @@ public class MainSceneController
         return main_scene;
     }
     
-    public void updateRegisterLabels(Register PC, Register SP, Register LV, Register CPP)
+    public void updateRegisterLabels(int PC, Register SP, Register LV, Register CPP)
     {
         String PC_string;
         
-        if(PC.get() < 16)
-            PC_string = "PC  : 0x0" + Integer.toHexString(PC.get()).toUpperCase();
+        if(PC < 16)
+            PC_string = "PC  : 0x0" + Integer.toHexString(PC).toUpperCase();
         else
-            PC_string = "PC  : 0x" + Integer.toHexString(PC.get()).toUpperCase();
+            PC_string = "PC  : 0x" + Integer.toHexString(PC).toUpperCase();
         
         main_scene.getRegister().updateLabel(PC_string, 1);
         main_scene.getRegister().updateLabel("SP  : 0x" + Integer.toHexString(SP.get()).toUpperCase(), 2);        

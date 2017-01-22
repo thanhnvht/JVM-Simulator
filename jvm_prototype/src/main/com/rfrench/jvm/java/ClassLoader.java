@@ -13,7 +13,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /*
-    Program Title: Input.java
+    Program Title: ClassLoader.java
     Author: Ryan French
     Created: 19-Oct-2016
     Version: 1.0
@@ -187,7 +187,12 @@ public class ClassLoader
 
         NUMBER_OF_METHODS = method_count;        
     }
-                                                     
+       
+    public int getNumberOfMethods()
+    {
+        return NUMBER_OF_METHODS;
+    }
+    
     public HashMap getByteCodeDetails()
     {
         return bytecode_details_map;
