@@ -74,7 +74,7 @@ public class ExecutionEngine
     {
         try
         {
-            if(PC.get() < assembly_data.getProgramSize()-1){            
+            if(PC.get() < assembly_data.getTotalMemorySpotsUsed()-1){            
 
                 main_scene_controller.updateRegisterLabels(PC, SP, LV, CPP);                        
                 main_scene_controller.getMainScene().getAssembly().highlightLine(current_line);  

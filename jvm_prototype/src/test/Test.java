@@ -6,7 +6,7 @@ import main.com.rfrench.jvm.java.ClassLoader;
 
 public class Test {
     
-    @SuppressWarnings("unchecked")
+
     public static void main(String [] args)
     {
         //String FILE_PATH = "/main/resources/javap/main_method_raw.txt";

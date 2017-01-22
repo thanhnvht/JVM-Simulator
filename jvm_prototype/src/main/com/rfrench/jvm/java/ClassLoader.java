@@ -35,22 +35,10 @@ public class ClassLoader
     private Memory M; //Memory of JVM
          
     private HashMap line_numbers; //Helper Hashmap
-    
-    private ArrayList<String> single_method_line_numbers;
-    
-    private ArrayList<String> single_method_bytecodes;
-    
-    
-    
+                
     private HashMap bytecode_details_map;
         
-    private ArrayList<String> single_method_bytecodes_and_lines;     
-    
-    private ArrayList<ArrayList<String>> method_bytecodes;
-        
-    private int[] method_start_address_array;
-        
-    private List<int[]> method_details_list;
+    private ArrayList<String> single_method_bytecodes_and_lines;                 
           
     private JSONArray bytecode_json_array;
         
@@ -62,7 +50,6 @@ public class ClassLoader
     {  
         this.M = M;            
         
-        method_bytecodes = new ArrayList<ArrayList<String>>();
     }
                                   
     /**
@@ -76,12 +63,7 @@ public class ClassLoader
         {
             JSONArray bytecode_json = createJSONParser();
             
-            createByteCodeDetailsHashMap(bytecode_json);    
-            
-            extractNumberOfMethods(file_name);
-                                
-            if(method_details_list.size() > 0)
-                extractMethodDetails(file_name);
+            createByteCodeDetailsHashMap(bytecode_json);                
             
             createByteCodeDisplayArray(file_name);            
 
@@ -102,7 +84,19 @@ public class ClassLoader
     public void readFileTest(String file_name)
     {                  
         try
-        {          
+        {        
+            JSONArray bytecode_json = createJSONParser();
+            
+            createByteCodeDetailsHashMap(bytecode_json);   
+            
+            extractNumberOfMethods(file_name);
+            
+            for(int i = 0; i < NUMBER_OF_METHODS; i++)
+            {
+                ArrayList<String> method_details = parseMethod(file_name, i);
+                
+                Method m = new Method(bytecode_details_map, bytecode_json_array, method_details);
+            }
             
         }
         catch(Exception e) //change to filenotfoundexception
@@ -142,14 +136,64 @@ public class ClassLoader
         }
     }    
     
+    /**
+     * Parse through entire javap file. Look for keyword 'Code:'. This indicates
+     * the start of the method information the simulator specifically needs.
+     * Extract all words from this section into an arraylist. Stop extract when
+     * keyword 'LineNumberTable:' occurs. As there may be more than one method 
+     * in the class, use occurences to skip previous methods found.
+     * @param file_name name of javap .txt file to extract from
+     * @param occurences occurences of 'Code:' before begin extract
+     * @return method_details ArrayList<String> Containing method data
+     */
+    private ArrayList<String> parseMethod(String file_name, int occurences)
+    {
+        Scanner sc = new Scanner(getClass().getResourceAsStream(file_name));
+        
+        ArrayList<String> method_details = new ArrayList<String>();
+        
+        final String START_KEYWORD = "Code:";
+        final String END_KEYWORD = "LineNumberTable:";
+        
+        int current_occurences = 0;
+        
+        boolean start = false;
+        boolean end = false;
+        
+        while(sc.hasNext() && !end)
+        {
+            String word = sc.next();
+            
+            if(word.equals(START_KEYWORD))
+            {                                
+                if(current_occurences == occurences)
+                {
+                    start = true;
+                }
+                
+                current_occurences++;
+            }
+            
+            if(word.equals(END_KEYWORD) && start)
+            {
+                end = true;
+            }
+            
+            if(start)
+            {
+                method_details.add(word);
+            }
+        }
+        
+        return method_details;
+    }
+    
     private void extractNumberOfMethods(String file_name)
     {
         Scanner sc = new Scanner(getClass().getResourceAsStream(file_name));
         
         int method_count = 0;
-        
-        method_details_list = new ArrayList<int[]>();
-                      
+                              
         while(sc.hasNext())
         {
             String word = sc.next();
@@ -157,56 +201,13 @@ public class ClassLoader
             if(word.equals("Code:"))
             {
                 method_count++;
-                method_details_list.add(new int[]{0, 0, 0});
             }            
         }                
 
         NUMBER_OF_METHODS = method_count;        
     }
     
-    private void extractMethodDetails(String file_name)
-    {
-        Scanner sc = new Scanner(getClass().getResourceAsStream(file_name));
-        
-        int method_index = 0;
-        
-        List<String> keywords = new ArrayList<String>();
-        
-        keywords.add("stack=");
-        keywords.add("locals=");
-        keywords.add("args_size=");        
-        
-        String patternString = "\\b(" + StringUtils.join(keywords, "|") + ")\\b";
-        Pattern pattern = Pattern.compile(patternString);
-        Matcher matcher;
-        
-        while(sc.hasNext())
-        {
-            String word = sc.next();
-            
-            matcher = pattern.matcher(word); 
-            
-            if(matcher.find())
-            {                
-                String match = matcher.group(1);
-                int value = Integer.parseInt(word.replaceAll("\\D+",""));
-                match = match.replaceAll("\\d","");
-                                               
-                switch(match) // java wont allow variable strings in the cases!?!
-                {
-                    case("stack=") : method_details_list.get(method_index)[0] = value; 
-                                     break;
-                                     
-                    case("locals=") : method_details_list.get(method_index)[1] = value;
-                                      break;
-                                      
-                    case("args_size=") : method_details_list.get(method_index)[2] = value; 
-                                         method_index++;
-                                         break;
-                }                         
-            }
-        }
-    }
+
         
     /**
      * Parse bytecode line by line
@@ -255,18 +256,7 @@ public class ClassLoader
                    
         NUMBER_OPCODES_PROGRAM = single_method_bytecodes_and_lines.size() / 2;        
     }
-            
-    private void calculateTotalNumberofOpcodes()
-    {
-        
-        for(int i = 0; i < NUMBER_OF_METHODS; i++)
-        {
-            NUMBER_OPCODES_PROGRAM += method_bytecodes.get(i).size();
-        }
-        
-        NUMBER_OPCODES_PROGRAM /= NUMBER_OF_METHODS;
-    }                
-    
+                              
     /**
      * Write bytecode opcode and parameters into Memory method area
      */
@@ -389,8 +379,7 @@ public class ClassLoader
         
         return pattern_operand;
     }
-    
-    
+        
     /**
      * Create HashMap containing the starting line number in
      * the javap program of each java bytecode in the program
@@ -411,22 +400,7 @@ public class ClassLoader
     
     private void findMaxLocalVariable()
     {
-//        for(int i = 0; i < program_opcodes_list.length; i++)
-//        {
-//            int temp_max = 0;
-//            
-//            switch(program_opcodes_list[i])
-//            {
-//                //case("ISTORE") : temp_max =
-//                case("ISTORE_1") : temp_max = 1; break;
-//                case("ISTORE_2") : temp_max = 2; break;
-//                case("ISTORE_3") : temp_max = 3; break;
-//            }
-//            
-//            if(temp_max > max_local_variable)
-//                max_local_variable = temp_max;
-//        }
-        
+
         max_local_variable = 1;
     }
         
@@ -445,7 +419,7 @@ public class ClassLoader
         return single_method_bytecodes_and_lines;
     }
     
-    public int getProgramSize()
+    public int getTotalMemorySpotsUsed()
     {
         return MEM_PROGRAM_SIZE;
     }
@@ -455,45 +429,7 @@ public class ClassLoader
         for(int i = 0; i < MEM_PROGRAM_SIZE; i++)        
             System.out.println(M.getMemoryAddress(i));        
     }
-               
-    public void printAllMethodsBytecode()
-    {               
-        for(int i = 0; i < NUMBER_OF_METHODS; i++)
-        {
-            int number_of_bytecodes = method_bytecodes.get(i).size() / 2;
-            
-            System.out.println("******");
-            int count = 0;
-            
-            for(int j = 0; j < number_of_bytecodes; j++)
-            {
-                System.out.print(method_bytecodes.get(i).get(count) + " ");
-                System.out.println(method_bytecodes.get(i).get(count+1));
-                count += 2;
-            }
-            
-        }
-    }
-    
-    public void printMethodDetails()
-    {
-        final int NUMBER_OF_DETAILS_PER_METHOD = 4;
-                        
-        String[] method_detail_titles = new String[]{"max_stack_size", 
-            "max_local_variable_size", "arg_size"};
-        
-        for(int i = 0; i < NUMBER_OF_METHODS; i++)
-        {
-            System.out.println("***********");
-            
-            for(int j = 0; j < NUMBER_OF_DETAILS_PER_METHOD; j++)
-            {
-                System.out.println(method_detail_titles[j] + ": " + method_details_list.get(i)[j]);
-            }
-            System.out.println("");
-        }
-    }
-               
+                              
     public int getNoOpcodes()
     {        
         return NUMBER_OPCODES_PROGRAM;
