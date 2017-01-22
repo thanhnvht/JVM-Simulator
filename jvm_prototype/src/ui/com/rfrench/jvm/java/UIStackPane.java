@@ -21,7 +21,7 @@ public class UIStackPane
     private Pane mem;
     private Pane stack_pane;
     private Label[] stack_labels;
-    private final int STACK_MAX_SIZE = 100;
+    private int STACK_MAX_SIZE = 100;
     
     public UIStackPane(Pane mem)
     {

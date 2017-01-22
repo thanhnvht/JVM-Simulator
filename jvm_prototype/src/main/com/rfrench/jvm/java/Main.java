@@ -16,8 +16,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application
 {    
-    //public static final String FILE_PATH = "/main/resources/javap/while_test2.txt";   
-    public static final String FILE_PATH = "/main/resources/javap/main_method.txt";  
+    public static final String FILE_PATH = "/main/resources/javap/while_test2.txt";   
+    //public static final String FILE_PATH = "/main/resources/javap/main_method.txt";  
     
     public static final String JSON_FILE_PATH = "/main/resources/json/bytecodes.json";
      
@@ -32,24 +32,24 @@ public class Main extends Application
     private MainScene main_scene;
     private MainSceneController main_scene_controller;
     private ExecutionEngine execution_engine;        
-    private ClassLoader assembly_data;
+    private ClassLoader class_loader;
                                 
     @Override
     public void start(Stage primaryStage)
     {      
         memory = new Memory();      
         
-        assembly_data = new ClassLoader(memory);
+        class_loader = new ClassLoader(memory);
         
-        assembly_data.readFile(FILE_PATH);
+        class_loader.readFile(FILE_PATH);
         
         createRegisters();        
                 
-        main_scene = new MainScene(memory, assembly_data, primaryStage);                 
+        main_scene = new MainScene(memory, class_loader, primaryStage);                 
         
         main_scene_controller = new MainSceneController(main_scene);
                 
-        execution_engine = new ExecutionEngine(main_scene, main_scene_controller, memory, assembly_data);                                       
+        execution_engine = new ExecutionEngine(main_scene, main_scene_controller, memory, class_loader);                                       
                         
         Scene scene = new Scene(main_scene.getMainPane(), MainScene.WIDTH_TENTH*10, MainScene.HEIGHT_TENTH*10);
         
@@ -61,7 +61,7 @@ public class Main extends Application
     
     private void createRegisters()
     {                
-        int LV_size = assembly_data.getMaxLocalVariable();
+        int LV_size = class_loader.getMethods().get(0).getLocalSize();
         
         PC = new Register(0);                     
         

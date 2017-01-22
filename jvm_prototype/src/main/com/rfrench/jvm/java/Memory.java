@@ -8,26 +8,16 @@ package main.com.rfrench.jvm.java;
     Version: 1.0
 */
 
-/*
-    TODO : Use one memory instead of several. Change rest of program to 
-           point to correct locations in this memory. This way real use of 
-           registers.
-
-           Method Area 0-999
-           Constant Pool 1000 - 1999
-           Local Variable 2000+
-           Operatnd Stack 2000+
-*/
-
 public class Memory 
-{            
-    private final int HEX = 16;
-    private final int MEM_SIZE = 3000;
-    
+{                
     private final Register LV;
     private int LV_size;
     
     private int[] memory;
+    
+    // Frame Memory
+    // Operand Stack Memory
+        
             
     public Memory()
     {     
@@ -47,22 +37,8 @@ public class Memory
     public int getMemoryAddress(int address)
     {
         return memory[address];
-    }
-    
-    public void setMem(int address, int value)
-    {
-        memory[address] = value;
-    }        
-        
-    public void setMethodMemory(String[] text_data)
-    {
-        for(int i = 0; i < text_data.length; i++)
-        {
-            String element = text_data[i].substring(2, 4);            
-            memory[i] = Integer.parseInt(element, HEX);
-        }
-    }
-  
+    }         
+          
     public void setMemoryElementValue(int address, int value)
     {
         memory[address] = value;

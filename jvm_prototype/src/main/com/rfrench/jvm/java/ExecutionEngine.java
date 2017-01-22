@@ -12,10 +12,6 @@ import ui.com.rfrench.jvm.java.MainScene;
     Version: 1.0
 */
 
-/*
-    TODO : Fix Functionality of Branching Opertations e.g. GOTO, IF_ICMPGE...
-*/
-
 public class ExecutionEngine 
 {
     private final int HEX = 16;
@@ -23,7 +19,7 @@ public class ExecutionEngine
     private MainSceneController main_scene_controller;
     
     private Memory mem;
-    private ClassLoader assembly_data;
+    private ClassLoader class_loader;
     
     private Register LV;
     private Register PC;
@@ -38,16 +34,18 @@ public class ExecutionEngine
      * @param m
      * @param main_scene_controller
      * @param mem
-     * @param assembly_data 
+     * @param class_loader 
      */
-    public ExecutionEngine(MainScene m, MainSceneController main_scene_controller, Memory mem, ClassLoader assembly_data) 
+    public ExecutionEngine(MainScene m, MainSceneController main_scene_controller, Memory mem, ClassLoader class_loader) 
     {                
         this.main_scene_controller = main_scene_controller;
         this.mem = mem;
                 
-        this.assembly_data = assembly_data;
+        this.class_loader = class_loader;
        
-        LV_size = assembly_data.getMaxLocalVariable();
+       //LV_size = class_loader.getMaxLocalVariable();
+       
+        LV_size = class_loader.getMethods().get(0).getLocalSize();
         
         PC = new Register(0);                     
         LV = new Register(2000);        
@@ -74,13 +72,26 @@ public class ExecutionEngine
     {
         try
         {
-            if(PC.get() < assembly_data.getTotalMemorySpotsUsed()-1){            
+            //Change PC to index into memory_opcodes in Method Class
+            
+            int NUMBER_OF_OPCODES = class_loader.getMethods().get(0).getNumberOfOpcodes();
+            
+            //if(PC.get() < class_loader.getTotalMemorySpotsUsed()-1)
+            
+            if(PC.get() < NUMBER_OF_OPCODES)
+            {            
+                main_scene_controller.updateRegisterLabels(PC, SP, LV, CPP);    
+                
+               // main_scene_controller.getMainScene().getAssembly().highlightLine(current_line);  
 
-                main_scene_controller.updateRegisterLabels(PC, SP, LV, CPP);                        
-                main_scene_controller.getMainScene().getAssembly().highlightLine(current_line);  
+                //String bytecode = Integer.toHexString(mem.getMethodMemoryElement(PC.get())).toUpperCase();
 
-                String bytecode = Integer.toHexString(mem.getMethodMemoryElement(PC.get())).toUpperCase();
-
+                String bytecode = Integer.toHexString(class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get())).toUpperCase();
+                
+                System.out.println(bytecode);
+                
+                
+                //Change this to HashMap?
                 switch(bytecode)
                 {
                     case ("3") :  ICONST(0);       break;  //ICONST_0
@@ -129,7 +140,7 @@ public class ExecutionEngine
             //No more instructions to read in program
             else
             {                 
-                main_scene_controller.getMainScene().getAssembly().highlightLine(current_line); 
+             //   main_scene_controller.getMainScene().getAssembly().highlightLine(current_line); 
                 main_scene_controller.updateRegisterLabels(PC, SP, LV, CPP); 
             }
         }
@@ -182,7 +193,9 @@ public class ExecutionEngine
     {        
         PC.inc();
         
-        int value = mem.getMethodMemoryElement(PC.get()); 
+        //int value = mem.getMethodMemoryElement(PC.get()); 
+        
+        int value = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
         
         mem.pushStackMem(SP, value);
                         
@@ -197,13 +210,15 @@ public class ExecutionEngine
     {
         PC.inc();
         
-        int first_parameter = mem.getMethodMemoryElement(PC.get());
+        //int first_parameter = mem.getMethodMemoryElement(PC.get());
+        
+        int first_operand = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
                 
         PC.inc();
         
-        int second_parameter = mem.getMethodMemoryElement(PC.get());
+        int second_operand = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
         
-        int offset = first_parameter + second_parameter;    
+        int offset = first_operand + second_operand;    
         
         calculateBranch(offset);
     }
@@ -291,7 +306,9 @@ public class ExecutionEngine
         {
             PC.inc();
             
-            frame_index = mem.getMethodMemoryElement(PC.get());
+            //frame_index = mem.getMethodMemoryElement(PC.get());
+            
+            frame_index = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
         }
             
         int value = mem.popStackMem(SP);   
@@ -393,11 +410,15 @@ public class ExecutionEngine
     {
         PC.inc();
         
-        int frame_index = mem.getMethodMemoryElement(PC.get());
+        //int frame_index = mem.getMethodMemoryElement(PC.get());
+        
+        int frame_index = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
         
         PC.inc();
         
-        int value = mem.getMethodMemoryElement(PC.get()) + mem.getLocalFrameElement(LV, frame_index); 
+        //int value = mem.getMethodMemoryElement(PC.get()) + mem.getLocalFrameElement(LV, frame_index); 
+        
+        int value = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get()) + mem.getLocalFrameElement(LV, frame_index);
         
         mem.setLocalFrameElement(LV, frame_index, value);
         
@@ -428,11 +449,15 @@ public class ExecutionEngine
     {
         PC.inc();
         
-        int offset = mem.getMethodMemoryElement(PC.get());
+        //int offset = mem.getMethodMemoryElement(PC.get());
+        
+        int offset = class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
         
         PC.inc();
         
-        offset += mem.getMethodMemoryElement(PC.get());        
+        //offset += mem.getMethodMemoryElement(PC.get());      
+        
+        offset += class_loader.getMethods().get(0).getMethodOpcodes().get(PC.get());
 
         int x = mem.popStackMem(SP);        
         
@@ -471,10 +496,25 @@ public class ExecutionEngine
     
     private void calculateBranch(int offset)
     {
-            PC.set(offset - 1);                                            
-            String line_number = (String)assembly_data.getProgram().get((current_line * 2) + 1);        
-            line_number = line_number.replaceAll("[^0-9]", "");        
-            current_line = (int)assembly_data.getLineNumbers().get(line_number) - 1;
+            //PC.set(offset - 1);             
+        
+            System.out.println("Branch to: " + offset);
+            
+            //String line_number = (String)assembly_data.getProgram().get((current_line * 2) + 1);        
+            
+            //String test_line_number = (String)assembly_data.
+            
+            //line_number = line_number.replaceAll("[^0-9]", "");        
+            
+            //System.out.println("line number: " + line_number);
+            
+            //Change to get line number from another array
+            
+            
+            
+            //current_line = (int)assembly_data.getLineNumbers().get(line_number) - 1;
+            
+            //System.out.println("'Current Line' " + current_line);
     }
     
     private void RETURN()

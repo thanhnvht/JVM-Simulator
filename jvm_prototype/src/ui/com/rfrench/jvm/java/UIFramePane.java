@@ -26,9 +26,9 @@ public class UIFramePane
     public UIFramePane(Pane memory_pane)
     {
         this.memory_pane = memory_pane;
-        number_of_frames = 0;
         
-       
+        number_of_frames = 0;
+               
         frame_labels = new Label[100];                
     }
     

@@ -17,75 +17,31 @@ public class Method
     private ArrayList<String> parsed_method_data;
     private ArrayList<String> method_bytecode;
     private ArrayList<String> method_line_numbers;
-    private ArrayList<Integer> memory_opcodes;
+    private ArrayList<Integer> method_opcode;
     
     private int MAX_STACK_SIZE;
     private int MAX_LOCAL_VAR_SIZE;
     private int MAX_ARG_SIZE;
-    private int NUMBER_OPCODES_PROGRAM;
     
     private HashMap bytecode_details_map;
     private JSONArray bytecode_details_json;
-       
-    public Method(HashMap bytecode_details_map, JSONArray bytecode_details_json)
-    {
-        this.parsed_method_data = parsed_method_data;
-        this.bytecode_details_map = bytecode_details_map;   
-        this.bytecode_details_json = bytecode_details_json;
-        
-        MAX_STACK_SIZE = 0;
-        MAX_LOCAL_VAR_SIZE = 0;
-        MAX_ARG_SIZE = 0;
-        NUMBER_OPCODES_PROGRAM = 0;
-        
-        method_bytecode = new ArrayList<String>();
-        method_line_numbers = new ArrayList<String>();   
-        memory_opcodes = new ArrayList<Integer>();
-    }
-    
+           
     public Method(HashMap bytecode_details_map, JSONArray bytecode_details_json, ArrayList<String> parsed_method_data)
     {
         this.parsed_method_data = parsed_method_data;
         this.bytecode_details_map = bytecode_details_map;   
-        this.bytecode_details_json = bytecode_details_json;
-        
-        MAX_STACK_SIZE = 0;
-        MAX_LOCAL_VAR_SIZE = 0;
-        MAX_ARG_SIZE = 0;
-        NUMBER_OPCODES_PROGRAM = 0;
+        this.bytecode_details_json = bytecode_details_json;        
         
         method_bytecode = new ArrayList<String>();
         method_line_numbers = new ArrayList<String>();  
-        memory_opcodes = new ArrayList<Integer>();
+        method_opcode = new ArrayList<Integer>();
         
-        setupMethod();
+        extractByteCode();        
+        extractLineNumbers();        
+        extractMethodAttributes();        
+        extractOpcodes();    
     }
-    
-    public void setupMethod()
-    {
-        extractByteCode();
-        
-        extractLineNumbers();
-        
-        extractMethodAttributes();
-        
-        extractOpcodes();
-        
-        for(int i = 0; i < memory_opcodes.size(); i++)
-        {
-            System.out.println(memory_opcodes.get(i));
-        }
-        
-        System.out.println("*****");
-    }
-    
-    public void setupMethod(ArrayList<String> parsed_method_data)
-    {
-        this.parsed_method_data = parsed_method_data;
-        
-        setupMethod();
-    }
-        
+                
     private void extractMethodAttributes()
     {
         MAX_STACK_SIZE = extractMethodDetails("stack=");
@@ -197,79 +153,7 @@ public class Method
         return value;
     }
     
-//    private void writeByteCodeToMemory()
-//    {                
-//        final int MAX_BYTE_VALUE = 255;
-//                
-//        Pattern pattern_branch = createBranchPattern();
-//        Matcher matcher_branch;
-//        
-//        Pattern pattern_operand = createOperandPattern();
-//        Matcher matcher_operand;
-//                
-//        int memory_location = 0;
-//                
-//        for(int i = 0; i < NUMBER_OPCODES_PROGRAM; i++)
-//        {      
-//            String word = method_bytecode.get(i);
-//            String parameter = "";
-//                                 
-//            matcher_branch = pattern_branch.matcher(word);
-//            matcher_operand = pattern_operand.matcher(word);
-//            
-//            if(word.indexOf(' ') != -1)            
-//            {
-//               parameter = word.substring(word.indexOf(' ') + 1, word.length());
-//               word = word.substring(0, word.indexOf(' '));                              
-//            }            
-//
-//            if(bytecode_details_map.containsKey(word))
-//            {
-//                int bytecode_map_index = (int)bytecode_details_map.get(word); 
-//                
-//                JSONObject bytecode_element = (JSONObject) bytecode_details_json.get(bytecode_map_index);
-//                                
-//                final String ATTRIBUTE = "Opcode";
-//                
-//                String opcode_text = (String)bytecode_element.get(ATTRIBUTE);                
-//                
-//                int opcode = Integer.parseInt(opcode_text, HEX);
-//                
-//                memory_data.add(opcode);
-//               
-//                if(matcher_branch.find())
-//                {
-//                    int offset = Integer.parseInt(parameter);
-//                    int param_1 = 0;
-//                    int param_2 = offset;
-//                
-//                    if(param_2 > MAX_BYTE_VALUE)
-//                    {                
-//                        param_1 = offset - MAX_BYTE_VALUE;
-//                        param_2 = 255;
-//                    }
-//
-//                    memory_data.add(param_1);
-//                    memory_data.add(param_2);
-//                }
-//                
-//                else if(word.equals("IINC"))
-//                {                    
-//                    int param_1 = Integer.parseInt(parameter.substring(0, parameter.indexOf(',')));
-//                    memory_data.add(param_1);
-//                    int param_2 = Integer.parseInt(parameter.substring(parameter.indexOf(' ') + 1, parameter.length()));
-//                    memory_data.add(param_2); 
-//                }                
-//                
-//                if(matcher_operand.find())
-//                {                   
-//                    int param_1 = Integer.parseInt(parameter);
-//                    memory_data.add(param_1);
-//                }
-//                
-//            } 
-//        }           
-//    }    
+   
     
     private void extractOpcodes()
     {
@@ -291,7 +175,7 @@ public class Method
 
                 String bytecode = (String) bytecode_element.get(ATTRIBUTE);
                
-                memory_opcodes.add(Integer.parseInt(bytecode, HEX));
+                method_opcode.add(Integer.parseInt(bytecode, HEX));
                 
                 if(checkBranchOpcode(word, count))
                 {
@@ -328,15 +212,15 @@ public class Method
         
         Pattern pattern = Pattern.compile(pattern_string_operand);
         
-        Matcher matcher = pattern.matcher(word);
+        Matcher matcher = pattern.matcher(word);        
         
         if(matcher.find())
         {
             int operand_index = index + 1;                        
                                     
-            int operand = Integer.parseInt(parsed_method_data.get(operand_index), HEX);
-            
-            memory_opcodes.add(operand);
+            int operand = Integer.parseInt(parsed_method_data.get(operand_index));
+                        
+            method_opcode.add(operand);
             
             stack_opcode = true;
         }
@@ -358,13 +242,13 @@ public class Method
             
             int operand = Integer.parseInt(operand_string, HEX);
             
-            memory_opcodes.add(operand);
+            method_opcode.add(operand);
             
             operand_index = index + 2;
             
             operand = Integer.parseInt(parsed_method_data.get(operand_index), HEX);
             
-            memory_opcodes.add(operand);            
+            method_opcode.add(operand);            
         }
                         
         return iinc_opcode;
@@ -407,13 +291,12 @@ public class Method
                 param_2 = MAX_BYTE_VALUE;
             }
             
-            memory_opcodes.add(param_1);            
-            memory_opcodes.add(param_2);
+            method_opcode.add(param_1);            
+            method_opcode.add(param_2);
             
             branch_opcode = true;
         }
-        
-        
+                
         return branch_opcode;
     }
     
@@ -430,5 +313,30 @@ public class Method
     public final int getArgSize()
     {
         return MAX_ARG_SIZE;
+    }
+    
+    public ArrayList<String> getMethodBytecode()
+    {
+        return method_bytecode;
+    }
+    
+    public ArrayList<String> getMethodLineNumbers()
+    {
+        return method_line_numbers;
+    }
+    
+    public ArrayList<Integer> getMethodOpcodes()
+    {
+        return method_opcode;
+    }
+    
+    public int getNumberOfOpcodes()
+    {
+        return method_opcode.size();
+    }
+    
+    public int getNumberOfBytecodes()
+    {
+        return method_bytecode.size();
     }
 }

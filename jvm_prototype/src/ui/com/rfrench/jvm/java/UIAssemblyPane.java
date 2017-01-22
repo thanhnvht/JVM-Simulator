@@ -38,9 +38,11 @@ public class UIAssemblyPane
     
     private Label[] assembly_pane_labels;
     private Label[] hex_labels;
+    private ArrayList<Label> bytecode_info_labels;
     
     private ListView assembly_listview;
     private ListView hex_listview;
+    private ListView bytecode_info_listview;
         
     private TabPane assembly_tabpane;
     private Tab bytecode_tab;
@@ -66,25 +68,27 @@ public class UIAssemblyPane
     
     private void setupLabels(ClassLoader class_loader)
     {       
-
-        bytecode_assembly_text = class_loader.getProgram();
-
+        ArrayList<String> bytecode_text = class_loader.getMethods().get(0).getMethodBytecode();
+        
+        ArrayList<String> line_numbers = class_loader.getMethods().get(0).getMethodLineNumbers();
+       
         bytecode_tab.setContent(assembly_listview);  
         
-        assembly_pane_labels = new Label[bytecode_assembly_text.size()];
+        int NUMBER_OF_BYTECODES = bytecode_text.size();
+           
+        assembly_pane_labels = new Label[NUMBER_OF_BYTECODES];
 
-        int index = 0;
-
-        for(int i = 0; i < class_loader.getNoOpcodes(); i++)
+        for(int i = 0; i < NUMBER_OF_BYTECODES; i++)
         {                        
-            //String mem_add = "0000x" + Integer.toHexString(class_loader.getOpcodeMemoryLocation(i)).toUpperCase();
-            //System.out.println(mem_add);
-            //assembly_pane_labels[i] = new Label(bytecode_assembly_text.get(index) + "\t" + mem_add + "\t" + bytecode_assembly_text.get(index+1));
-            assembly_pane_labels[i] = new Label(bytecode_assembly_text.get(index) + "\t" + bytecode_assembly_text.get(index+1));
+            String line_number = line_numbers.get(i);
+            
+            String bytecode = bytecode_text.get(i);
+            
+            assembly_pane_labels[i] = new Label(line_number + "\t" + bytecode);
+            
             assembly_listview.getItems().add(assembly_pane_labels[i]);  
-            index += 2;
-        }
- 
+
+        } 
     }
     
     private void setupTooltips(ClassLoader class_loader)
@@ -92,9 +96,7 @@ public class UIAssemblyPane
         try
         {
             final String ATTRIBUTE_NAME = "Tooltip";
-         
-            int current_line = 0;
-            
+                     
             JSONParser parser = new JSONParser();            
             Object obj = parser.parse(new InputStreamReader(getClass().getResourceAsStream(JSON_FILE_PATH)));
             JSONObject jsonObject = (JSONObject) obj;            
@@ -102,13 +104,13 @@ public class UIAssemblyPane
             
             HashMap bytecode_details_map = class_loader.getByteCodeDetails();
             
-            int index = 1;
             
-            final int NUMBER_OF_OPCODES = class_loader.getProgram().size() / 2;
+            final int NUMBER_OF_BYTECODES = class_loader.getMethods().get(0).getMethodBytecode().size();
             
-            for(int i = 0; i < NUMBER_OF_OPCODES; i++)
+            for(int i = 0; i < NUMBER_OF_BYTECODES; i++)
             {                                     
-                String word = (String)class_loader.getProgram().get(index);
+                
+                String word = (String)class_loader.getMethods().get(0).getMethodBytecode().get(i);
                 
                 //Remove Operand from Bytecode
                 if(word.indexOf(' ') != - 1)
@@ -129,12 +131,8 @@ public class UIAssemblyPane
                     
                     tooltip.setText(tooltip_text);
                     
-                    assembly_pane_labels[current_line].setTooltip(tooltip);      
-                    
-                    current_line++;
-                }
-         
-                index+= 2;
+                    assembly_pane_labels[i].setTooltip(tooltip);      
+                }        
             }        
         }
         
@@ -150,7 +148,7 @@ public class UIAssemblyPane
     {
         assembly_tabpane = new TabPane();
         bytecode_tab = new Tab();
-        bytecode_tab.setText("ByteCode");
+        bytecode_tab.setText("Bytecode");
         
         Tab java_code_tab = new Tab();
         java_code_tab.setText("Java Code");
@@ -160,11 +158,28 @@ public class UIAssemblyPane
         Tab hex_tab = new Tab();
         hex_tab.setText("Hex Code");
         hex_tab.setContent(hex_listview);
+        
+        Tab bytecode_info_tab = new Tab();
+        bytecode_info_tab.setText("Bytecode Information");
+        bytecode_info_tab.setContent(bytecode_info_listview);
+        setupBytecodeInfoTab();
+        
                                 
-        assembly_tabpane.getTabs().addAll(bytecode_tab, java_code_tab, hex_tab);
+        assembly_tabpane.getTabs().addAll(bytecode_tab, java_code_tab, hex_tab, bytecode_info_tab);
         assembly_tabpane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     }
         
+    private void setupBytecodeInfoTab()
+    {
+        bytecode_info_listview = new ListView();
+        
+        bytecode_info_labels = new ArrayList<Label>();
+        
+        bytecode_info_labels.add(new Label("Test"));
+        
+        bytecode_info_listview.getItems().add(bytecode_info_labels);
+    }
+    
     private void setupJavaCodeField()
     {
         String java_code = "*";        
@@ -217,45 +232,5 @@ public class UIAssemblyPane
     public void highlightLine(int index)
     {        
         assembly_listview.getSelectionModel().select(index);
-    }
-    
-//    private void writeOpcodeMemoryLocationsTest()
-//    {
-//        int memory_location = 0;
-//        int count = 0;
-//        int OPCODES_INDEX = 2;
-//        
-//        opcode_memory_locations = new int[NUMBER_OPCODES_PROGRAM];
-//        method_start_address_array = new int[NUMBER_OF_METHODS];
-//                
-//        for(int i = 0; i < NUMBER_OF_METHODS; i++)
-//        {
-//            int method_opcodes_total = opcodes_list.get(i).size();
-//            
-//            method_start_address_array[i] = memory_location;
-//            
-//            for(int j = 0; j < method_opcodes_total; j++)
-//            {
-//                String word = opcodes_list.get(i).get(j);
-//                
-//                if(word.indexOf(' ') != -1)            
-//                {
-//                    word = word.substring(0, word.indexOf(' '));   
-//                }
-//                
-//                if(opcodes.containsKey(word))
-//                {
-//                    opcode_memory_locations[count] = memory_location;
-//                    count++;
-//                    int[] opcode_meta_data = (int[])opcodes.get(word);                                               
-//                    memory_location += opcode_meta_data[OPCODES_INDEX];
-//                }
-//                else
-//                {
-//                    System.out.println("Invalid Opcode: " + word);
-//                }
-//            }
-//        }                                      
-//    }  
-    
+    }    
 }
