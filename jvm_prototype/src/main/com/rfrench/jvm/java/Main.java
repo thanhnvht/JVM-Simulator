@@ -16,12 +16,12 @@ import javafx.stage.Stage;
 
 public class Main extends Application
 {    
-    //public static final String FILE_PATH = "/main/resources/javap/while_test_verbose.txt";   
-    public static final String FILE_PATH = "/main/resources/javap/multiple_methods.txt";  
+    public static final String FILE_PATH = "/main/resources/javap/while_test_verbose.txt";   
+    //public static final String FILE_PATH = "/main/resources/javap/multiple_methods.txt";  
     
     public static final String JSON_FILE_PATH = "/main/resources/json/bytecodes.json";
          
-    private MethodArea memory;
+    private MethodArea method_area;
     
     private Register SP;
     private Register CPP;
@@ -35,19 +35,20 @@ public class Main extends Application
     @Override
     public void start(Stage primaryStage)
     {      
-        memory = new MethodArea();      
-        
-        class_loader = new ClassLoader(memory, FILE_PATH);
+                     
+        class_loader = new ClassLoader(FILE_PATH);
         
         class_loader.readFile();
         
+        method_area = new MethodArea(class_loader); 
+                        
         createRegisters();        
                 
-        main_scene = new MainScene(memory, class_loader, primaryStage);                 
+        main_scene = new MainScene(method_area, class_loader, primaryStage);                 
         
         main_scene_controller = new MainSceneController(main_scene);
                 
-        execution_engine = new ExecutionEngine(main_scene, main_scene_controller, memory, class_loader);                                       
+        execution_engine = new ExecutionEngine(main_scene, main_scene_controller, method_area, class_loader);                                       
                         
         Scene scene = new Scene(main_scene.getMainPane(), MainScene.WIDTH_TENTH*10, MainScene.HEIGHT_TENTH*10);
         

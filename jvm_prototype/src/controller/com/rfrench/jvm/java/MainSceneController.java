@@ -1,6 +1,8 @@
 
 package controller.com.rfrench.jvm.java;
 
+import javafx.scene.control.SingleSelectionModel;
+import javafx.scene.control.Tab;
 import main.com.rfrench.jvm.java.Register;
 import ui.com.rfrench.jvm.java.MainScene;
 
@@ -56,6 +58,12 @@ public class MainSceneController
     {
         ++stack_pane_size;
         main_scene.getStack().push(value, stack_pane_size); 
+    }
+    
+    public void ALOAD_0(String value)
+    {
+        ++stack_pane_size;
+        main_scene.getStack().push(value, stack_pane_size);
     }
     
     public void ICONST(String value)
@@ -126,5 +134,39 @@ public class MainSceneController
     {
         String new_frame_text = main_scene.getFrame().getPartialFrameName(frame_index) + " = " + frame_value;
         main_scene.getFrame().updateFrameLabel(frame_index, new_frame_text);
+    }
+    
+    public void INVOKESPECIAL(int stack_size, int current_method, int max_local_var)
+    {
+        for(int i = 0; i < stack_size; i++)
+        {
+            main_scene.getStack().pop(stack_pane_size);            
+            --stack_pane_size;            
+        }
+        
+        for(int i = 0; i < max_local_var; i++)
+        {
+            main_scene.getFrame().addFrameUI(i, "");
+        }
+        
+                
+        SingleSelectionModel<Tab> selection_model = main_scene.getAssembly().getTabPane().getSelectionModel();
+            
+        selection_model.select(current_method);
+        
+    }
+    
+    public void RETURN(int current_method, int max_local_var)
+    {
+        SingleSelectionModel<Tab> selection_model = main_scene.getAssembly().getTabPane().getSelectionModel();
+            
+        selection_model.select(current_method);
+        
+        for(int i = 0; i < max_local_var; i++)
+        {
+            main_scene.getFrame().removeFrameUI(i);
+        }
+        
+      
     }
 }

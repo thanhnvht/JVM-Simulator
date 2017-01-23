@@ -5,8 +5,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
-import main.com.rfrench.jvm.java.MethodArea;
-import main.com.rfrench.jvm.java.Register;
 
 /*
     Program Title: UIFramePane.java
@@ -17,38 +15,55 @@ import main.com.rfrench.jvm.java.Register;
 
 public class UIFramePane 
 {
-    private Pane memory_pane;
+    private Pane java_stack_pane;
+            
     private Label[] frame_labels;
+    
     private final String[] frame_names = {"","i", "j", "k"};  
+    
     private final String CSS_FRAME_ID = "FRAME";
+    
     private int number_of_frames;
     
     public UIFramePane(Pane memory_pane)
     {
-        this.memory_pane = memory_pane;
+        this.java_stack_pane = memory_pane;
         
         number_of_frames = 0;
                
         frame_labels = new Label[100];                
     }
     
-    public void addFrameUI(int index, MethodArea M)
+    public void addFrameUI(int index, String frame_text)
     {                        
-        Label f_label = new Label(frame_names[index] + " = " + M.getLocalFrameElement(new Register(2000), index));
+        Label f_label = new Label(frame_text);
+        
         f_label.setId(CSS_FRAME_ID);
-        f_label.setAlignment(Pos.CENTER);       
+        
+        f_label.setAlignment(Pos.CENTER);     
+        
         f_label.setTranslateX(10);
-        //f_label.setTranslateY((-51 * number_of_frames) + 615);
+        
         f_label.setTranslateY((-51 * number_of_frames) + (MainScene.HEIGHT_TENTH * 8));
+        
         Tooltip tool_tip = new Tooltip();
+        
         tool_tip.setText("Local Frame Variable: " + index);        
+        
         f_label.setTooltip(tool_tip); 
         
         ++number_of_frames;
+        
         frame_labels[index] = f_label;
-        memory_pane.getChildren().add(f_label);        
+        
+        java_stack_pane.getChildren().add(f_label);        
     }
             
+    public void removeFrameUI(int index)
+    {
+        java_stack_pane.getChildren().remove(index);
+    }
+    
     public int getNumberOfFrames()
     {
         return number_of_frames;

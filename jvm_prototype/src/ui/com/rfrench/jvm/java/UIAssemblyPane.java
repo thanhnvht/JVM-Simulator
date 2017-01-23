@@ -30,9 +30,7 @@ public class UIAssemblyPane
 {
     
     private final String CSS_ASSEMBLY_ID = "ASSEMBLY";
-   
-    
-    
+           
     private ArrayList<ArrayList<Label>> java_program_labels_list;    
     private ArrayList<Label> java_program_labels;
             
@@ -187,17 +185,17 @@ public class UIAssemblyPane
             assembly_tabpane.getTabs().add(bytecode_tab);
         }
                         
-        Tab java_code_tab = new Tab();
-        java_code_tab.setText("Java Code");
-        setupJavaCodeField();
-        java_code_tab.setContent(code_area);
-                
-        Tab hex_tab = new Tab();
-        hex_tab.setText("Hex Code");
-        hex_tab.setContent(hex_listview);
+//        Tab java_code_tab = new Tab();
+//        java_code_tab.setText("Java Code");
+//        setupJavaCodeField();
+//        java_code_tab.setContent(code_area);
+//                
+//        Tab hex_tab = new Tab();
+//        hex_tab.setText("Hex Code");
+//        hex_tab.setContent(hex_listview);
                                                
                 
-        assembly_tabpane.getTabs().addAll(java_code_tab, hex_tab);
+//        assembly_tabpane.getTabs().addAll(java_code_tab, hex_tab);
         assembly_tabpane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
     }
         

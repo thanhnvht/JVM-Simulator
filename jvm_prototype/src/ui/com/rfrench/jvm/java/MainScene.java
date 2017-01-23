@@ -55,14 +55,17 @@ public class MainScene
         
         for(int i = 0; i < MAX_LOCAL_VAR; i++)
         {
-            fp.addFrameUI(i+1, method_area);
+            fp.addFrameUI(i, "");
         }
           
         sp = new UIStackPane(mp.getPane());        
                 
         ap = new UIAssemblyPane(class_loader, new String[]{"", "i", "j", "k"}, method_area);
+        
         grid_pane.add(ap.getTabPane(), 2, 1, 2, 2);
+        
         cp = new UIConstantPoolPane(method_area);      
+        
         grid_pane.add(cp.getTabPane(), 0, 1, 1, 2);        
                           
         rp = new UIRegisterPane();       

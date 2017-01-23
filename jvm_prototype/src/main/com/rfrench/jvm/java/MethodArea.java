@@ -2,6 +2,7 @@
 package main.com.rfrench.jvm.java;
 
 import java.util.ArrayList;
+import java.util.Stack;
 
 /*
     Program Title: Memory.java
@@ -13,32 +14,38 @@ import java.util.ArrayList;
 public class MethodArea 
 {                
     private final Register LV;
-    private int LV_size;
     
     private int[] memory;
     
     private ArrayList<String> constant_pool;
     
+    private ArrayList<Method> methods;
+    
+    private Stack operand_stack;
+    
+    private Stack call_stack;
+            
     // Frame Memory
     // Operand Stack Memory
-        
-            
-    public MethodArea()
+                    
+    public MethodArea(ClassLoader class_loader)
     {     
         memory = new int[3000];        
         
+        operand_stack = new Stack();
+        
+        call_stack = new Stack();
+                
         LV = new Register(2000);  
         
         memory[LV.get()] = 0;
         memory[LV.get() + 1] = 0; //i
         memory[LV.get() + 2] = 0; //j
         memory[LV.get() + 3] = 0; //k      
-
         
-        LV_size = 3;
+        constant_pool = class_loader.getConstantPoolData();
         
-        constant_pool = new ArrayList<String>();
-        
+        methods = class_loader.getMethods();
     }
                
     public int getMemoryAddress(int address)
@@ -78,8 +85,9 @@ public class MethodArea
     }
     
     public int popStackMem(Register SP)
-    {        
+    {                
         SP.dec();      
+        
         return memory[SP.get() + 1];                
     }           
     
@@ -87,4 +95,39 @@ public class MethodArea
     {
         return constant_pool;
     }
+    
+    public int popOperandStack()
+    {
+        int value = (int)operand_stack.pop();
+        
+        return value;
+    }
+    
+    public void pushOperandStack(int value)
+    {
+        operand_stack.push(value);
+    }
+    
+    public int getOperandStackSize()
+    {
+        return operand_stack.size();
+    }
+    
+    public Method getMethod(int index)
+    {
+        return methods.get(index);
+    }
+    
+    public void pushCallStack(int value)
+    {
+        call_stack.push(value);
+    }
+    
+    public int popCallStack()
+    {
+        int value = (int)call_stack.pop();
+        
+        return value;
+    }
+    
 }

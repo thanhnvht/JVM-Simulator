@@ -1,12 +1,15 @@
 
 package main.com.rfrench.jvm.java;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import static main.com.rfrench.jvm.java.Main.JSON_FILE_PATH;
+import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -30,18 +33,16 @@ public class ClassLoader
     
     private ArrayList<Method> methods;
     
-    private MethodArea method_area;
+    private ArrayList<String> constant_pool_data;    
     
     private final String FILE_PATH;
         
     /**
      * JVMFileReader Constructor
-     * @param method_area
      * @param FILE_PATH
     */
-    public ClassLoader(MethodArea method_area, String FILE_PATH)
+    public ClassLoader(String FILE_PATH)
     {          
-        this.method_area = method_area;
         this.FILE_PATH = FILE_PATH;
         
     }
@@ -58,7 +59,7 @@ public class ClassLoader
             
             createByteCodeDetailsHashMap(bytecode_json);                
             
-            parseConstantPoolData();
+            //parseConstantPoolData();
             
             extractNumberOfMethods();
                                     
@@ -68,11 +69,16 @@ public class ClassLoader
             
             ArrayList<String> method_access_type_list = findMethodAccess();
             
-            ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);
+            ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);                        
+            
+            addConstantPoolMethodReferences(method_names_list);
+            
+            //CHANGE TO RELATIVE FILE PATH
+            FileUtils.cleanDirectory(new File("C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/src/main/com/rfrench/jvm/resources/temp/"));
             
             for(int i = 0; i < NUMBER_OF_METHODS; i++)
             {
-                ArrayList<String> method_code = parseMethod(i);
+                ArrayList<String> method_code = parseMethodCode(i);
                 
                 String method_name = method_names_list.get(i);
                 
@@ -80,14 +86,10 @@ public class ClassLoader
                 
                 boolean instance_method = is_method_instance_list.get(i);
                 
-                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code);                               
+                writeMethodDetailsJSON("method_" + i + ".json", method_name, method_access, instance_method);
                 
-                m.setMethodName(method_name);
-                
-                m.setMethodAccess(method_access);             
-                
-                m.setInstanceMethod(instance_method);
-                
+                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, i);                               
+                              
                 methods.add(m);
             }
         }
@@ -103,11 +105,9 @@ public class ClassLoader
     {                  
         try
         {        
-            parseConstantPoolData();
+
             
-            findMethodNames();
-            
-            
+            findMethodNames();                        
         }
         
         catch(Exception e) 
@@ -129,6 +129,31 @@ public class ClassLoader
         return bytecode_json_array;
     }
     
+    private void writeMethodDetailsJSON(String file_name, String method_name, String method_access, boolean is_instance_method)
+    {
+        try
+        {
+            JSONObject obj = new JSONObject();
+            
+            obj.put("Name", method_name);           
+            obj.put("Access", method_access);
+            obj.put("Instance Method", is_instance_method);
+            
+            //CHANGE TO RELATIVE FILEPATH
+            FileWriter file = new FileWriter("C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/src/main/com/rfrench/jvm/resources/temp/" + file_name);
+            
+            file.write(obj.toJSONString());
+            file.flush();
+            file.close();
+        }
+        
+        catch(IOException e)
+        {
+            System.out.println("JSON WRITE ERROR");
+            e.printStackTrace();
+        }
+    }
+           
     private void createByteCodeDetailsHashMap(JSONArray bytecode_json)
     {
         final int MAX_BYTECODES = 255;
@@ -147,27 +172,20 @@ public class ClassLoader
         }
     }    
     
-    private void parseConstantPoolData()
+    private void addConstantPoolMethodReferences(ArrayList<String> method_names_list)
     {
-        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
-                
-        while(sc.hasNext())
+        constant_pool_data = new ArrayList<String>();
+        
+        for(int i = 0; i < method_names_list.size(); i++)
         {
-            String word = sc.next();
-            
-            if(word.equals("Methodref"))
+            if(i != 0)
             {
-                sc.next(); //Skip next 2 tokens
-                sc.next(); //
-                
-                String method_reference = sc.next();
-                
-                method_area.getConstantPool().add(method_reference);
-                
+                constant_pool_data.add(method_names_list.get(i));
             }
+            
         }
     }
-    
+        
     private void extractClassName(String FQN)
     {
         String FQN_parts[] = FQN.split("\\.");
@@ -334,11 +352,11 @@ public class ClassLoader
      * @param occurences occurences of 'Code:' before begin extract
      * @return method_details ArrayList<String> Containing method data
      */
-    private ArrayList<String> parseMethod(int occurences)
+    private ArrayList<String> parseMethodCode(int occurences)
     {
         Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
         
-        ArrayList<String> method_details = new ArrayList<String>();
+        ArrayList<String> method_code = new ArrayList<String>();
         
         final String START_KEYWORD = "Code:";
         final String END_KEYWORD = "LineNumberTable:";
@@ -369,11 +387,11 @@ public class ClassLoader
             
             if(start)
             {
-                method_details.add(word);
+                method_code.add(word);
             }
         }
         
-        return method_details;
+        return method_code;
     }
     
     private void extractNumberOfMethods()
@@ -408,5 +426,10 @@ public class ClassLoader
     public ArrayList<Method> getMethods()
     {
         return methods;
+    }
+    
+    public ArrayList<String> getConstantPoolData()
+    {
+        return constant_pool_data;
     }
 }

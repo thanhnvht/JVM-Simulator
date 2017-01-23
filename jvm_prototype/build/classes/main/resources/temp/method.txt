@@ -1,8 +1,0 @@
-                  0:             ICONST_0 
-                  1:             ISTORE_1 
-                  2:              ILOAD_1 
-                  3:            BIPUSH 10 
-                  5:         IF_ICMPGE 14 
-                  8:            IINC 1, 1 
-                 11:               GOTO 2 
-                 14:               RETURN 

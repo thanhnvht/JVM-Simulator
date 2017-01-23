@@ -1,6 +1,8 @@
 
 package main.com.rfrench.jvm.java;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +11,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /*
     Program Title: Method.java
@@ -25,10 +29,12 @@ public class Method
     private ArrayList<String> method_bytecode;
     private ArrayList<String> method_line_numbers;
     private ArrayList<Integer> method_opcode;    
+    
+    private String[] local_variable_frame;
         
-    private int MAX_STACK_SIZE;
+    private final int MAX_STACK_SIZE;
     private int MAX_LOCAL_VAR_SIZE;
-    private int MAX_ARG_SIZE;         //REFACTOR CODE SO MOST OF THESE ARE FINAL VARIABLES
+    private int MAX_ARG_SIZE;         //TODO REFACTOR CODE SO MOST OF THESE ARE FINAL VARIABLES
     
     private boolean STATIC;
     private boolean INSTANCE_METHOD;
@@ -41,31 +47,54 @@ public class Method
     private HashMap bytecode_details_map;
     private JSONArray bytecode_details_json;
            
-    public Method(HashMap bytecode_details_map, JSONArray bytecode_details_json, ArrayList<String> parsed_code_data)
-    {
-        
+    public Method(HashMap bytecode_details_map, JSONArray bytecode_details_json, ArrayList<String> parsed_code_data, int method_number)
+    {        
         this.parsed_code_data = parsed_code_data;
         this.bytecode_details_map = bytecode_details_map;   
         this.bytecode_details_json = bytecode_details_json;        
-        
+
         method_bytecode = new ArrayList<String>();
         method_line_numbers = new ArrayList<String>();  
         method_opcode = new ArrayList<Integer>();
-        
+
         extractByteCode();        
-        extractLineNumbers();        
-        extractMethodAttributes();        
-        extractOpcodes();    
-    }
-                
-    private void extractMethodAttributes()
-    {
+        extractLineNumbers();              
+        extractOpcodes();
+        
         MAX_STACK_SIZE = extractMethodDetails("stack=");
-        
+
         MAX_LOCAL_VAR_SIZE = extractMethodDetails("locals=");
-        
+
         MAX_ARG_SIZE = extractMethodDetails("args_size=");
+        
+        local_variable_frame = new String[MAX_LOCAL_VAR_SIZE];
+        
+        try
+        {            
+            JSONParser parser = new JSONParser(); 
+                      
+            Object obj = parser.parse(new InputStreamReader(getClass().getResourceAsStream("/main/com/rfrench/jvm/resources/temp/method_" + method_number + ".json")));
+            
+            JSONObject jsonObject = (JSONObject) obj;
+            
+            METHOD_NAME = (String) jsonObject.get("Name");
+            
+            METHOD_ACCESS = (String) jsonObject.get("Access");
+            
+            INSTANCE_METHOD = (boolean) jsonObject.get("Instance Method");
+            
+            if(INSTANCE_METHOD)
+            {
+                local_variable_frame[0] = METHOD_NAME;
+            }
+        }
+        catch(IOException | ParseException e)
+        {
+            e.printStackTrace();
+        }
     }
+        
+     
     
     private void extractByteCode()
     {                               
@@ -132,7 +161,7 @@ public class Method
 
     }
     
-    private int extractMethodDetails(String keyword)
+    private int extractMethodDetails(String keyword) // MOVE THIS TO CLASS LOADER AND WRITE TO JSON
     {         
         final int PARSED_DATA_SIZE = parsed_code_data.size();
         
@@ -168,9 +197,7 @@ public class Method
         
         return value;
     }
-    
-   
-    
+           
     private void extractOpcodes()
     {
         final int PARSED_DATA_SIZE = parsed_code_data.size();
@@ -207,13 +234,56 @@ public class Method
                 {
                     count += 2;
                 }
+                
+                if(checkMethodOpcode(word, count))
+                {
+                    count += 2;
+                }
             }
-            
-            
+                        
             count++;
         }
     }        
           
+    private boolean checkMethodOpcode(String word, int index)
+    {
+        boolean is_method_opcode = false;
+        
+        List<String> method_keywords = new ArrayList<String>();
+        
+        method_keywords.add("INVOKESPECIAL");
+        method_keywords.add("INVOKESTATIC");
+        
+        String pattern_string_operand = "\\b(" + StringUtils.join(method_keywords, "|") + ")\\b";
+        
+        Pattern pattern = Pattern.compile(pattern_string_operand);
+        
+        Matcher matcher = pattern.matcher(word);        
+        
+        if(matcher.find())
+        {            
+            int operand_index = index + 1;
+            
+            String operand_string = parsed_code_data.get(operand_index);
+            
+            @SuppressWarnings("ReplaceStringBufferByString")
+            StringBuilder sb = new StringBuilder(operand_string);
+            
+            sb.deleteCharAt(operand_string.indexOf("#"));
+            
+            operand_string = sb.toString();
+            
+            int operand = Integer.parseInt(operand_string);            
+                        
+            method_opcode.add(0);
+            method_opcode.add(operand);
+            
+            is_method_opcode = true;
+        }
+        
+        return is_method_opcode;
+    }
+    
     private boolean checkStackOpcode(String word, int index)
     {
         boolean stack_opcode = false;
@@ -356,19 +426,9 @@ public class Method
         return method_bytecode.size();
     }
     
-    public void setMethodName(String name)
-    {
-        METHOD_NAME = name;
-    }
-    
     public String getMethodName()
     {
         return METHOD_NAME;
-    }
-    
-    public void setMethodAccess(String access)
-    {
-        METHOD_ACCESS = access;
     }
     
     public String getMethodAccess()
@@ -376,14 +436,30 @@ public class Method
         return METHOD_ACCESS;
     }
     
-    public void setInstanceMethod(boolean isInstance)
-    {
-        INSTANCE_METHOD = isInstance;
-    }
-    
     public boolean getInstanceMethod()
     {
         return INSTANCE_METHOD;
+    }
+    
+    public String getLocalVariable(int index)
+    {
+        String local_var = null;
+        
+        if(index > MAX_LOCAL_VAR_SIZE - 1)
+        {
+            System.out.println("Index out of bounds");
+        }
+        else
+        {
+           local_var = local_variable_frame[index];
+        }
+            
+        return local_var;
+    }
+    
+    public void setLocalVariable(int index, String value)
+    {
+        local_variable_frame[index] = value;
     }
     
 }
