@@ -1,9 +1,11 @@
 
 package controller.com.rfrench.jvm.java;
 
+import java.util.ArrayList;
+import java.util.Stack;
+import javafx.scene.control.ListView;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
-import main.com.rfrench.jvm.java.Register;
 import ui.com.rfrench.jvm.java.MainScene;
 
 /*
@@ -16,12 +18,20 @@ import ui.com.rfrench.jvm.java.MainScene;
 public class MainSceneController 
 {
     private MainScene main_scene;
+    
     private int stack_pane_size;
+    
+    private Stack button_presses_per_method;
     
     public MainSceneController(MainScene m)
     {                
         main_scene = m;
+        
         stack_pane_size = 0;
+        
+        button_presses_per_method = new Stack();
+        
+        button_presses_per_method.push(-1);
     }
     
     public MainScene getMainScene()
@@ -29,7 +39,16 @@ public class MainSceneController
         return main_scene;
     }
     
-    public void updateRegisterLabels(int PC, Register SP, Register LV, Register CPP)
+    public void hightlightLine(int current_method, int button_press_count)
+    {
+        ListView current_listview = main_scene.getAssembly().getCurrentListView(current_method);
+        
+        current_listview.getSelectionModel().select(button_press_count);
+        
+        
+    }
+    
+    public void updateRegisterLabels(int PC)
     {
         String PC_string;
         
@@ -39,10 +58,12 @@ public class MainSceneController
             PC_string = "PC  : 0x" + Integer.toHexString(PC).toUpperCase();
         
         main_scene.getRegister().updateLabel(PC_string, 1);
-        main_scene.getRegister().updateLabel("SP  : 0x" + Integer.toHexString(SP.get()).toUpperCase(), 2);        
-        main_scene.getRegister().updateLabel("LV  : 0x" + Integer.toHexString(LV.get()).toUpperCase(), 3);
-        main_scene.getRegister().updateLabel("CPP : 0x" + Integer.toHexString(CPP.get()).toUpperCase(), 4);
     }   
+    
+    public Stack getButtonStack()
+    {
+        return button_presses_per_method;
+    }
     
     public void removeAllStack()
     {
@@ -63,7 +84,7 @@ public class MainSceneController
     public void ALOAD_0(String value)
     {
         ++stack_pane_size;
-        main_scene.getStack().push(value, stack_pane_size);
+        main_scene.getStack().push(value, stack_pane_size);        
     }
     
     public void ICONST(String value)
@@ -93,12 +114,12 @@ public class MainSceneController
         main_scene.getStack().push(label_name, stack_pane_size);
     }
     
-    public void ISTORE(int frame_index, String frame_element)
+    public void ISTORE(int frame_index, String frame_value)
     {
         main_scene.getStack().pop(stack_pane_size);     
         --stack_pane_size;
-        String new_frame_text = main_scene.getFrame().getPartialFrameName(frame_index) + " = " + frame_element;
-        main_scene.getFrame().updateFrameLabel(frame_index, new_frame_text);
+
+        main_scene.getFrame().updateFrameLabel(frame_index, frame_value);
         
     }
     
@@ -121,7 +142,37 @@ public class MainSceneController
         main_scene.getStack().pop(stack_pane_size);
         --stack_pane_size;
         main_scene.getStack().pop(stack_pane_size);
-        --stack_pane_size;
+        --stack_pane_size;        
+    }
+    
+    public void GOTO(int offset, ArrayList<String> Linenumbers)
+    {
+        System.out.println("offset: " + offset);
+        
+        String offset_string = Integer.toString(offset);
+        
+        boolean line_found = false;
+                
+        int count = 0;
+        
+        while(!line_found || count > Linenumbers.size())
+        {
+            String next_line_number = Linenumbers.get(count);
+            
+            if(next_line_number.contains(offset_string))
+            {
+                System.out.println("Line to branch to is: " + count);
+                
+                button_presses_per_method.pop();
+                button_presses_per_method.push(count);
+                
+                line_found = true;
+                
+            }
+            
+            count++;
+        }
+
     }
     
     public void POP()
@@ -131,13 +182,19 @@ public class MainSceneController
     }
     
     public void IINC(int frame_index, String frame_value)
-    {
-        String new_frame_text = main_scene.getFrame().getPartialFrameName(frame_index) + " = " + frame_value;
-        main_scene.getFrame().updateFrameLabel(frame_index, new_frame_text);
+    {        
+        main_scene.getFrame().updateFrameLabel(frame_index, frame_value);
     }
     
     public void INVOKESPECIAL(int stack_size, int current_method, int max_local_var)
-    {
+    {        
+        String test = "";
+        
+        if(stack_pane_size > 0)
+        {
+            test = main_scene.getStack().getStackText(stack_pane_size);
+        }
+                    
         for(int i = 0; i < stack_size; i++)
         {
             main_scene.getStack().pop(stack_pane_size);            
@@ -146,14 +203,20 @@ public class MainSceneController
         
         for(int i = 0; i < max_local_var; i++)
         {
-            main_scene.getFrame().addFrameUI(i, "");
+            if(i == 0)
+            {                
+                main_scene.getFrame().addFrameUI(i, test, current_method);
+            }
+            
+            else
+            {
+                main_scene.getFrame().addFrameUI(i, "", current_method);
+            }                                
         }
-        
-                
+                        
         SingleSelectionModel<Tab> selection_model = main_scene.getAssembly().getTabPane().getSelectionModel();
             
-        selection_model.select(current_method);
-        
+        selection_model.select(current_method);        
     }
     
     public void RETURN(int current_method, int max_local_var)

@@ -253,4 +253,9 @@ public class UIAssemblyPane
     {        
         java_program_listview.getSelectionModel().select(index);
     }    
+    
+    public ListView getCurrentListView(int current_method)
+    {
+        return java_program_listview_list.get(current_method);
+    }
 }

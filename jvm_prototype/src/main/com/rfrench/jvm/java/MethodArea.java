@@ -13,9 +13,6 @@ import java.util.Stack;
 
 public class MethodArea 
 {                
-    private final Register LV;
-    
-    private int[] memory;
     
     private ArrayList<String> constant_pool;
     
@@ -23,73 +20,21 @@ public class MethodArea
     
     private Stack operand_stack;
     
+   
+    
     private Stack call_stack;
-            
-    // Frame Memory
-    // Operand Stack Memory
+
                     
     public MethodArea(ClassLoader class_loader)
     {     
-        memory = new int[3000];        
-        
         operand_stack = new Stack();
         
-        call_stack = new Stack();
-                
-        LV = new Register(2000);  
-        
-        memory[LV.get()] = 0;
-        memory[LV.get() + 1] = 0; //i
-        memory[LV.get() + 2] = 0; //j
-        memory[LV.get() + 3] = 0; //k      
-        
+        call_stack = new Stack();   
+                        
         constant_pool = class_loader.getConstantPoolData();
         
         methods = class_loader.getMethods();
-    }
-               
-    public int getMemoryAddress(int address)
-    {
-        return memory[address];
-    }         
-          
-    public void setMemoryElementValue(int address, int value)
-    {
-        memory[address] = value;
-    }
-    
-    public int[] getMethodMemory()
-    {
-        return memory;
-    }
-    
-    public int getMethodMemoryElement(int address)
-    {
-        return memory[address];        
-    }
-    
-    public int getLocalFrameElement(Register lv, int index)
-    {
-        return memory[index + lv.get()];
-    }
-    
-    public void setLocalFrameElement(Register lv, int index, int value)
-    {
-        memory[index + lv.get()] = value;
-    }
-    
-    public void pushStackMem(Register SP, int value)
-    {       
-        SP.inc();      
-        memory[SP.get()] = value;
-    }
-    
-    public int popStackMem(Register SP)
-    {                
-        SP.dec();      
-        
-        return memory[SP.get() + 1];                
-    }           
+    }                        
     
     public ArrayList<String> getConstantPool()
     {

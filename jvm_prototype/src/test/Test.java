@@ -12,9 +12,7 @@ public class Test {
         //String FILE_PATH = "/main/resources/javap/object_test.txt";   
                 
         ClassLoader A = new ClassLoader(FILE_PATH);
-           
-        A.readFileTest();
-        
+                   
   
 
     }

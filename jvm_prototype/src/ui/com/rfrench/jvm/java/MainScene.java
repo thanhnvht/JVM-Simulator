@@ -55,7 +55,7 @@ public class MainScene
         
         for(int i = 0; i < MAX_LOCAL_VAR; i++)
         {
-            fp.addFrameUI(i, "");
+            fp.addFrameUI(i, "", 0);
         }
           
         sp = new UIStackPane(mp.getPane());        

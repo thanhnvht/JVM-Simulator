@@ -2,6 +2,7 @@
 package main.com.rfrench.jvm.java;
 
 import controller.com.rfrench.jvm.java.MainSceneController;
+import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import ui.com.rfrench.jvm.java.MainScene;
 
@@ -19,38 +20,29 @@ public class ExecutionEngine
     private MainSceneController main_scene_controller;
     
     private MethodArea method_area;
-    private ClassLoader class_loader;
-        
+    
+    private ArrayList<Integer> current_method_opcodes;
+            
     private int current_method_count = 0;
     
-    private Register LV;
     private int PC;
-    private Register SP;
-    private Register CPP;
     
-    private int LV_size;     
-            
+    private boolean branched;
+    private boolean method_invoked;
+                      
     /**
      * Constructor for InstructionSet Logic
-     * @param m
+     * @param main_scene
      * @param main_scene_controller
-     * @param mem
-     * @param class_loader 
+     * @param method_area
      */
-    public ExecutionEngine(MainScene m, MainSceneController main_scene_controller, MethodArea mem, ClassLoader class_loader) 
+    public ExecutionEngine(MainScene main_scene, MainSceneController main_scene_controller, MethodArea method_area) 
     {                
         this.main_scene_controller = main_scene_controller;
         
-        this.method_area = mem;
-                
-        this.class_loader = class_loader;
-              
-        LV_size = class_loader.getMethods().get(current_method_count).getLocalSize();
+        this.method_area = method_area;              
             
-        PC = 0;
-        LV = new Register(2000);        
-        SP = new Register(LV.get() + LV_size); 
-        CPP = new Register(0);
+        PC = 0;      
                                        
         main_scene_controller.getMainScene().getButton().getNextInstructionButton().setOnAction((ActionEvent event) -> 
         {
@@ -69,19 +61,21 @@ public class ExecutionEngine
      */
     public void executeInstruction()
     {
-
-        //Change PC to index into memory_opcodes in Method Class
-            
-        int NUMBER_OF_OPCODES = class_loader.getMethods().get(current_method_count).getNumberOfOpcodes();
+        Method m = method_area.getMethod(current_method_count);
+        
+        branched = false;
+        method_invoked = false;
+                    
+        int NUMBER_OF_OPCODES = m.getNumberOfOpcodes();
                         
         if(PC < NUMBER_OF_OPCODES)
         {            
-            main_scene_controller.updateRegisterLabels(PC, SP, LV, CPP);    
-
-            String bytecode = Integer.toHexString(class_loader.getMethods().get(current_method_count).getMethodOpcodes().get(PC)).toUpperCase();
+            main_scene_controller.updateRegisterLabels(PC);    
+            
+            String bytecode = Integer.toHexString(m.getMethodOpcodes().get(PC)).toUpperCase();
 
             System.out.println(bytecode);
-            
+                                   
             //class_loader.getByteCodeDetails().get(HEX)
 
             //Change this to HashMap?
@@ -129,13 +123,21 @@ public class ExecutionEngine
                 case ("B8"):  INVOKESTATIC (); break;
             }                         
 
-            PC++;                           
+            highlightLine();
+            
+
+                       
+            PC++;     
+            
+  
         }
 
         else
-        {                 
+        {             
+            main_scene_controller.hightlightLine(current_method_count, PC);
+            
          //   main_scene_controller.getMainScene().getAssembly().highlightLine(current_line); 
-            main_scene_controller.updateRegisterLabels(PC, SP, LV, CPP); 
+            main_scene_controller.updateRegisterLabels(PC); 
 
             System.out.println("Program Done!!");
         }       
@@ -148,16 +150,43 @@ public class ExecutionEngine
      * - Memory Reloaded
      */
     public void resetProgram()
-    {
-        SP.set(LV.get() + LV_size);         
+    {     
         PC = 0;      
-        
+                        
         main_scene_controller.getMainScene().getAssembly().highlightLine(-1);                   
         main_scene_controller.removeAllStack();               
-        main_scene_controller.updateRegisterLabels(PC, SP, LV, CPP);
+        main_scene_controller.updateRegisterLabels(PC);
         main_scene_controller.getMainScene().getAssembly().getListView().getSelectionModel().select(0);                
     }
-                
+      
+    private void highlightLine()
+    {
+        if(branched)
+        {
+            int button_press_count = (int) main_scene_controller.getButtonStack().peek();
+            
+            main_scene_controller.hightlightLine(current_method_count, button_press_count);
+        }
+
+        else if(method_invoked)
+        {
+            main_scene_controller.getButtonStack().push(-1);
+        }
+
+        else
+        {
+            int button_press = (int) main_scene_controller.getButtonStack().pop();
+
+            button_press++;
+
+            main_scene_controller.getButtonStack().push(button_press);   
+            
+            int button_press_count = (int) main_scene_controller.getButtonStack().peek();
+        
+            main_scene_controller.hightlightLine(current_method_count, button_press_count);
+        }
+    }
+    
     /**
      * Pushes a value between 0 and 5 onto stack
      * @param value number t push onto stack
@@ -168,8 +197,6 @@ public class ExecutionEngine
         {
             method_area.pushOperandStack(value);
             
-            //method_area.pushStackMem(SP, value);
-        
             main_scene_controller.ICONST(Integer.toString(value));
         }
         
@@ -183,13 +210,15 @@ public class ExecutionEngine
      * Pushes a byte (value between 0-255) onto stack
      */
     private void BIPUSH() 
-    {        
+    {   
+        Method m = method_area.getMethod(current_method_count);
+        
         PC++;              
         
-        int value = method_area.getMethod(current_method_count).getMethodOpcodes().get(PC);       
+        int value = m.getMethodOpcodes().get(PC);       
+                     
+        method_area.pushOperandStack(value);
                         
-        method_area.pushStackMem(SP, value);                        
-        
         main_scene_controller.BIPUSH(Integer.toString(value));       
     }
     
@@ -211,7 +240,13 @@ public class ExecutionEngine
         
         int offset = first_operand + second_operand;    
         
+        
+        
         calculateBranch(offset);
+        
+        main_scene_controller.GOTO(offset, m.getMethodLineNumbers());
+        
+        branched = true;
     }
 
     /**
@@ -219,26 +254,19 @@ public class ExecutionEngine
      */
     private void IADD() 
     {        
-        int x = method_area.popStackMem(SP);
+        int value_1 = method_area.popOperandStack();        
+        int value_2 = method_area.popOperandStack();
+               
+        int add_result = value_1 + value_2;
         
-        int y = method_area.popStackMem(SP);
-        
-        int add_result = x + y;
-        
-        method_area.pushStackMem(SP, add_result);
+        method_area.pushOperandStack(add_result);
                              
         main_scene_controller.IADD();                         
     }
 
-    private void IAND() //NEED TO DO UI CHANGES
+    private void IAND()
     {
-        int x = method_area.popStackMem(SP);        
-        
-        int y = method_area.popStackMem(SP);    
-                       
-        int value = (x == y) ? 1 : 0;       
-        
-        method_area.pushStackMem(SP, value);             
+          
     }
         
     /**
@@ -248,26 +276,14 @@ public class ExecutionEngine
      */
     private void IF_ICMPEQ() 
     {           
-        PC++;
+    
         
-        int first_operand = method_area.getMethodMemoryElement(PC);       
-        
-        PC++;
-        
-        int second_operand = method_area.getMethodMemoryElement(PC);
-        
-        int offset = first_operand + second_operand;         
-
-        int stack_element_1 = method_area.popStackMem(SP);        
-        
-        int stack_element_2 = method_area.popStackMem(SP);        
-        
-        if (stack_element_1 == stack_element_2)       
-        {
-            calculateBranch(offset);       
-        }
+//        if (stack_element_1 == stack_element_2)       
+//        {
+//            calculateBranch(offset);       
+//        }
                        
-        main_scene_controller.IF_ICMPEQ();
+//        main_scene_controller.IF_ICMPEQ();
     }
     
     private void ILOAD(int frame_index) 
@@ -299,20 +315,18 @@ public class ExecutionEngine
         String value = Integer.toString(method_area.popOperandStack());
          
         m.setLocalVariable(frame_index, value);
-         
-                        
+                                 
         main_scene_controller.ISTORE(frame_index, value);                             
     }
     
     private void ISUB() 
     {        
-        int x = method_area.popStackMem(SP);       
+        int value_1 = method_area.popOperandStack();
+        int value_2 = method_area.popOperandStack();
+                     
+        int sub_value = value_2 - value_1;
         
-        int y = method_area.popStackMem(SP);    
-        
-        int sub_value = y - x;
-        
-        method_area.pushStackMem(SP, sub_value);              
+        method_area.pushCallStack(sub_value);
         
         main_scene_controller.ISUB();
     }
@@ -325,63 +339,47 @@ public class ExecutionEngine
 
     private void POP() 
     {
-        method_area.pushStackMem(SP, 0);       
+        method_area.popCallStack();
         
         main_scene_controller.POP();
     }
     
     private void SWAP()
-    {
-        int x = method_area.popStackMem(SP);        
+    {        
+        int value_1 = method_area.popCallStack();
+        int value_2 = method_area.popCallStack();    
         
-        int y = method_area.popStackMem(SP);        
-        
-        method_area.pushStackMem(SP, x);        
-        
-        method_area.pushStackMem(SP, y);                                      
+        method_area.pushOperandStack(value_1);
+        method_area.pushOperandStack(value_2);
     }
     
     private void DUP()
-    {
-        int x = method_area.popStackMem(SP);        
-        method_area.pushStackMem(SP, x);                       
+    {        
+        int value = method_area.popOperandStack();
+        
+        method_area.pushOperandStack(value);
+        
+        method_area.pushOperandStack(value);
     }
     
     private void IFEQ()
     {
-        PC++;
+      
         
-        int offset = method_area.getMethodMemoryElement(PC);
-        
-        PC++;
-        
-        offset += method_area.getMethodMemoryElement(PC);
-        
-        int x = method_area.popStackMem(SP);        
-        
-        if (x == 0)            
-        {
-            PC = (PC + offset - 3);
-        }
+//        if (x == 0)            
+//        {
+//            PC = (PC + offset - 3);
+//        }
            
     }
     
     private void IFLT()
     {
-        PC++;
         
-        int offset = method_area.getMethodMemoryElement(PC);
-        
-        PC++;
-        
-        offset += method_area.getMethodMemoryElement(PC);
-        
-        int x = method_area.popStackMem(SP);
-        
-        if (x < 0)            
-        {
-            PC = (PC + offset - 3);
-        }
+//        if (x < 0)            
+//        {
+//            PC = (PC + offset - 3);
+//        }
     }
     
     private void IINC()
@@ -437,13 +435,17 @@ public class ExecutionEngine
         
         offset += m.getMethodOpcodes().get(PC);
 
-        int x = method_area.popOperandStack();        
+        int value_1 = method_area.popOperandStack();        
             
-        int y = method_area.popOperandStack();
+        int value_2 = method_area.popOperandStack();
                 
-        if (y >= x)
+        if (value_2 >= value_1)
         {
             calculateBranch(offset);
+            
+            branched = true;
+            
+            main_scene_controller.GOTO(offset, m.getMethodLineNumbers());
         }
         
         main_scene_controller.IF_ICMPEQ(); //CHANGE? SAME THiNGs happen to stack so...
@@ -451,25 +453,13 @@ public class ExecutionEngine
     
     private void IF_ICMPNE()
     {
-        PC++;
-        
-        int offset = method_area.getMethodMemoryElement(PC);
-        
-        PC++;
-        
-        offset += method_area.getMethodMemoryElement(PC);        
-        
-        
-        int x = method_area.popStackMem(SP);        
-        
-        int y = method_area.popStackMem(SP);        
-        
-        if (x != y)
-        {
-            calculateBranch(offset);
-        }
+
+//        if (x != y)
+//        {
+//            calculateBranch(offset);
+//        }
                 
-        main_scene_controller.IF_ICMPEQ(); //CHANGE? SAME THiNGs happen to stack so...
+//       main_scene_controller.IF_ICMPEQ(offset, m.getMethodLineNumbers());
     }
     
     private void calculateBranch(int offset)
@@ -494,16 +484,12 @@ public class ExecutionEngine
     }
     
     private void ALOAD_0()
-    {
-        
-        
+    {                
         String reference = method_area.getMethod(current_method_count).getLocalVariable(0);
         
         method_area.pushOperandStack(0); //have put 0 for now. will hav to change to address of reference
         
-        main_scene_controller.ALOAD_0("0");
-        
-        System.out.println(reference);
+        main_scene_controller.ALOAD_0(reference);
     }
     
     private void INVOKESPECIAL()
@@ -513,8 +499,8 @@ public class ExecutionEngine
     
     private void INVOKESTATIC()
     {
-        Method old_method = method_area.getMethod(current_method_count);
-                
+        Method old_method = method_area.getMethod(current_method_count);             
+        
         PC++;
         int first_operand = old_method.getMethodOpcodes().get(PC);
         PC++;
@@ -524,12 +510,14 @@ public class ExecutionEngine
         int value = (first_operand + second_operand) - 1; 
                         
         String symbolic_reference = method_area.getConstantPool().get(value);
-                
+        
+        System.out.println("sym ref: " + symbolic_reference);
+        
         current_method_count++;
         
         Method new_method = method_area.getMethod(current_method_count);
         
-        int current_stack_size = method_area.getOperandStackSize();             
+        int current_stack_size = method_area.getOperandStackSize();                             
         
         for(int i = 0; i < current_stack_size; i++)
         {
@@ -547,5 +535,7 @@ public class ExecutionEngine
         method_area.pushCallStack(PC);
         
         PC = -1;
+        
+        method_invoked = true;
     }
 }

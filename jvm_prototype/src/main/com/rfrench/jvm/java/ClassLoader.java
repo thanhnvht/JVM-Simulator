@@ -59,8 +59,6 @@ public class ClassLoader
             
             createByteCodeDetailsHashMap(bytecode_json);                
             
-            //parseConstantPoolData();
-            
             extractNumberOfMethods();
                                     
             methods = new ArrayList<Method>();
@@ -99,23 +97,7 @@ public class ClassLoader
             e.printStackTrace();
         }
     }       
-
-    //DEBUGGING METHOD
-    public void readFileTest()
-    {                  
-        try
-        {        
-
-            
-            findMethodNames();                        
-        }
-        
-        catch(Exception e) 
-        {
-            e.printStackTrace();
-        }
-    }   
-        
+       
     private JSONArray createJSONParser() throws IOException, ParseException
     {                        
         JSONParser parser = new JSONParser();
@@ -181,19 +163,9 @@ public class ClassLoader
             if(i != 0)
             {
                 constant_pool_data.add(method_names_list.get(i));
-            }
-            
+            }            
         }
-    }
-        
-    private void extractClassName(String FQN)
-    {
-        String FQN_parts[] = FQN.split("\\.");
-        
-        int last_part_index = FQN_parts.length - 1;
-            
-        String class_name = FQN_parts[last_part_index];        
-    }
+    }        
     
     private String findFQN()
     {
@@ -203,7 +175,6 @@ public class ClassLoader
         String second_keyword = "class";
         
         String FQN = null;
-        String class_name = null;
         
         boolean FQN_found = false;
                         
@@ -332,17 +303,7 @@ public class ClassLoader
         
         return method_flags;
     }
-    
-    private void findInstanceMethod(String class_name)
-    {
-        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
         
-        while(sc.hasNext())
-        {
-            
-        }
-    }
-    
     /**
      * Parse through entire javap file. Look for keyword 'Code:'. This indicates
      * the start of the method information the simulator specifically needs.

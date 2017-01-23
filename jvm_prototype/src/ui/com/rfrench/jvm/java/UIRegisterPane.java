@@ -8,7 +8,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.Tooltip;
-import javafx.scene.shape.Rectangle;
 
 /*
     Program Title: UIRegisterPane.java
@@ -45,7 +44,6 @@ public class UIRegisterPane
         register_tab.setContent(register_listview);
         register_tabpane.getTabs().add(register_tab);
         register_tabpane.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
-
         
         setupPC();
         setupSP();
