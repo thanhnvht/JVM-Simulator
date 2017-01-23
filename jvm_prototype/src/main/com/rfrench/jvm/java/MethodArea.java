@@ -2,7 +2,6 @@
 package main.com.rfrench.jvm.java;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /*
     Program Title: Memory.java

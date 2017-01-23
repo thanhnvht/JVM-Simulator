@@ -5,8 +5,6 @@
  */
 package ui.com.rfrench.jvm.java;
 
-
-import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.Pane;
@@ -25,20 +23,15 @@ public class UIMemoryPane {
         
         mempane = new TabPane();
         mempane.setMinHeight(MainScene.HEIGHT_TENTH * 10);
-        mempane.setMinWidth(MainScene.WIDTH_TENTH * 5);
+        mempane.setMinWidth(MainScene.WIDTH_TENTH * 4);
         mempane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         
         Tab mem = new Tab();
-        mem.setText("Stack/Frame Memory");
+        mem.setText("Java Stack Frame");
         mem.setContent(p);
+                
         
-        Tab canvas_mem = new Tab();
-        canvas_mem.setText("Canvas");
-        Canvas c = new Canvas();
-        canvas_mem.setContent(c);
-        
-        
-        mempane.getTabs().addAll(mem, canvas_mem);                
+        mempane.getTabs().addAll(mem);                
         p.setId(CSS_MEMORY_ID);
 
         

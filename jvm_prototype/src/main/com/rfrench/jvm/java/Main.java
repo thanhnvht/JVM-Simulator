@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 public class Main extends Application
 {    
     //public static final String FILE_PATH = "/main/resources/javap/while_test_verbose.txt";   
-    public static final String FILE_PATH = "/main/resources/javap/MultipleMethodTest.txt";  
+    public static final String FILE_PATH = "/main/resources/javap/multiple_methods.txt";  
     
     public static final String JSON_FILE_PATH = "/main/resources/json/bytecodes.json";
          
@@ -37,9 +37,9 @@ public class Main extends Application
     {      
         memory = new MethodArea();      
         
-        class_loader = new ClassLoader(memory);
+        class_loader = new ClassLoader(memory, FILE_PATH);
         
-        class_loader.readFile(FILE_PATH);
+        class_loader.readFile();
         
         createRegisters();        
                 

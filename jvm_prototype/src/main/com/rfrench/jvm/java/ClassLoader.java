@@ -31,21 +31,26 @@ public class ClassLoader
     private ArrayList<Method> methods;
     
     private MethodArea method_area;
+    
+    private final String FILE_PATH;
         
     /**
      * JVMFileReader Constructor
+     * @param method_area
+     * @param FILE_PATH
     */
-    public ClassLoader(MethodArea method_area)
+    public ClassLoader(MethodArea method_area, String FILE_PATH)
     {          
         this.method_area = method_area;
+        this.FILE_PATH = FILE_PATH;
+        
     }
                                   
     /**
      * Read a javap file. Retrieve relevant data and put into 
      * helper data structures to then be used later in program
-     * @param file_name name/location of file to read
      */
-    public void readFile(String file_name)
+    public void readFile()
     {          
         try
         {
@@ -53,17 +58,35 @@ public class ClassLoader
             
             createByteCodeDetailsHashMap(bytecode_json);                
             
-            parseConstantPoolData(file_name);
+            parseConstantPoolData();
             
-            extractNumberOfMethods(file_name);
-            
+            extractNumberOfMethods();
+                                    
             methods = new ArrayList<Method>();
+            
+            ArrayList<String> method_names_list = findMethodNames();
+            
+            ArrayList<String> method_access_type_list = findMethodAccess();
+            
+            ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);
             
             for(int i = 0; i < NUMBER_OF_METHODS; i++)
             {
-                ArrayList<String> method_details = parseMethod(file_name, i);
+                ArrayList<String> method_code = parseMethod(i);
                 
-                Method m = new Method(bytecode_details_map, bytecode_json_array, method_details);
+                String method_name = method_names_list.get(i);
+                
+                String method_access = method_access_type_list.get(i);
+                
+                boolean instance_method = is_method_instance_list.get(i);
+                
+                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code);                               
+                
+                m.setMethodName(method_name);
+                
+                m.setMethodAccess(method_access);             
+                
+                m.setInstanceMethod(instance_method);
                 
                 methods.add(m);
             }
@@ -76,15 +99,18 @@ public class ClassLoader
     }       
 
     //DEBUGGING METHOD
-    public void readFileTest(String file_name)
+    public void readFileTest()
     {                  
         try
         {        
-            parseConstantPoolData(file_name);
+            parseConstantPoolData();
+            
+            findMethodNames();
+            
             
         }
         
-        catch(Exception e) //change to filenotfoundexception
+        catch(Exception e) 
         {
             e.printStackTrace();
         }
@@ -121,9 +147,9 @@ public class ClassLoader
         }
     }    
     
-    private void parseConstantPoolData(String file_name)
+    private void parseConstantPoolData()
     {
-        Scanner sc = new Scanner(getClass().getResourceAsStream(file_name));
+        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
                 
         while(sc.hasNext())
         {
@@ -142,19 +168,175 @@ public class ClassLoader
         }
     }
     
+    private void extractClassName(String FQN)
+    {
+        String FQN_parts[] = FQN.split("\\.");
+        
+        int last_part_index = FQN_parts.length - 1;
+            
+        String class_name = FQN_parts[last_part_index];        
+    }
+    
+    private String findFQN()
+    {
+        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        
+        String first_keyword = "public";
+        String second_keyword = "class";
+        
+        String FQN = null;
+        String class_name = null;
+        
+        boolean FQN_found = false;
+                        
+        while(sc.hasNext() || !FQN_found)
+        {
+            String word = sc.next();
+            
+            if(word.equals(first_keyword))
+            {
+                word = sc.next();
+                
+                if(word.equals(second_keyword))
+                {
+                    FQN = sc.next();
+                    FQN_found = true;
+                }
+            }
+        }
+        
+        return FQN;
+    }
+    
+    private ArrayList<Boolean> checkInstanceMethod(ArrayList<String> method_names)
+    {
+        ArrayList<Boolean> is_instance_method = new ArrayList<Boolean>();
+        
+        String FQN = findFQN();
+        
+        for(int i = 0; i < NUMBER_OF_METHODS; i++)
+        {
+            String method_name = method_names.get(i);
+            
+            if(method_name.contains(FQN))
+            {
+                is_instance_method.add(true);
+            }
+            else
+            {
+                is_instance_method.add(false);
+            }
+        }
+                
+        return is_instance_method;
+    }
+    
+    private ArrayList<String> findMethodNames()
+    {
+        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        
+        ArrayList<String> method_names = new ArrayList<String>();
+        
+        String first_keyword = "public";
+        String second_keyword = "private";
+        String remove_keyword = "class";
+        
+        //DOES NOT WORK WITH OBJECTS THAT HAVE FIELDS !!!!!!!!!!!!!!!!!!!!!
+        
+        while(sc.hasNext())
+        {
+            String word = sc.next();
+            
+            if(word.equals(first_keyword) || word.equals(second_keyword))
+            {    
+                String method_name = word + sc.nextLine();
+                
+                if(!method_name.contains(remove_keyword)) // Ensure no class names are in list
+                {      
+                    @SuppressWarnings("ReplaceStringBufferByString")
+                    StringBuilder sb = new StringBuilder(method_name);
+                    
+                    sb.deleteCharAt(method_name.indexOf(";"));
+                    
+                    method_name = sb.toString();
+                    
+                    String[] method_parts = method_name.split(" ");
+                                        
+                    int method_name_index = method_parts.length - 1;
+                    
+                    method_name = method_parts[method_name_index];
+                    
+                    method_names.add(method_name);
+                }
+                
+            }
+            else
+            {
+                sc.nextLine();
+            }
+        }
+                
+        return method_names;
+    }
+    
+    private ArrayList<String> findMethodAccess()
+    {
+        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        
+        ArrayList<String> method_flags = new ArrayList<String>();
+        
+        String first_keyword = "public";
+        String second_keyword = "private";
+        String third_keyword = "protected";
+        
+        String remove_keyword = "class";
+        
+        while(sc.hasNext())
+        {
+            String word = sc.next();
+            
+            if(word.equals(first_keyword) || word.equals(second_keyword) || word.equals(third_keyword)) 
+            {    
+                String method_name = word + sc.nextLine();
+                
+                if(!method_name.contains(remove_keyword)) // Ensure no class names are in list
+                {       
+                    method_flags.add(word);
+                }
+                
+            }
+            else
+            {
+                sc.nextLine();
+            }
+        }     
+        
+        
+        return method_flags;
+    }
+    
+    private void findInstanceMethod(String class_name)
+    {
+        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        
+        while(sc.hasNext())
+        {
+            
+        }
+    }
+    
     /**
      * Parse through entire javap file. Look for keyword 'Code:'. This indicates
      * the start of the method information the simulator specifically needs.
      * Extract all words from this section into an arraylist. Stop extract when
      * keyword 'LineNumberTable:' occurs. As there may be more than one method 
      * in the class, use occurences to skip previous methods found.
-     * @param file_name name of javap .txt file to extract from
      * @param occurences occurences of 'Code:' before begin extract
      * @return method_details ArrayList<String> Containing method data
      */
-    private ArrayList<String> parseMethod(String file_name, int occurences)
+    private ArrayList<String> parseMethod(int occurences)
     {
-        Scanner sc = new Scanner(getClass().getResourceAsStream(file_name));
+        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
         
         ArrayList<String> method_details = new ArrayList<String>();
         
@@ -194,9 +376,9 @@ public class ClassLoader
         return method_details;
     }
     
-    private void extractNumberOfMethods(String file_name)
+    private void extractNumberOfMethods()
     {
-        Scanner sc = new Scanner(getClass().getResourceAsStream(file_name));
+        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
         
         int method_count = 0;
                               

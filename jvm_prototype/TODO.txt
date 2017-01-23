@@ -2,15 +2,13 @@ TODO
 
 Add Timer to play through file 
 
-
 invoke and return from methods
  - Call Stack
 
+change local var pane to add local vars based on how many there are
 
-read class files
+detect constructor methods so can add its reference to itself in local-var 0
 
-read constant pool data
+switch info to be in methodarea class rather than classloader class
 
-change memory class to better resemble java runtime data areas
-
-change JSON to use relative paths instead of absolute
+fix line highlighting

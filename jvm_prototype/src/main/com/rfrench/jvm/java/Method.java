@@ -21,21 +21,30 @@ public class Method
 {
     private final int HEX = 16;
     
-    private ArrayList<String> parsed_method_data;
+    private ArrayList<String> parsed_code_data;
     private ArrayList<String> method_bytecode;
     private ArrayList<String> method_line_numbers;
     private ArrayList<Integer> method_opcode;    
-    
+        
     private int MAX_STACK_SIZE;
     private int MAX_LOCAL_VAR_SIZE;
-    private int MAX_ARG_SIZE;
+    private int MAX_ARG_SIZE;         //REFACTOR CODE SO MOST OF THESE ARE FINAL VARIABLES
     
+    private boolean STATIC;
+    private boolean INSTANCE_METHOD;
+    
+    private String METHOD_NAME;
+    private String METHOD_ACCESS;
+    
+    private String CLASS_NAME;
+            
     private HashMap bytecode_details_map;
     private JSONArray bytecode_details_json;
            
-    public Method(HashMap bytecode_details_map, JSONArray bytecode_details_json, ArrayList<String> parsed_method_data)
+    public Method(HashMap bytecode_details_map, JSONArray bytecode_details_json, ArrayList<String> parsed_code_data)
     {
-        this.parsed_method_data = parsed_method_data;
+        
+        this.parsed_code_data = parsed_code_data;
         this.bytecode_details_map = bytecode_details_map;   
         this.bytecode_details_json = bytecode_details_json;        
         
@@ -60,13 +69,13 @@ public class Method
     
     private void extractByteCode()
     {                               
-        final int PARSED_DATA_SIZE = parsed_method_data.size();
+        final int PARSED_DATA_SIZE = parsed_code_data.size();
         
         int count = 0;
         
         while(count < PARSED_DATA_SIZE)
         {
-            String word = parsed_method_data.get(count).toUpperCase();
+            String word = parsed_code_data.get(count).toUpperCase();
             
             if(bytecode_details_map.containsKey(word))
             {
@@ -87,13 +96,13 @@ public class Method
                     case (1):
                     case (2):
                         count++;
-                        word += " " + parsed_method_data.get(count);
+                        word += " " + parsed_code_data.get(count);
                         break;
                     case (3):
                         count++;
-                        word+= " " + parsed_method_data.get(count) ;
+                        word+= " " + parsed_code_data.get(count) ;
                         count++;
-                        word+= " " + parsed_method_data.get(count);
+                        word+= " " + parsed_code_data.get(count);
                 }
                 
                 method_bytecode.add(word);
@@ -105,13 +114,13 @@ public class Method
     
     private void extractLineNumbers()
     {
-        final int PARSED_DATA_SIZE = parsed_method_data.size();
+        final int PARSED_DATA_SIZE = parsed_code_data.size();
         
         String previous_word = null;
         
         for(int i = 0; i < PARSED_DATA_SIZE; i++)
         {
-            String word = parsed_method_data.get(i).toUpperCase();
+            String word = parsed_code_data.get(i).toUpperCase();
             
             if (bytecode_details_map.containsKey(word)) 
             {
@@ -125,7 +134,7 @@ public class Method
     
     private int extractMethodDetails(String keyword)
     {         
-        final int PARSED_DATA_SIZE = parsed_method_data.size();
+        final int PARSED_DATA_SIZE = parsed_code_data.size();
         
         int value = -1;
         
@@ -143,7 +152,7 @@ public class Method
         
         while(!attribute_found || count < PARSED_DATA_SIZE)
         {
-            String word = parsed_method_data.get(count);
+            String word = parsed_code_data.get(count);
             
             matcher = pattern.matcher(word);
             
@@ -164,13 +173,13 @@ public class Method
     
     private void extractOpcodes()
     {
-        final int PARSED_DATA_SIZE = parsed_method_data.size();
+        final int PARSED_DATA_SIZE = parsed_code_data.size();
         
         int count = 0;
         
         while(count < PARSED_DATA_SIZE)
         {
-            String word = parsed_method_data.get(count).toUpperCase();
+            String word = parsed_code_data.get(count).toUpperCase();
             
             if (bytecode_details_map.containsKey(word)) 
             {
@@ -225,7 +234,7 @@ public class Method
         {
             int operand_index = index + 1;                        
                                     
-            int operand = Integer.parseInt(parsed_method_data.get(operand_index));
+            int operand = Integer.parseInt(parsed_code_data.get(operand_index));
                         
             method_opcode.add(operand);
             
@@ -243,7 +252,7 @@ public class Method
         {
             int operand_index = index + 1;
                         
-            String operand_string = parsed_method_data.get(operand_index);
+            String operand_string = parsed_code_data.get(operand_index);
             
             operand_string = operand_string.substring(0, operand_string.indexOf(',')); //Remove Comma from String
             
@@ -253,7 +262,7 @@ public class Method
             
             operand_index = index + 2;
             
-            operand = Integer.parseInt(parsed_method_data.get(operand_index), HEX);
+            operand = Integer.parseInt(parsed_code_data.get(operand_index), HEX);
             
             method_opcode.add(operand);            
         }
@@ -287,7 +296,7 @@ public class Method
         {
             int operand_index = index + 1;
             
-            int offset = Integer.parseInt(parsed_method_data.get(operand_index));
+            int offset = Integer.parseInt(parsed_code_data.get(operand_index));
 
             int param_1 = 0;          
             int param_2 = offset;
@@ -346,4 +355,35 @@ public class Method
     {
         return method_bytecode.size();
     }
+    
+    public void setMethodName(String name)
+    {
+        METHOD_NAME = name;
+    }
+    
+    public String getMethodName()
+    {
+        return METHOD_NAME;
+    }
+    
+    public void setMethodAccess(String access)
+    {
+        METHOD_ACCESS = access;
+    }
+    
+    public String getMethodAccess()
+    {
+        return METHOD_ACCESS;
+    }
+    
+    public void setInstanceMethod(boolean isInstance)
+    {
+        INSTANCE_METHOD = isInstance;
+    }
+    
+    public boolean getInstanceMethod()
+    {
+        return INSTANCE_METHOD;
+    }
+    
 }
