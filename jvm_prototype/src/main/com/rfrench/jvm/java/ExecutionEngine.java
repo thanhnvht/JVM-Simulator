@@ -1,10 +1,10 @@
 
 package main.com.rfrench.jvm.java;
 
-import controller.com.rfrench.jvm.java.MainSceneController;
+import main.com.rfrench.jvm.controller.MainSceneController;
 import java.util.ArrayList;
 import javafx.event.ActionEvent;
-import ui.com.rfrench.jvm.java.MainScene;
+import main.com.rfrench.jvm.ui.MainScene;
 
 /*
     Program Title: ExecutionEngine.java
@@ -29,6 +29,8 @@ public class ExecutionEngine
     
     private boolean branched;
     private boolean method_invoked;
+    private boolean method_return;
+    private boolean move_tab;
                       
     /**
      * Constructor for InstructionSet Logic
@@ -40,8 +42,10 @@ public class ExecutionEngine
     {                
         this.main_scene_controller = main_scene_controller;
         
-        this.method_area = method_area;              
-            
+        this.method_area = method_area;       
+        
+        move_tab = false;
+        
         PC = 0;      
                                        
         main_scene_controller.getMainScene().getButton().getNextInstructionButton().setOnAction((ActionEvent event) -> 
@@ -65,6 +69,8 @@ public class ExecutionEngine
         
         branched = false;
         method_invoked = false;
+        method_return = false;
+        
                     
         int NUMBER_OF_OPCODES = m.getNumberOfOpcodes();
                         
@@ -74,7 +80,7 @@ public class ExecutionEngine
             
             String bytecode = Integer.toHexString(m.getMethodOpcodes().get(PC)).toUpperCase();
 
-            System.out.println(bytecode);
+           // System.out.println(bytecode);
                                    
             //class_loader.getByteCodeDetails().get(HEX)
 
@@ -124,21 +130,14 @@ public class ExecutionEngine
             }                         
 
             highlightLine();
-            
-
-                       
-            PC++;     
-            
-  
+                                  
+            PC++;                   
         }
 
         else
         {             
             main_scene_controller.hightlightLine(current_method_count, PC);
-            
-         //   main_scene_controller.getMainScene().getAssembly().highlightLine(current_line); 
             main_scene_controller.updateRegisterLabels(PC); 
-
             System.out.println("Program Done!!");
         }       
     }
@@ -161,22 +160,46 @@ public class ExecutionEngine
       
     private void highlightLine()
     {
-        if(branched)
-        {
-            int button_press_count = (int) main_scene_controller.getButtonStack().peek();
+        // Ensure method invokation changes tab on next button press
+        if(move_tab) 
+        {            
+            System.out.println("moving tab");
             
-            main_scene_controller.hightlightLine(current_method_count, button_press_count);
+            main_scene_controller.changeTab(current_method_count);  
+            
+            move_tab = false;
         }
-
-        else if(method_invoked)
+        
+        if(method_invoked || method_return)
         {
+            System.out.println("method_invoke/return");
+            
+            int previous_method_count = 0;
+            
+            if(method_invoked)
+            {
+                previous_method_count = current_method_count - 1;
+            }
+            else if (method_return)
+            {
+                previous_method_count = current_method_count;
+            }
+           
+            int button_press_count = (int) main_scene_controller.getButtonStack().pop();            
+
+            button_press_count++;
+           
+            main_scene_controller.getButtonStack().push(button_press_count);            
+            main_scene_controller.hightlightLine(previous_method_count, button_press_count);            
             main_scene_controller.getButtonStack().push(-1);
+            
+            move_tab = true;
         }
 
-        else
-        {
+        else if(!branched)
+        {            
             int button_press = (int) main_scene_controller.getButtonStack().pop();
-
+            
             button_press++;
 
             main_scene_controller.getButtonStack().push(button_press);   
@@ -240,11 +263,10 @@ public class ExecutionEngine
         
         int offset = first_operand + second_operand;    
         
-        
-        
+                
         calculateBranch(offset);
         
-        main_scene_controller.GOTO(offset, m.getMethodLineNumbers());
+        main_scene_controller.GOTO(offset, m.getMethodLineNumbers(), current_method_count);
         
         branched = true;
     }
@@ -445,7 +467,7 @@ public class ExecutionEngine
             
             branched = true;
             
-            main_scene_controller.GOTO(offset, m.getMethodLineNumbers());
+            main_scene_controller.GOTO(offset, m.getMethodLineNumbers(), current_method_count);
         }
         
         main_scene_controller.IF_ICMPEQ(); //CHANGE? SAME THiNGs happen to stack so...
@@ -480,6 +502,8 @@ public class ExecutionEngine
         }
                 
         main_scene_controller.RETURN(current_method_count, max_local_var);
+                        
+        method_return = true;
                       
     }
     

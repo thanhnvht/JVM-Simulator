@@ -36,6 +36,8 @@ public class ClassLoader
     private ArrayList<String> constant_pool_data;    
     
     private final String FILE_PATH;
+    
+    private final String TEMP_FOLDER_FILE_PATH;
         
     /**
      * JVMFileReader Constructor
@@ -44,7 +46,8 @@ public class ClassLoader
     public ClassLoader(String FILE_PATH)
     {          
         this.FILE_PATH = FILE_PATH;
-        
+
+        TEMP_FOLDER_FILE_PATH = new File("src/main/com/rfrench/jvm/resources/temp/").getAbsolutePath();
     }
                                   
     /**
@@ -72,7 +75,7 @@ public class ClassLoader
             addConstantPoolMethodReferences(method_names_list);
             
             //CHANGE TO RELATIVE FILE PATH
-            FileUtils.cleanDirectory(new File("C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/src/main/com/rfrench/jvm/resources/temp/"));
+            FileUtils.cleanDirectory(new File(TEMP_FOLDER_FILE_PATH));
             
             for(int i = 0; i < NUMBER_OF_METHODS; i++)
             {
@@ -122,7 +125,7 @@ public class ClassLoader
             obj.put("Instance Method", is_instance_method);
             
             //CHANGE TO RELATIVE FILEPATH
-            FileWriter file = new FileWriter("C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/src/main/com/rfrench/jvm/resources/temp/" + file_name);
+            FileWriter file = new FileWriter(TEMP_FOLDER_FILE_PATH + file_name);
             
             file.write(obj.toJSONString());
             file.flush();

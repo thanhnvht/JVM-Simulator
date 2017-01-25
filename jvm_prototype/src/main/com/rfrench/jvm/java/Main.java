@@ -1,8 +1,8 @@
 
 package main.com.rfrench.jvm.java;
 
-import controller.com.rfrench.jvm.java.MainSceneController;
-import ui.com.rfrench.jvm.java.MainScene;
+import main.com.rfrench.jvm.controller.MainSceneController;
+import main.com.rfrench.jvm.ui.MainScene;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -16,10 +16,10 @@ import javafx.stage.Stage;
 
 public class Main extends Application
 {    
-    //public static final String FILE_PATH = "/main/resources/javap/while_test_verbose.txt";   
-    public static final String FILE_PATH = "/main/resources/javap/multiple_methods.txt";  
+    public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/while_test_verbose.txt";   
+    //public static final String FILE_PATH = "/main/resources/javap/multiple_methods.txt";  
     
-    public static final String JSON_FILE_PATH = "/main/resources/json/bytecodes.json";
+    public static final String JSON_FILE_PATH = "/main/com/rfrench/jvm/resources/json/bytecodes.json";
          
     private MethodArea method_area;
     private ClassLoader class_loader; 
@@ -38,7 +38,7 @@ public class Main extends Application
         
         method_area = new MethodArea(class_loader); 
 
-        main_scene = new MainScene(method_area, class_loader, primaryStage);                 
+        main_scene = new MainScene(method_area, primaryStage);                 
         
         main_scene_controller = new MainSceneController(main_scene);
                 

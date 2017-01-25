@@ -2,6 +2,7 @@
 package main.com.rfrench.jvm.java;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Stack;
 
 /*
@@ -20,7 +21,9 @@ public class MethodArea
     
     private Stack operand_stack;
     
-   
+    private final int NUMBER_OF_METHODS;
+    
+    private HashMap bytecode_details_map;
     
     private Stack call_stack;
 
@@ -34,6 +37,10 @@ public class MethodArea
         constant_pool = class_loader.getConstantPoolData();
         
         methods = class_loader.getMethods();
+        
+        NUMBER_OF_METHODS = methods.size();
+        
+        bytecode_details_map = class_loader.getByteCodeDetails();
     }                        
     
     public ArrayList<String> getConstantPool()
@@ -63,6 +70,11 @@ public class MethodArea
         return methods.get(index);
     }
     
+    public int getNumberOfMethods()
+    {
+        return NUMBER_OF_METHODS;
+    }
+    
     public void pushCallStack(int value)
     {
         call_stack.push(value);
@@ -73,6 +85,11 @@ public class MethodArea
         int value = (int)call_stack.pop();
         
         return value;
+    }
+    
+    public HashMap getBytecodeDetails()
+    {
+        return bytecode_details_map;
     }
     
 }
