@@ -162,29 +162,16 @@ public class ExecutionEngine
     {
         // Ensure method invokation changes tab on next button press
         if(move_tab) 
-        {            
-            //System.out.println("moving tab");
-            
+        {                        
             main_scene_controller.changeTab(current_method_count);  
             
             move_tab = false;
         }
         
-        if(method_invoked || method_return)
+        if(method_invoked)
         {
-            //System.out.println("method_invoke/return");
-            
-            int previous_method_count = 0;
-            
-            if(method_invoked)
-            {
-                previous_method_count = current_method_count - 1;
-            }
-            else if (method_return)
-            {
-                previous_method_count = current_method_count + 1;
-            }
-           
+            int previous_method_count = current_method_count - 1;
+
             int button_press_count = (int) main_scene_controller.getButtonStack().pop();            
 
             button_press_count++;          
@@ -192,6 +179,35 @@ public class ExecutionEngine
             main_scene_controller.getButtonStack().push(button_press_count);            
             main_scene_controller.hightlightLine(previous_method_count, button_press_count);            
             main_scene_controller.getButtonStack().push(-1);
+            
+            move_tab = true;
+        }
+        
+        else if(method_return) // FIX SO HIGHLIGHTS RETURN
+        {
+            int button_press_count;
+                       
+            System.out.println("Return");
+            
+            int previous_method_count = current_method_count + 1;
+            
+            button_press_count = (int) main_scene_controller.getButtonStack().pop();            
+
+            button_press_count++;          
+            
+            main_scene_controller.getButtonStack().push(button_press_count);            
+            main_scene_controller.hightlightLine(previous_method_count, button_press_count);                       
+            main_scene_controller.getButtonStack().pop();
+            
+            if(current_method_count > 0)
+            {                
+                button_press_count = (int) main_scene_controller.getButtonStack().pop();   
+                button_press_count++;   
+                main_scene_controller.getButtonStack().push(button_press_count); 
+                
+                System.out.println("current_method: " + current_method_count);
+                System.out.println("button_press: " + button_press_count);
+            }
             
             move_tab = true;
         }
@@ -253,17 +269,14 @@ public class ExecutionEngine
     {
         Method m = method_area.getMethod(current_method_count);
         
-        PC++;
-                                
-        int first_operand = m.getMethodOpcodes().get(PC); 
-                
-        PC++;
-        
+        PC++;                                
+        int first_operand = m.getMethodOpcodes().get(PC);                 
+        PC++;        
         int second_operand = m.getMethodOpcodes().get(PC);
         
-        int offset = first_operand + second_operand;    
-                        
-        PC = offset - 1;
+        int offset = (first_operand + second_operand) - 1;                            
+        
+        PC = offset;
         
         main_scene_controller.GOTO(offset, m.getMethodLineNumbers(), current_method_count);
         
@@ -448,26 +461,18 @@ public class ExecutionEngine
     {
         Method m = method_area.getMethod(current_method_count);
                 
-        PC++;
-                
-        int offset = m.getMethodOpcodes().get(PC);
-        
-        PC++;   
-        
+        PC++;               
+        int offset = m.getMethodOpcodes().get(PC);        
+        PC++;           
         offset += m.getMethodOpcodes().get(PC);
 
-        int value_1 = method_area.popOperandStack();        
-            
+        int value_1 = method_area.popOperandStack();                    
         int value_2 = method_area.popOperandStack();
                 
         if (value_2 >= value_1)
         {
-            PC = offset - 1;
-            
-            System.out.println("offset: " + offset);
-            
-            branched = true;
-            
+            PC = offset - 1;                    
+            branched = true;            
             main_scene_controller.GOTO(offset, m.getMethodLineNumbers(), current_method_count);
         }
         
@@ -485,19 +490,11 @@ public class ExecutionEngine
 //       main_scene_controller.IF_ICMPEQ(offset, m.getMethodLineNumbers());
     }
     
-    private void calculateBranch(int offset)
-    {
-        PC = offset - 1; //-1 to negate the PC increment at end of execution                                     
-    }
     
     private void RETURN()
     {
         int previous_method_count = current_method_count;
-        
-        Method old_method = method_area.getMethod(current_method_count);
-        
-        int max_local_var = old_method.getLocalSize();
-        
+    
         if(current_method_count > 0)
         {
             current_method_count--;
@@ -506,7 +503,7 @@ public class ExecutionEngine
                 
         main_scene_controller.RETURN(previous_method_count);
                         
-        method_return = true;
+        method_return = true;                
                       
     }
     
@@ -538,7 +535,7 @@ public class ExecutionEngine
                         
         String symbolic_reference = method_area.getConstantPool().get(value);
         
-        System.out.println("sym ref: " + symbolic_reference);
+        //System.out.println("sym ref: " + symbolic_reference);
         
         current_method_count++;
         

@@ -45,7 +45,7 @@ public class UIStackPane
         
         r_label.setTranslateX(350);
         //r_label.setTranslateY((-51* (2+index))+ 615);
-        r_label.setTranslateY((-51 * (stack_number - 1))+ (MainScene.HEIGHT_TENTH * 8));
+        r_label.setTranslateY((-51 * (stack_number - 1))+ (MainScene.HEIGHT_TENTH * 4));
         
         Tooltip tool_tip = new Tooltip();
         tool_tip.setText("Stack Element: " + stack_number);        

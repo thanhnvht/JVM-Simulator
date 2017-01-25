@@ -35,18 +35,26 @@ public class UIFramePane
         method_local_frames_list = new ArrayList<ArrayList<Label>>();
     }
     
-    public void addFrameUI(String frame_text, int current_method_count, int max_local_var)
+    public void addFrameUI(String[] frame_text, int current_method_count, int max_local_var)
     {            
+                        
         frame_labels = new ArrayList<Label>();
         
         for(int i = 0; i < max_local_var; i++)        
         {
-            Label f_label = new Label(frame_text);
+            String f_text = "";
+            
+            if(i < frame_text.length)
+            {
+                f_text = frame_text[i];
+            }
+            
+            Label f_label = new Label(f_text);
         
             f_label.setId(CSS_FRAME_ID);        
             f_label.setAlignment(Pos.CENTER);             
             f_label.setTranslateX(10);        
-            f_label.setTranslateY((-51 * number_of_frames) + (MainScene.HEIGHT_TENTH * 8));
+            f_label.setTranslateY((-51 * number_of_frames) + (MainScene.HEIGHT_TENTH * 4));
 
             Tooltip tool_tip = new Tooltip();
 

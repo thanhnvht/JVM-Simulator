@@ -3,23 +3,30 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package main.com.rfrench.jvm.simulatated_programs;
+package main.com.rfrench.jvm.simulated_programs;
 
 /**
  *
  * @author Ryan
  */
-public class WhileTest 
+public class MultipleMethodTest 
 {
     public static void main(String [] args)
     {
-        int a = 5;
-        int b = 0;
+        method_1();
+    }
+    
+    private static void method_1()
+    {
+        int a = 10;
         
-        while(b < a)
-        {
-            b++;
-        }                
+        method_2();
         
+        int b = a - 10;
+    }
+    
+    private static void method_2()
+    {
+        int b = 20;
     }
 }

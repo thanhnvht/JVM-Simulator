@@ -1,28 +1,31 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package test;
 
-package main.com.rfrench.jvm.java;
-
-import main.com.rfrench.jvm.controller.MainSceneController;
-import main.com.rfrench.jvm.ui.MainScene;
 import javafx.application.Application;
+import static javafx.application.Application.launch;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import main.com.rfrench.jvm.controller.MainSceneController;
+import main.com.rfrench.jvm.java.ExecutionEngine;
+import main.com.rfrench.jvm.java.MethodArea;
+import main.com.rfrench.jvm.ui.MainScene;
 
-/*
-    Program Title: Main.java
-    Author: Ryan French
-    Created: 19-Oct-2016
-    Version: 1.0
-*/
-
-public class Main extends Application
-{    
-    //public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/while_test_verbose.txt";   
-    public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/multiple_methods.txt";  
-    
+/**
+ *
+ * @author Ryan
+ */
+public class WhileTest extends Application
+{
+    public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/while_test_verbose.txt";   
+        
     public static final String JSON_FILE_PATH = "/main/com/rfrench/jvm/resources/json/bytecodes.json";
          
     private MethodArea method_area;
-    private ClassLoader class_loader; 
+    private main.com.rfrench.jvm.java.ClassLoader class_loader; 
     private ExecutionEngine execution_engine;        
          
     private MainScene main_scene;
@@ -32,7 +35,7 @@ public class Main extends Application
     public void start(Stage primaryStage)
     {      
                      
-        class_loader = new ClassLoader(FILE_PATH);
+        class_loader = new main.com.rfrench.jvm.java.ClassLoader(FILE_PATH);
         
         class_loader.readFile();
         

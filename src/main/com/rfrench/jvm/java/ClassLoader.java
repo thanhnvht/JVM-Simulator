@@ -125,8 +125,6 @@ public class ClassLoader
             file.write(obj.toJSONString());
             file.flush();
             file.close();
-            
-            System.out.println("wrote file");
         }
         
         catch(IOException e)

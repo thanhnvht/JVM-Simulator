@@ -197,22 +197,24 @@ public class MainSceneController
     
     public void INVOKESPECIAL(int stack_size, int current_method, int max_local_var)
     {        
-        String test = "";
+        String[] stack_text = new String[stack_size];
         
-        if(stack_pane_size > 0)
+        for(int i = 0; i < stack_size; i++)
         {
-            test = main_scene.getStack().getStackText(stack_pane_size);
+            stack_text[i] = main_scene.getStack().getStackText(stack_pane_size);
         }
-                    
+   
         for(int i = 0; i < stack_size; i++)
         {
             main_scene.getStack().pop(stack_pane_size);            
             --stack_pane_size;            
         }
         
-        main_scene.getFrame().addFrameUI("", current_method, max_local_var);
+        main_scene.getFrame().addFrameUI(stack_text, current_method, max_local_var);
  
     }
+    
+
     
     public void RETURN(int current_method)
     {
