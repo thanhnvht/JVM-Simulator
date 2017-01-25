@@ -156,9 +156,7 @@ public class MainSceneController
     }
     
     public void GOTO(int offset, ArrayList<String> Linenumbers, int current_method)
-    {  
-        System.out.println("branch");
-        
+    {          
         String offset_string = Integer.toString(offset);
         
         boolean line_found = false;

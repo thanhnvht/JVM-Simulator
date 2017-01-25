@@ -75,10 +75,7 @@ public class ClassLoader
             ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);                        
             
             addConstantPoolMethodReferences(method_names_list);
-            
-            
-            
-            
+                                                
             for(int i = 0; i < NUMBER_OF_METHODS; i++)
             {
                 ArrayList<String> method_code = parseMethodCode(i);

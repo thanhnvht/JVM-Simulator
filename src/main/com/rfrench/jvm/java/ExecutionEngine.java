@@ -182,13 +182,17 @@ public class ExecutionEngine
             }
             else if (method_return)
             {
-                previous_method_count = current_method_count;
+                previous_method_count = current_method_count + 1;
+                
+                System.out.println("previous method: " + previous_method_count);
             }
            
             int button_press_count = (int) main_scene_controller.getButtonStack().pop();            
 
             button_press_count++;
            
+            System.out.println("button pres count: " + button_press_count);
+            
             main_scene_controller.getButtonStack().push(button_press_count);            
             main_scene_controller.hightlightLine(previous_method_count, button_press_count);            
             main_scene_controller.getButtonStack().push(-1);
@@ -262,9 +266,8 @@ public class ExecutionEngine
         int second_operand = m.getMethodOpcodes().get(PC);
         
         int offset = first_operand + second_operand;    
-        
-                
-        calculateBranch(offset);
+                        
+        PC = offset - 1;
         
         main_scene_controller.GOTO(offset, m.getMethodLineNumbers(), current_method_count);
         
@@ -463,7 +466,9 @@ public class ExecutionEngine
                 
         if (value_2 >= value_1)
         {
-            calculateBranch(offset);
+            PC = offset - 1;
+            
+            System.out.println("offset: " + offset);
             
             branched = true;
             
