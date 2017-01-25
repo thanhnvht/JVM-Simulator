@@ -58,6 +58,8 @@ public class ClassLoader
     {          
         try
         {
+            FileUtils.cleanDirectory(new File(TEMP_FOLDER_FILE_PATH));
+            
             JSONArray bytecode_json = createJSONParser();
             
             createByteCodeDetailsHashMap(bytecode_json);                
@@ -74,8 +76,8 @@ public class ClassLoader
             
             addConstantPoolMethodReferences(method_names_list);
             
-            //CHANGE TO RELATIVE FILE PATH
-            FileUtils.cleanDirectory(new File(TEMP_FOLDER_FILE_PATH));
+            
+            
             
             for(int i = 0; i < NUMBER_OF_METHODS; i++)
             {
@@ -87,7 +89,7 @@ public class ClassLoader
                 
                 boolean instance_method = is_method_instance_list.get(i);
                 
-                writeMethodDetailsJSON("method_" + i + ".json", method_name, method_access, instance_method);
+                writeMethodDetailsJSON("/method_" + i + ".json", method_name, method_access, instance_method);
                 
                 Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, i);                               
                               
@@ -124,7 +126,6 @@ public class ClassLoader
             obj.put("Access", method_access);
             obj.put("Instance Method", is_instance_method);
             
-            //CHANGE TO RELATIVE FILEPATH
             FileWriter file = new FileWriter(TEMP_FOLDER_FILE_PATH + file_name);
             
             file.write(obj.toJSONString());

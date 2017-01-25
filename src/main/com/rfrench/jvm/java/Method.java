@@ -33,16 +33,15 @@ public class Method
     private String[] local_variable_frame;
         
     private final int MAX_STACK_SIZE;
-    private int MAX_LOCAL_VAR_SIZE;
-    private int MAX_ARG_SIZE;         //TODO REFACTOR CODE SO MOST OF THESE ARE FINAL VARIABLES
+    private final int MAX_LOCAL_VAR_SIZE;
+    private final int MAX_ARG_SIZE;  
     
     private boolean STATIC;
     private boolean INSTANCE_METHOD;
     
     private String METHOD_NAME;
     private String METHOD_ACCESS;
-    
-    private String CLASS_NAME;
+
             
     private HashMap bytecode_details_map;
     private JSONArray bytecode_details_json;
@@ -71,8 +70,10 @@ public class Method
         
         try
         {            
-            JSONParser parser = new JSONParser(); 
-                      
+            JSONParser parser = new JSONParser();                       
+            
+            //System.out.println("/main/com/rfrench/jvm/resources/temp/method_" + method_number + ".json");
+            
             Object obj = parser.parse(new InputStreamReader(getClass().getResourceAsStream("/main/com/rfrench/jvm/resources/temp/method_" + method_number + ".json")));
             
             JSONObject jsonObject = (JSONObject) obj;
