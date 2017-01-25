@@ -31,7 +31,8 @@ public class UIButtonPane
         open_file_button.setMinWidth(BUTTON_WIDTH);
         
                 
-        button_vbox = new VBox(10, next_instruction_button, reset_program_button, open_file_button);
+        //button_vbox = new VBox(10, next_instruction_button, reset_program_button, open_file_button);
+        button_vbox = new VBox(10, next_instruction_button);
         button_vbox.setMinWidth(MainScene.WIDTH_TENTH * 3);
         button_vbox.setMinHeight(MainScene.HEIGHT_TENTH * 3);
     }

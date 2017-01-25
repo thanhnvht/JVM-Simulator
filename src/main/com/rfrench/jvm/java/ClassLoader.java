@@ -75,19 +75,16 @@ public class ClassLoader
             ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);                        
             
             addConstantPoolMethodReferences(method_names_list);
-                                                
+            
             for(int i = 0; i < NUMBER_OF_METHODS; i++)
             {
-                ArrayList<String> method_code = parseMethodCode(i);
-                
-                String method_name = method_names_list.get(i);
-                
-                String method_access = method_access_type_list.get(i);
-                
-                boolean instance_method = is_method_instance_list.get(i);
-                
-                writeMethodDetailsJSON("/method_" + i + ".json", method_name, method_access, instance_method);
-                
+                writeMethodDetailsJSON("/method_" + i + ".json", method_names_list.get(i), method_access_type_list.get(i), is_method_instance_list.get(i));
+            }
+            
+            for(int i = 0; i < NUMBER_OF_METHODS; i++)
+            {
+                ArrayList<String> method_code = parseMethodCode(i);                                
+                                
                 Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, i);                               
                               
                 methods.add(m);
@@ -128,6 +125,8 @@ public class ClassLoader
             file.write(obj.toJSONString());
             file.flush();
             file.close();
+            
+            System.out.println("wrote file");
         }
         
         catch(IOException e)

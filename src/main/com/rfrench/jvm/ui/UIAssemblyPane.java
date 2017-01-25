@@ -11,7 +11,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
-import main.com.rfrench.jvm.java.ClassLoader;
 import main.com.rfrench.jvm.java.MethodArea;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -86,9 +85,7 @@ public class UIAssemblyPane
         for (int i = 0; i < NUMBER_OF_METHODS; i++) 
         {
             ArrayList<String> bytecode_text = method_area.getMethod(i).getMethodBytecode();
-            
-            
-
+                        
             ArrayList<String> line_numbers = method_area.getMethod(i).getMethodLineNumbers();
 
             ListView listview = java_program_listview_list.get(i);

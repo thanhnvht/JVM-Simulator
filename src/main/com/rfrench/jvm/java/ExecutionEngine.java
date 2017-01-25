@@ -163,7 +163,7 @@ public class ExecutionEngine
         // Ensure method invokation changes tab on next button press
         if(move_tab) 
         {            
-            System.out.println("moving tab");
+            //System.out.println("moving tab");
             
             main_scene_controller.changeTab(current_method_count);  
             
@@ -172,7 +172,7 @@ public class ExecutionEngine
         
         if(method_invoked || method_return)
         {
-            System.out.println("method_invoke/return");
+            //System.out.println("method_invoke/return");
             
             int previous_method_count = 0;
             
@@ -183,15 +183,11 @@ public class ExecutionEngine
             else if (method_return)
             {
                 previous_method_count = current_method_count + 1;
-                
-                System.out.println("previous method: " + previous_method_count);
             }
            
             int button_press_count = (int) main_scene_controller.getButtonStack().pop();            
 
-            button_press_count++;
-           
-            System.out.println("button pres count: " + button_press_count);
+            button_press_count++;          
             
             main_scene_controller.getButtonStack().push(button_press_count);            
             main_scene_controller.hightlightLine(previous_method_count, button_press_count);            
@@ -341,7 +337,7 @@ public class ExecutionEngine
          
         m.setLocalVariable(frame_index, value);
                                  
-        main_scene_controller.ISTORE(frame_index, value);                             
+        main_scene_controller.ISTORE(current_method_count, frame_index, value);                             
     }
     
     private void ISUB() 
@@ -425,7 +421,7 @@ public class ExecutionEngine
         
         m.setLocalVariable(frame_index, value);
                         
-        main_scene_controller.IINC(frame_index, value);                        
+        main_scene_controller.IINC(current_method_count, frame_index, value);                        
     }
     
     private void INVOKEVIRTUAL()
@@ -496,6 +492,8 @@ public class ExecutionEngine
     
     private void RETURN()
     {
+        int previous_method_count = current_method_count;
+        
         Method old_method = method_area.getMethod(current_method_count);
         
         int max_local_var = old_method.getLocalSize();
@@ -506,7 +504,7 @@ public class ExecutionEngine
             PC = method_area.popCallStack();
         }
                 
-        main_scene_controller.RETURN(current_method_count, max_local_var);
+        main_scene_controller.RETURN(previous_method_count);
                         
         method_return = true;
                       

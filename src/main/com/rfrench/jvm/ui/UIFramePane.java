@@ -18,52 +18,67 @@ public class UIFramePane
 {
     private Pane java_stack_pane;
             
-    private ArrayList<ArrayList<Label>> methods_local_frames_list;
+    private ArrayList<ArrayList<Label>> method_local_frames_list;
     
     private ArrayList<Label> frame_labels;    
     
     private final String CSS_FRAME_ID = "FRAME";
     
-    private int number_of_frames;
+    private int number_of_frames; // used to calculate where to put next frame in UI
     
     public UIFramePane(Pane memory_pane)
     {
         this.java_stack_pane = memory_pane;
         
         number_of_frames = 0;
-                       
-        frame_labels = new ArrayList<Label>();
-        
-        methods_local_frames_list = new ArrayList<ArrayList<Label>>();
+                                       
+        method_local_frames_list = new ArrayList<ArrayList<Label>>();
     }
     
-    public void addFrameUI(int index, String frame_text, int current_method)
-    {                        
-        Label f_label = new Label(frame_text);
+    public void addFrameUI(String frame_text, int current_method_count, int max_local_var)
+    {            
+        frame_labels = new ArrayList<Label>();
         
-        f_label.setId(CSS_FRAME_ID);        
-        f_label.setAlignment(Pos.CENTER);             
-        f_label.setTranslateX(10);        
-        f_label.setTranslateY((-51 * number_of_frames) + (MainScene.HEIGHT_TENTH * 8));
+        for(int i = 0; i < max_local_var; i++)        
+        {
+            Label f_label = new Label(frame_text);
         
-        Tooltip tool_tip = new Tooltip();
+            f_label.setId(CSS_FRAME_ID);        
+            f_label.setAlignment(Pos.CENTER);             
+            f_label.setTranslateX(10);        
+            f_label.setTranslateY((-51 * number_of_frames) + (MainScene.HEIGHT_TENTH * 8));
+
+            Tooltip tool_tip = new Tooltip();
+
+            tool_tip.setText("Local Frame Variable: " + i);        
+
+            f_label.setTooltip(tool_tip); 
+
+            ++number_of_frames;
+
+            frame_labels.add(f_label);
+            
+            java_stack_pane.getChildren().add(f_label); 
+        }
         
-        tool_tip.setText("Local Frame Variable: " + index);        
-        
-        f_label.setTooltip(tool_tip); 
-        
-        ++number_of_frames;
-                
-        frame_labels.add(f_label);
-        
-        java_stack_pane.getChildren().add(f_label);        
+        method_local_frames_list.add(frame_labels);
+       
     }
             
-    public void removeFrameUI(int index)
+    public void removeFrameUI(int current_method_count)
     {
-        System.out.println("Frame to remove: " + index);
+        ArrayList<Label> current_frame_list = method_local_frames_list.get(current_method_count);
         
-        java_stack_pane.getChildren().remove(index);
+       //Label frame_label = method_local_frames_list.get(current_method_count).get(index);
+               
+        int number_of_local_vars = method_local_frames_list.get(current_method_count).size();
+        
+        for(int i = 0; i < number_of_local_vars; i++)
+        {
+            Label frame_label = current_frame_list.get(i);
+            
+            java_stack_pane.getChildren().remove(frame_label);
+        }
     }
     
     public int getNumberOfFrames()
@@ -76,8 +91,10 @@ public class UIFramePane
         return frame_labels.get(index).getText();        
     }
         
-    public void updateFrameLabel(int index, String new_text)
+    public void updateFrameLabel(int current_method_count, int index, String new_text)
     {
-        frame_labels.get(index).setText(new_text);
+        Label label = method_local_frames_list.get(current_method_count).get(index);
+        
+        label.setText(new_text);
     }
 }

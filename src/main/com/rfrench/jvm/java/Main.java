@@ -14,10 +14,13 @@ import javafx.stage.Stage;
     Version: 1.0
 */
 
+// Runtime.getRuntime().exec("cmd /c start build.bat");
+// ^^ Use this later to run javap -p -v -c 'file'
+
 public class Main extends Application
 {    
     public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/while_test_verbose.txt";   
-    //public static final String FILE_PATH = "/main/resources/javap/multiple_methods.txt";  
+    //public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/multiple_methods.txt";  
     
     public static final String JSON_FILE_PATH = "/main/com/rfrench/jvm/resources/json/bytecodes.json";
          
@@ -42,7 +45,7 @@ public class Main extends Application
         
         main_scene_controller = new MainSceneController(main_scene);
                 
-        execution_engine = new ExecutionEngine(main_scene, main_scene_controller, method_area);                                       
+        new ExecutionEngine(main_scene, main_scene_controller, method_area);                                       
                         
         Scene scene = new Scene(main_scene.getMainPane(), MainScene.WIDTH_TENTH*10, MainScene.HEIGHT_TENTH*10);
         

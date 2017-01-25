@@ -1,7 +1,6 @@
 
 package main.com.rfrench.jvm.ui;
 
-import main.com.rfrench.jvm.java.ClassLoader;
 import main.com.rfrench.jvm.java.MethodArea;
 
 import javafx.geometry.Rectangle2D;
@@ -28,9 +27,8 @@ public class MainScene
           
     private BorderPane main_pane;
     private GridPane grid_pane; 
-    private BorderPane memory_pane;
     
-    
+  
     private UIRegisterPane rp;
     private UIStackPane sp;
     private UIAssemblyPane ap;
@@ -55,10 +53,7 @@ public class MainScene
         
         int MAX_LOCAL_VAR = method_area.getMethod(0).getLocalSize();
         
-        for(int i = 0; i < MAX_LOCAL_VAR; i++)
-        {
-            fp.addFrameUI(i, "", 0);
-        }
+        fp.addFrameUI("", 0, MAX_LOCAL_VAR);
           
         sp = new UIStackPane(mp.getPane());        
                 

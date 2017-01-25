@@ -124,12 +124,12 @@ public class MainSceneController
         main_scene.getStack().push(label_name, stack_pane_size);
     }
     
-    public void ISTORE(int frame_index, String frame_value)
-    {
-        main_scene.getStack().pop(stack_pane_size);     
+    public void ISTORE(int current_method_count, int frame_index, String frame_value)
+    {        
+        main_scene.getStack().pop(stack_pane_size);                     
         --stack_pane_size;
-
-        main_scene.getFrame().updateFrameLabel(frame_index, frame_value);
+                
+        main_scene.getFrame().updateFrameLabel(current_method_count, frame_index, frame_value);
         
     }
     
@@ -190,9 +190,9 @@ public class MainSceneController
         --stack_pane_size;   
     }
     
-    public void IINC(int frame_index, String frame_value)
+    public void IINC(int current_method_count, int frame_index, String frame_value)
     {        
-        main_scene.getFrame().updateFrameLabel(frame_index, frame_value);
+        main_scene.getFrame().updateFrameLabel(current_method_count, frame_index, frame_value);
     }
     
     public void INVOKESPECIAL(int stack_size, int current_method, int max_local_var)
@@ -210,32 +210,18 @@ public class MainSceneController
             --stack_pane_size;            
         }
         
-        for(int i = 0; i < max_local_var; i++)
-        {
-            if(i == 0)
-            {                
-                main_scene.getFrame().addFrameUI(i, test, current_method);
-            }
-            
-            else
-            {
-                main_scene.getFrame().addFrameUI(i, "", current_method);
-            }                                
-        }    
+        main_scene.getFrame().addFrameUI("", current_method, max_local_var);
+ 
     }
     
-    public void RETURN(int current_method, int max_local_var)
+    public void RETURN(int current_method)
     {
         
 //        SingleSelectionModel<Tab> selection_model = main_scene.getAssembly().getTabPane().getSelectionModel();
 //            
 //        selection_model.select(current_method);
         
-//        for(int i = 0; i < max_local_var; i++)
-//        {
-//            main_scene.getFrame().removeFrameUI(i);
-//        }
-        
+          main_scene.getFrame().removeFrameUI(current_method);
       
     }
 }
