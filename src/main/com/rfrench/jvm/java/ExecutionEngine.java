@@ -3,7 +3,11 @@ package main.com.rfrench.jvm.java;
 
 import main.com.rfrench.jvm.controller.MainSceneController;
 import java.util.ArrayList;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.util.Duration;
 import main.com.rfrench.jvm.ui.MainScene;
 
 /*
@@ -13,7 +17,7 @@ import main.com.rfrench.jvm.ui.MainScene;
     Version: 1.0
 */
 
-public class ExecutionEngine 
+public class ExecutionEngine   
 {
     private final int HEX = 16;
     
@@ -31,6 +35,9 @@ public class ExecutionEngine
     private boolean method_invoked;
     private boolean method_return;
     private boolean move_tab;
+    
+    private boolean program_done = false;
+    private boolean pause_program = false;
                       
     /**
      * Constructor for InstructionSet Logic
@@ -43,7 +50,7 @@ public class ExecutionEngine
         this.main_scene_controller = main_scene_controller;
         
         this.method_area = method_area;       
-        
+                
         move_tab = false;
         
         PC = 0;      
@@ -56,7 +63,33 @@ public class ExecutionEngine
         main_scene_controller.getMainScene().getButton().getResetProgramButton().setOnAction((ActionEvent event) -> 
         {
             resetProgram();
-        });                        
+        });                   
+        
+        main_scene_controller.getMainScene().getButton().getPlayProgramButton().setOnAction((ActionEvent event) ->
+        {
+
+            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1),
+                eve -> 
+                {
+                    if(!pause_program)
+                    {
+                        if(!program_done)
+                            main_scene_controller.getMainScene().getButton().getNextInstructionButton().fire();
+                    }                                           
+                }   
+                    
+                ));
+            
+                             
+                timeline.setCycleCount(Animation.INDEFINITE);                
+                timeline.play();           
+                                                     
+        });
+        
+        main_scene_controller.getMainScene().getButton().getPauseProgramButton().setOnAction((ActionEvent event) ->
+        {
+          pause_program = !pause_program;
+        });
     }
        
     /**
@@ -139,6 +172,7 @@ public class ExecutionEngine
             main_scene_controller.hightlightLine(current_method_count, PC);
             main_scene_controller.updateRegisterLabels(PC); 
             System.out.println("Program Done!!");
+            program_done = true;
         }       
     }
     
@@ -147,13 +181,14 @@ public class ExecutionEngine
      * - Resets Registers
      * - Resets GUI
      * - Memory Reloaded
+     * 
      */
     public void resetProgram()
     {     
         PC = 0;      
                         
         main_scene_controller.getMainScene().getAssembly().highlightLine(-1);                   
-        main_scene_controller.removeAllStack();               
+             
         main_scene_controller.updateRegisterLabels(PC);
         main_scene_controller.getMainScene().getAssembly().getListView().getSelectionModel().select(0);                
     }

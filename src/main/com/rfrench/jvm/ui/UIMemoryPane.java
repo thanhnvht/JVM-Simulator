@@ -22,8 +22,8 @@ public class UIMemoryPane {
         p = new Pane();
         
         mempane = new TabPane();
-        mempane.setMinHeight(MainScene.HEIGHT_TENTH * 10);
-        mempane.setMinWidth(MainScene.WIDTH_TENTH * 4);
+        mempane.setMinHeight(MainScene.HEIGHT_TENTH * 60);
+        mempane.setMinWidth(MainScene.WIDTH_TENTH * 40);
         mempane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         
         Tab mem = new Tab();

@@ -70,15 +70,13 @@ public class Method
         
         try
         {            
-            JSONParser parser = new JSONParser();                       
-            
-            //System.out.println("/main/com/rfrench/jvm/resources/temp/method_" + method_number + ".json");
+            JSONParser parser = new JSONParser();                                   
             
             Object obj = parser.parse(new InputStreamReader(getClass().getResourceAsStream("/main/com/rfrench/jvm/resources/temp/method_" + method_number + ".json")));
             
             JSONObject jsonObject = (JSONObject) obj;
             
-            METHOD_NAME = (String) jsonObject.get("Name");
+            METHOD_NAME = findMethodName(jsonObject);
             
             METHOD_ACCESS = (String) jsonObject.get("Access");
             
@@ -95,7 +93,18 @@ public class Method
         }
     }
         
-     
+    private String findMethodName(JSONObject jsonObject)
+    {
+        String method_name_temp = (String) jsonObject.get("Name");
+        
+        String[] method_name_parts = method_name_temp.split("\\.");
+        
+        int number_of_full_stops = method_name_parts.length;
+        
+        String method_name = method_name_parts[number_of_full_stops - 1];
+                
+        return method_name;
+    }
     
     private void extractByteCode()
     {                               

@@ -1,11 +1,10 @@
 
 package main.com.rfrench.jvm.ui;
 
+import java.util.Stack;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
 /*
@@ -20,8 +19,9 @@ public class UIStackPane
     private final String CSS_STACK_ID = "STACK";
     private Pane mem;
     private Pane stack_pane;
-    private Label[] stack_labels;
-    private int STACK_MAX_SIZE = 100;
+
+    
+    private Stack operand_stack_labels; 
     
     public UIStackPane(Pane mem)
     {
@@ -29,52 +29,58 @@ public class UIStackPane
         stack_pane = new Pane();
         stack_pane.setMinSize(250, 150);
         Tooltip tooltip = new Tooltip();
-        tooltip.setText("Operand Stack in Memory");
+        tooltip.setText("Operand Stack");
+              
         
-        stack_labels = new Label[STACK_MAX_SIZE];        
+        operand_stack_labels = new Stack();
     }
     
-    public void push(String label_name, int stack_number)
-    {              
-        Label r_label = new Label(label_name);
-        r_label.setId(CSS_STACK_ID);
-        r_label.setAlignment(Pos.CENTER);
-                     
-        stack_labels[stack_number] = r_label;   
-        stack_pane.getChildren().add(r_label);
+    public void push(String label_name)
+    {     
+        int current_stack_size = operand_stack_labels.size();
         
-        r_label.setTranslateX(350);
-        //r_label.setTranslateY((-51* (2+index))+ 615);
-        r_label.setTranslateY((-51 * (stack_number - 1))+ (MainScene.HEIGHT_TENTH * 4));
+        Label operand_stack_label = new Label(label_name);
+        operand_stack_label.setId(CSS_STACK_ID);
+        operand_stack_label.setAlignment(Pos.CENTER);
+                     
+        stack_pane.getChildren().add(operand_stack_label);
+        
+        operand_stack_labels.push(operand_stack_label);
+        
+        operand_stack_label.setTranslateX(350);
+
+        operand_stack_label.setTranslateY((-51 * (current_stack_size))+ (MainScene.HEIGHT_TENTH * 37));
         
         Tooltip tool_tip = new Tooltip();
-        tool_tip.setText("Stack Element: " + stack_number);        
-        r_label.setTooltip(tool_tip); 
+        tool_tip.setText("Operand Stack element: " + current_stack_size);        
+        operand_stack_label.setTooltip(tool_tip); 
         
-        mem.getChildren().add(r_label);
+        mem.getChildren().add(operand_stack_label);
     } 
     
-    public void pop(int index)
-    {            
-        stack_pane.getChildren().remove(stack_labels[index]);
-        mem.getChildren().remove(stack_labels[index]);
+    public void pop()
+    {        
+        Label operand_stack_label = (Label) operand_stack_labels.pop();
         
+        mem.getChildren().remove(operand_stack_label);                        
     }
     
     public Pane getStackPane()
     {
         return stack_pane;
     }
-    
-    private void setupStackPointer()
+        
+    public String getStackText()
     {
-        Label label1 = new Label("Search");
-        Image image = new Image(getClass().getResourceAsStream("labels.jpg"));
-        label1.setGraphic(new ImageView(image));
+        Label operand_stack_label = (Label) operand_stack_labels.peek();
+        
+        String stack_element_text = operand_stack_label.getText();
+        
+        return stack_element_text;
     }
     
-    public String getStackText(int index)
+    public int getCurrentStackSize()
     {
-        return stack_labels[index].getText();
+        return operand_stack_labels.size();
     }
 }

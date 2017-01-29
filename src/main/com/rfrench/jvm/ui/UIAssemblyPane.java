@@ -11,6 +11,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
+import javafx.scene.paint.Color;
 import main.com.rfrench.jvm.java.MethodArea;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -33,14 +34,10 @@ public class UIAssemblyPane
     private ArrayList<ArrayList<Label>> java_program_labels_list;    
     private ArrayList<Label> java_program_labels;
             
-    private Label[] hex_labels;
-
     private final int NUMBER_OF_METHODS;
    
     private ArrayList<ListView> java_program_listview_list;
     private ListView java_program_listview;
-    private ListView hex_listview;
-
         
     private TabPane assembly_tabpane;
     private ArrayList<Tab> bytecode_tab_list;
@@ -56,8 +53,7 @@ public class UIAssemblyPane
         this.method_area = method_area;
         
         NUMBER_OF_METHODS = method_area.getNumberOfMethods();
-        
-        //setupHex(class_loader, M);        
+              
         setupTabs();
         setupListView();                                                       
         setupLabels();   
@@ -71,8 +67,8 @@ public class UIAssemblyPane
         for(int i = 0; i < NUMBER_OF_METHODS; i++)
         {
             java_program_listview = new ListView();
-            java_program_listview.setMinWidth(MainScene.WIDTH_TENTH * 3);
-            java_program_listview.setMinHeight(MainScene.HEIGHT_TENTH * 7);
+            java_program_listview.setMinWidth(MainScene.WIDTH_TENTH * 30);
+            java_program_listview.setMinHeight(MainScene.HEIGHT_TENTH * 70);
             java_program_listview.setId(CSS_ASSEMBLY_ID);              
             java_program_listview_list.add(java_program_listview);
         }   
@@ -104,7 +100,10 @@ public class UIAssemblyPane
 
                 String bytecode = bytecode_text.get(j);                                
                 
-                java_program_labels.add(new Label(line_number + "\t" + bytecode));
+                Label new_label = new Label(line_number + "\t" + bytecode);
+                new_label.setTextFill(Color.AZURE);
+                
+                java_program_labels.add(new_label);
                 
                 listview.getItems().add(java_program_labels.get(j));
             }
@@ -115,56 +114,69 @@ public class UIAssemblyPane
     
     private void setupTooltips()
     {
-        try
+                            
+        JSONArray bytecode_json_array = getByteCodeTooltipDetails();
+
+        HashMap bytecode_details_map = method_area.getBytecodeDetails();
+
+        for (int i = 0; i < NUMBER_OF_METHODS; i++) 
         {
-            final String ATTRIBUTE_NAME = "Tooltip";
-                     
-            JSONParser parser = new JSONParser();            
-            
-            Object obj = parser.parse(new InputStreamReader(getClass().getResourceAsStream(JSON_FILE_PATH)));
-            
-            JSONObject jsonObject = (JSONObject) obj;            
-            
-            JSONArray bytecode_json_array = (JSONArray) jsonObject.get("bytecodes");
-            
-            HashMap bytecode_details_map = method_area.getBytecodeDetails();
-                        
-            
-            for (int i = 0; i < NUMBER_OF_METHODS; i++) 
-            {
-                
-                
-                int NUMBER_OF_BYTECODES = method_area.getMethod(i).getMethodBytecode().size();
 
-                for (int j = 0; j < NUMBER_OF_BYTECODES; j++) {
+            int NUMBER_OF_BYTECODES = method_area.getMethod(i).getMethodBytecode().size();
 
-                    String word = method_area.getMethod(i).getMethodBytecode().get(j);
+            for (int j = 0; j < NUMBER_OF_BYTECODES; j++) {
 
-                    //Remove Operand from Bytecode
-                    if (word.indexOf(' ') != - 1) 
-                    {
-                        word = word.substring(0, word.indexOf(' '));
-                    }
+                String word = method_area.getMethod(i).getMethodBytecode().get(j);
 
-                    //Gather Tooltip text from JSON
-                    if (bytecode_details_map.containsKey(word)) 
-                    {
-                        Tooltip tooltip = new Tooltip();
-
-                        int bytecode_index = (int) bytecode_details_map.get(word);
-
-                        JSONObject bytecode_element = (JSONObject) bytecode_json_array.get(bytecode_index);
-
-                        String tooltip_text = (String) bytecode_element.get(ATTRIBUTE_NAME);
-
-                        tooltip.setText(tooltip_text);
-                        
-                        Label l = java_program_labels_list.get(i).get(j);
-                        
-                        l.setTooltip(tooltip);
-                    }
+                //Remove Operand from Bytecode
+                if (word.indexOf(' ') != - 1) 
+                {
+                    word = word.substring(0, word.indexOf(' '));
                 }
-            }      
+
+                
+                if (bytecode_details_map.containsKey(word)) 
+                {
+                    //Gather Tooltip text from JSON
+                    assignToolTip(bytecode_details_map, bytecode_json_array, word, i, j);
+                }
+            }
+        }      
+    }
+    
+    private void assignToolTip(HashMap bytecode_details_map, JSONArray bytecode_json_array, String word, int method_count, int line_number)
+    {
+        final String ATTRIBUTE_NAME = "Tooltip";
+        
+        Tooltip tooltip = new Tooltip();
+
+        int bytecode_index = (int) bytecode_details_map.get(word);
+
+        JSONObject bytecode_element = (JSONObject) bytecode_json_array.get(bytecode_index);
+
+        String tooltip_text = (String) bytecode_element.get(ATTRIBUTE_NAME);
+
+        tooltip.setText(tooltip_text);
+
+        Label l = java_program_labels_list.get(method_count).get(line_number);
+
+        l.setTooltip(tooltip);
+    }
+    
+    private JSONArray getByteCodeTooltipDetails()
+    {
+        JSONArray bytecode_json_array = null;
+        
+        try
+        {                     
+            JSONParser parser = new JSONParser();            
+
+            Object obj = parser.parse(new InputStreamReader(getClass().getResourceAsStream(JSON_FILE_PATH)));
+
+            JSONObject jsonObject = (JSONObject) obj;            
+
+            bytecode_json_array = (JSONArray) jsonObject.get("bytecodes");
+            
         }
         
         catch(IOException | ParseException e)
@@ -173,6 +185,8 @@ public class UIAssemblyPane
             
             e.printStackTrace();
         }
+        
+        return bytecode_json_array;
     }
     
     private void setupTabs()
@@ -202,19 +216,7 @@ public class UIAssemblyPane
                 
 //        assembly_tabpane.getTabs().addAll(java_code_tab, hex_tab);
         assembly_tabpane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-    }
-        
-    
-    private void setupJavaCodeField()
-    {
-        String java_code = "*";        
-        
-        code_area = new TextArea();
-        code_area.setText(java_code);
-        code_area.setEditable(false);
-        code_area.setId(CSS_ASSEMBLY_ID);
-        
-    }
+    }            
         
 //    private void setupHex(ClassLoader input_file, Memory M)
 //    {

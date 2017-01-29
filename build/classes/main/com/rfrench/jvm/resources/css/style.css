@@ -4,7 +4,6 @@
     -fx-color : #FFF;
 }
 
-
 .button
 {
     -fx-background-color: #A4A6BF;
@@ -17,15 +16,15 @@
 
 #MEMORYPANE
 {
-    -fx-background-color: #999; 
+    -fx-background-color: #333; 
 }
 
 #FRAME
-{
-    
+{    
     -fx-border-color: black;
-    -fx-background-color: #398439; 
-    -fx-min-width: 450px;
+    -fx-text-fill: white;
+    -fx-background-color: #003333; 
+    -fx-min-width: 300px;
     -fx-min-height: 50px;
 }
 
@@ -37,43 +36,52 @@
 #STACK
 {    
     -fx-border-color: black;
-    -fx-background-color: #0093ff; 
+    -fx-text-fill: white;
+    -fx-background-color: #000033; 
     -fx-min-width: 300px;
     -fx-min-height: 50px;
 }
 
-.list-cell
+#STACK:hover
 {
-    -fx-background-color: #FFF; 
-    -fx-border-bottom : #FFF;
-    -fx-text-fill: red;
-   
+    -fx-background-color: #006699
 }
 
-.list-cell:filled:selected
+#ASSEMBLY .list-cell
 {
-    -fx-text-fill: red;
+    -fx-font-family: Consolas, monaco, monospace;
+    -fx-background-color: #444;         
 }
 
-.list-cell:filled:selected:focused, .list-cell:filled:selected 
+#ASSEMBLY .list-cell:filled:selected:focused, .list-cell:filled:selected 
 {
-    -fx-background-color: yellowgreen;
-     
+    -fx-background-color: grey;         
 }
 
-.list-cell:filled:hover {
+
+.list-cell:filled:hover 
+{
     -fx-background-color: #0093ff;
 }
 
-#ASSEMBLY
-{
-    -fx-font-family: Consolas, monaco, monospace;
-        
-}
-
-#REGISTER
+#REGISTER .label
 {
     -fx-font-family: Consolas, monaco, monospace;
     -fx-font-size : 32px;
     
+}
+
+#CONSTANT_POOL .list-cell
+{
+    -fx-background-color: #444; 
+}
+
+#BYTECODE_INFO .pane
+{
+    -fx-background-color: #555;
+}
+
+#BYTECODE_INFO .list-cell
+{
+    -fx-background-color: #555; 
 }

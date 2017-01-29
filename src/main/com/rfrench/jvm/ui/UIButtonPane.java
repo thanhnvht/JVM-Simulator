@@ -1,7 +1,6 @@
 
 package main.com.rfrench.jvm.ui;
 
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 
@@ -15,9 +14,12 @@ import javafx.scene.layout.VBox;
 public class UIButtonPane 
 {
     private VBox button_vbox;
+    
     private Button next_instruction_button;
     private Button reset_program_button;
     private Button open_file_button;
+    private Button run_program;
+    private Button pause_program;
     
     private final int BUTTON_WIDTH = 100;
     
@@ -30,11 +32,14 @@ public class UIButtonPane
         open_file_button = new Button("Open File");
         open_file_button.setMinWidth(BUTTON_WIDTH);
         
+        run_program = new Button("Run Program");
+        pause_program = new Button("Pause Program");
+        
                 
         //button_vbox = new VBox(10, next_instruction_button, reset_program_button, open_file_button);
-        button_vbox = new VBox(10, next_instruction_button);
-        button_vbox.setMinWidth(MainScene.WIDTH_TENTH * 3);
-        button_vbox.setMinHeight(MainScene.HEIGHT_TENTH * 3);
+        button_vbox = new VBox(10, next_instruction_button, run_program, pause_program);
+        button_vbox.setMinWidth(MainScene.WIDTH_TENTH * 30);
+        button_vbox.setMinHeight(MainScene.HEIGHT_TENTH * 30);
     }
            
     public VBox getButtonVBox()
@@ -52,8 +57,18 @@ public class UIButtonPane
         return next_instruction_button;
     }
     
+    public Button getPlayProgramButton()
+    {
+        return run_program;
+    }
+    
     public Button getResetProgramButton()
     {
         return reset_program_button;
+    }
+    
+    public Button getPauseProgramButton()
+    {
+        return pause_program;
     }
 }

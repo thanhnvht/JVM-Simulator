@@ -19,8 +19,6 @@ public class MainSceneController
 {
     private MainScene main_scene;
     
-    private int stack_pane_size;
-    
     private Stack button_presses_per_method;
     
     private int before_branch_button_press;
@@ -28,8 +26,6 @@ public class MainSceneController
     public MainSceneController(MainScene m)
     {                
         main_scene = m;
-        
-        stack_pane_size = 0;
         
         button_presses_per_method = new Stack();
         
@@ -73,61 +69,45 @@ public class MainSceneController
     public Stack getButtonStack()
     {
         return button_presses_per_method;
-    }
-    
-    public void removeAllStack()
-    {
-        for(int i = 0; i <= stack_pane_size; i++)
-        {
-            main_scene.getStack().pop(i);
-        }
-        
-        stack_pane_size = 0;
-    }
+    }    
     
     public void BIPUSH(String value)
     {
-        ++stack_pane_size;
-        main_scene.getStack().push(value, stack_pane_size); 
+        main_scene.getStack().push(value); 
     }
     
     public void ALOAD_0(String value)
     {
-        ++stack_pane_size;
-        main_scene.getStack().push(value, stack_pane_size);        
+        main_scene.getStack().push(value);   
+        
+        main_scene.getByteCodeInfoPane().addByteCodeInfo("Load a reference from Local Variable 0");
     }
     
     public void ICONST(String value)
     {
-        ++stack_pane_size;
-        main_scene.getStack().push(value, stack_pane_size); 
+        main_scene.getStack().push(value); 
     }
     
     public void ILOAD(int frame_index)
     {
-        ++stack_pane_size;
-        main_scene.getStack().push(main_scene.getFrame().getFrameName(frame_index), stack_pane_size); 
-        
+        main_scene.getStack().push(main_scene.getFrame().getFrameName(frame_index));         
     }
     
     public void IADD()
     {
-        String label_name = main_scene.getStack().getStackText(stack_pane_size);          
-        main_scene.getStack().pop(stack_pane_size);
-        --stack_pane_size;
         
-        label_name = main_scene.getStack().getStackText(stack_pane_size) + " + " + label_name;              
-        main_scene.getStack().pop(stack_pane_size);                              
-        --stack_pane_size;
+        String label_name = main_scene.getStack().getStackText();          
+        main_scene.getStack().pop();
         
-        ++stack_pane_size;
-        main_scene.getStack().push(label_name, stack_pane_size);
+        label_name = main_scene.getStack().getStackText() + " + " + label_name;              
+        main_scene.getStack().pop();                              
+
+        main_scene.getStack().push(label_name);
     }
     
     public void ISTORE(int current_method_count, int frame_index, String frame_value)
     {        
-        main_scene.getStack().pop(stack_pane_size);                     
-        --stack_pane_size;
+        main_scene.getStack().pop();                     
                 
         main_scene.getFrame().updateFrameLabel(current_method_count, frame_index, frame_value);
         
@@ -135,24 +115,21 @@ public class MainSceneController
     
     public void ISUB()
     {
-        String label_name = main_scene.getStack().getStackText(stack_pane_size);          
-        main_scene.getStack().pop(stack_pane_size);
-        --stack_pane_size;
+        String label_name = main_scene.getStack().getStackText();          
+        main_scene.getStack().pop();
         
-        label_name = main_scene.getStack().getStackText(stack_pane_size) + " - " + label_name;              
-        main_scene.getStack().pop(stack_pane_size);                              
-        --stack_pane_size;
-        
-        ++stack_pane_size;
-        main_scene.getStack().push(label_name, stack_pane_size);
+        label_name = main_scene.getStack().getStackText() + " - " + label_name;              
+        main_scene.getStack().pop();                              
+
+        main_scene.getStack().push(label_name);
     }
     
     public void IF_ICMPEQ()
     {
-        main_scene.getStack().pop(stack_pane_size);
-        --stack_pane_size;
-        main_scene.getStack().pop(stack_pane_size);
-        --stack_pane_size;        
+        main_scene.getStack().pop();
+
+        main_scene.getStack().pop();
+      
     }
     
     public void GOTO(int offset, ArrayList<String> Linenumbers, int current_method)
@@ -186,8 +163,7 @@ public class MainSceneController
     
     public void POP()
     {
-        main_scene.getStack().pop(stack_pane_size);
-        --stack_pane_size;   
+        main_scene.getStack().pop();
     }
     
     public void IINC(int current_method_count, int frame_index, String frame_value)
@@ -201,13 +177,12 @@ public class MainSceneController
         
         for(int i = 0; i < stack_size; i++)
         {
-            stack_text[i] = main_scene.getStack().getStackText(stack_pane_size);
+            stack_text[i] = main_scene.getStack().getStackText();
         }
    
         for(int i = 0; i < stack_size; i++)
         {
-            main_scene.getStack().pop(stack_pane_size);            
-            --stack_pane_size;            
+            main_scene.getStack().pop();                      
         }
         
         main_scene.getFrame().addFrameUI(stack_text, current_method, max_local_var);

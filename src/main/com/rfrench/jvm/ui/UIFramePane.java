@@ -54,7 +54,7 @@ public class UIFramePane
             f_label.setId(CSS_FRAME_ID);        
             f_label.setAlignment(Pos.CENTER);             
             f_label.setTranslateX(10);        
-            f_label.setTranslateY((-51 * number_of_frames) + (MainScene.HEIGHT_TENTH * 4));
+            f_label.setTranslateY((-51 * number_of_frames) + (MainScene.HEIGHT_TENTH * 37));
 
             Tooltip tool_tip = new Tooltip();
 

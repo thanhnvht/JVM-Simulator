@@ -16,8 +16,8 @@ import javafx.stage.Stage;
 
 public class Main extends Application
 {    
-    //public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/while_test_verbose.txt";   
-    public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/multiple_methods.txt";  
+    public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/while_test_verbose.txt";   
+    //public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/multiple_methods.txt";  
     
     public static final String JSON_FILE_PATH = "/main/com/rfrench/jvm/resources/json/bytecodes.json";
          
@@ -29,6 +29,7 @@ public class Main extends Application
     private MainSceneController main_scene_controller;
                                 
     @Override
+    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public void start(Stage primaryStage)
     {      
                      

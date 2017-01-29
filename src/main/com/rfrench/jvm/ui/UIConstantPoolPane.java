@@ -11,7 +11,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.Tooltip;
-import javafx.stage.Screen;
+import javafx.scene.paint.Color;
 import main.com.rfrench.jvm.java.MethodArea;
 
 /*
@@ -26,8 +26,9 @@ public class UIConstantPoolPane
     private TabPane memory_tabpane;
     private ListView constantpool_listview;
     private MethodArea method_area;    
+
+    private final String CSS_ASSEMBLY_ID = "CONSTANT_POOL";
     
-    Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
     
     public UIConstantPoolPane(MethodArea method_area)
     {
@@ -37,11 +38,13 @@ public class UIConstantPoolPane
         Tab cpp_memory = new Tab();
         cpp_memory.setText("Constant Pool");
         
+        memory_tabpane.setId(CSS_ASSEMBLY_ID);
+        
         addConstantPoolInfo();
                         
         cpp_memory.setContent(constantpool_listview);
-        memory_tabpane.setMinWidth(MainScene.WIDTH_TENTH * 3);
-        memory_tabpane.setMinHeight(MainScene.HEIGHT_TENTH * 2);
+        memory_tabpane.setMinWidth(MainScene.WIDTH_TENTH * 30);
+        memory_tabpane.setMinHeight(MainScene.HEIGHT_TENTH * 20);
         memory_tabpane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
                         
         Tooltip tool_tip = new Tooltip();
@@ -61,8 +64,9 @@ public class UIConstantPoolPane
         for(int i = 0; i < CONSTANT_POOL_SIZE; i++)
         {
             String method_ref = method_area.getConstantPool().get(i);
-            Label l = new Label(method_ref);
-            constantpool_listview.getItems().add(l);
+            Label constant_pool_label = new Label(method_ref);
+            constant_pool_label.setTextFill(Color.AZURE);
+            constantpool_listview.getItems().add(constant_pool_label);
         }
         
         
