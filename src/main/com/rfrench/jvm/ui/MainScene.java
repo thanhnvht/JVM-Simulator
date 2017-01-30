@@ -7,6 +7,8 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Screen;
+import javafx.stage.Stage;
+import main.com.rfrench.jvm.java.ExecutionEngine;
 
 /*
     Program Title: MainScene.java
@@ -24,7 +26,9 @@ public class MainScene
     
     private final String CSS_FILE_PATH = "/main/com/rfrench/jvm/resources/css/style.css";
           
-    private MethodArea method_area;
+    private Stage primary_stage;
+    
+    private MethodArea method_area;    
     
     private BorderPane main_pane;
     private GridPane grid_pane; 
@@ -35,12 +39,13 @@ public class MainScene
     private UIAssemblyPane assembly_code_pane;
     private UIFramePane local_frame_pane;
     private UIConstantPoolPane constant_pool_pane;           
-    private UIMenu m;
+    private UIMenu menu;
     private UIButtonPane button_pane;
     private UIByteCodeInfoPane bytecode_info_pane;
           
-    public MainScene(MethodArea method_area)
+    public MainScene(MethodArea method_area, Stage primary_stage)
     {        
+        this.primary_stage = primary_stage;
         this.method_area = method_area;
         
         main_pane = new BorderPane();       
@@ -55,6 +60,7 @@ public class MainScene
         addRegisterPane();
         addByteCodeInfoPane();
         addButtonPane();
+        addMenuBar();
 
         main_pane.setCenter(grid_pane);
 
@@ -124,6 +130,15 @@ public class MainScene
         grid_pane.add(button_pane.getButtonVBox(), 2, 2);
     }
     
+    private void addMenuBar()
+    {
+        menu = new UIMenu(primary_stage);
+        
+        main_pane.setTop(menu.getMenuBar());
+                
+    }
+    
+    
     public BorderPane getMainPane()
     {
         return main_pane;
@@ -162,5 +177,10 @@ public class MainScene
     public UIByteCodeInfoPane getByteCodeInfoPane()
     {
         return bytecode_info_pane;
+    }
+    
+    public UIMenu getMenu()
+    {
+        return menu;
     }
 }

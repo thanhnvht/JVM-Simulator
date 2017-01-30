@@ -38,14 +38,13 @@ public class Main extends Application
         
         MethodArea method_area = new MethodArea(class_loader); 
 
-        MainScene main_scene = new MainScene(method_area);                 
+        MainScene main_scene = new MainScene(method_area, primaryStage);                 
         
         MainSceneController main_scene_controller = new MainSceneController(main_scene);
                 
-        new ExecutionEngine(main_scene, main_scene_controller, method_area, primaryStage);                                       
+        ExecutionEngine execution_engine = new ExecutionEngine(main_scene, main_scene_controller, method_area, primaryStage);                                       
                 
-
-        StageController stage_controller = new StageController(primaryStage, main_scene);
+        StageController stage_controller = new StageController(primaryStage, main_scene, execution_engine);
         
 
     }

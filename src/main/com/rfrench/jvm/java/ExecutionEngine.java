@@ -61,10 +61,7 @@ public class ExecutionEngine
             executeInstruction();
         }); 
         
-        main_scene_controller.getMainScene().getButton().getResetProgramButton().setOnAction((ActionEvent event) -> 
-        {
-            resetProgram();
-        });                   
+                  
         
         main_scene_controller.getMainScene().getButton().getPlayProgramButton().setOnAction((ActionEvent event) ->
         {
@@ -92,14 +89,7 @@ public class ExecutionEngine
           pause_program = !pause_program;
         });
         
-        main_scene_controller.getMainScene().getButton().getChangeSceneButton().setOnAction((ActionEvent event) ->
-        {
-            Pane test_pane = new Pane();
-            Label test_label = new Label("Test");
-            test_pane.getChildren().add(test_label);
-            Scene scene = new Scene(test_pane, 800, 800);
-            primaryStage.setScene(scene);
-        });
+
     }
        
     /**

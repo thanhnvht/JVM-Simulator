@@ -31,7 +31,7 @@ public class MainSceneController
         
         button_presses_per_method.push(-1);
         
-        before_branch_button_press = -1;
+        before_branch_button_press = -1;        
     }
     
     public MainScene getMainScene()
