@@ -20,6 +20,7 @@ public class UIButtonPane
     private Button open_file_button;
     private Button run_program;
     private Button pause_program;
+    private Button change_scene;
     
     private final int BUTTON_WIDTH = 100;
     
@@ -34,10 +35,10 @@ public class UIButtonPane
         
         run_program = new Button("Run Program");
         pause_program = new Button("Pause Program");
-        
+        change_scene = new Button("Change Scene");
                 
         //button_vbox = new VBox(10, next_instruction_button, reset_program_button, open_file_button);
-        button_vbox = new VBox(10, next_instruction_button, run_program, pause_program);
+        button_vbox = new VBox(10, next_instruction_button, run_program, pause_program, change_scene);
         button_vbox.setMinWidth(MainScene.WIDTH_TENTH * 30);
         button_vbox.setMinHeight(MainScene.HEIGHT_TENTH * 30);
     }
@@ -70,5 +71,10 @@ public class UIButtonPane
     public Button getPauseProgramButton()
     {
         return pause_program;
+    }
+    
+    public Button getChangeSceneButton()
+    {
+        return change_scene;
     }
 }

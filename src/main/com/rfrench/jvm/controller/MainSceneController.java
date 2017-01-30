@@ -148,7 +148,7 @@ public class MainSceneController
             {
                 before_branch_button_press = (int)button_presses_per_method.pop() + 1;    
                 
-                button_presses_per_method.push(count - 1);                
+                button_presses_per_method.push(count);                
                 line_found = true;                
             }
             

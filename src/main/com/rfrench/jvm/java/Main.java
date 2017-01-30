@@ -1,11 +1,17 @@
 
 package main.com.rfrench.jvm.java;
 
+import javafx.animation.PauseTransition;
 import main.com.rfrench.jvm.controller.MainSceneController;
 import main.com.rfrench.jvm.ui.MainScene;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import main.com.rfrench.jvm.controller.StageController;
 
 /*
     Program Title: Main.java
@@ -19,43 +25,36 @@ public class Main extends Application
     public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/while_test_verbose.txt";   
     //public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/multiple_methods.txt";  
     
-    public static final String JSON_FILE_PATH = "/main/com/rfrench/jvm/resources/json/bytecodes.json";
-         
-    private MethodArea method_area;
-    private ClassLoader class_loader; 
-    private ExecutionEngine execution_engine;        
-         
-    private MainScene main_scene;
-    private MainSceneController main_scene_controller;
+    public static final String JSON_FILE_PATH = "/main/com/rfrench/jvm/resources/json/bytecodes.json";             
                                 
     @Override
     @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public void start(Stage primaryStage)
     {      
                      
-        class_loader = new ClassLoader(FILE_PATH);
-        
+        ClassLoader class_loader = new ClassLoader(FILE_PATH);
+                
         class_loader.readFile();
         
-        method_area = new MethodArea(class_loader); 
+        MethodArea method_area = new MethodArea(class_loader); 
 
-        main_scene = new MainScene(method_area, primaryStage);                 
+        MainScene main_scene = new MainScene(method_area);                 
         
-        main_scene_controller = new MainSceneController(main_scene);
+        MainSceneController main_scene_controller = new MainSceneController(main_scene);
                 
-        new ExecutionEngine(main_scene, main_scene_controller, method_area);                                       
-                        
-        Scene scene = new Scene(main_scene.getMainPane(), MainScene.WIDTH_TENTH*10, MainScene.HEIGHT_TENTH*10);
+        new ExecutionEngine(main_scene, main_scene_controller, method_area, primaryStage);                                       
+                
+
+        StageController stage_controller = new StageController(primaryStage, main_scene);
         
-        primaryStage.setMaximized(true);
-        primaryStage.setTitle("JVM Simulator");
-        primaryStage.setScene(scene);
-        primaryStage.show();                
+
     }
         
     public static void main(String[] args)
     {
         launch(args);
-    }       
+    }   
 
+    
+    
 }

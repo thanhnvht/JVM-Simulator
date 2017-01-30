@@ -2,11 +2,14 @@
 package main.com.rfrench.jvm.java;
 
 import main.com.rfrench.jvm.controller.MainSceneController;
-import java.util.ArrayList;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.event.ActionEvent;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.Pane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.com.rfrench.jvm.ui.MainScene;
 
@@ -24,8 +27,6 @@ public class ExecutionEngine
     private MainSceneController main_scene_controller;
     
     private MethodArea method_area;
-    
-    private ArrayList<Integer> current_method_opcodes;
             
     private int current_method_count = 0;
     
@@ -45,7 +46,7 @@ public class ExecutionEngine
      * @param main_scene_controller
      * @param method_area
      */
-    public ExecutionEngine(MainScene main_scene, MainSceneController main_scene_controller, MethodArea method_area) 
+    public ExecutionEngine(MainScene main_scene, MainSceneController main_scene_controller, MethodArea method_area, Stage primaryStage) 
     {                
         this.main_scene_controller = main_scene_controller;
         
@@ -89,6 +90,15 @@ public class ExecutionEngine
         main_scene_controller.getMainScene().getButton().getPauseProgramButton().setOnAction((ActionEvent event) ->
         {
           pause_program = !pause_program;
+        });
+        
+        main_scene_controller.getMainScene().getButton().getChangeSceneButton().setOnAction((ActionEvent event) ->
+        {
+            Pane test_pane = new Pane();
+            Label test_label = new Label("Test");
+            test_pane.getChildren().add(test_label);
+            Scene scene = new Scene(test_pane, 800, 800);
+            primaryStage.setScene(scene);
         });
     }
        

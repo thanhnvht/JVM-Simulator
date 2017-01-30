@@ -58,7 +58,7 @@ public class ClassLoader
     {          
         try
         {
-            FileUtils.cleanDirectory(new File(TEMP_FOLDER_FILE_PATH));
+            //FileUtils.cleanDirectory(new File(TEMP_FOLDER_FILE_PATH));
             
             JSONArray bytecode_json = createJSONParser();
             

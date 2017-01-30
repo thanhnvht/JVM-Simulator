@@ -7,7 +7,6 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Screen;
-import javafx.stage.Stage;
 
 /*
     Program Title: MainScene.java
@@ -40,7 +39,7 @@ public class MainScene
     private UIButtonPane button_pane;
     private UIByteCodeInfoPane bytecode_info_pane;
           
-    public MainScene(MethodArea method_area, Stage stage)
+    public MainScene(MethodArea method_area)
     {        
         this.method_area = method_area;
         
