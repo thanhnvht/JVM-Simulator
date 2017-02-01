@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.FlowPane?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@style_test.css" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.com.rfrench.jvm.controller.MainSceneController">
+   <children>
+      <TabPane fx:id="bytecode_pane" layoutY="69.0" prefHeight="1015.0" prefWidth="423.0" tabClosingPolicy="UNAVAILABLE" />
+      <FlowPane layoutX="424.0" layoutY="67.0" prefHeight="761.0" prefWidth="1074.0" />
+      <ScrollPane layoutX="1499.0" layoutY="78.0" prefHeight="669.0" prefWidth="420.0">
+         <content>
+            <FlowPane id="frame_pane" fx:id="local_variable_pane" prefHeight="667.0" prefWidth="287.0" />
+         </content>
+      </ScrollPane>
+      <ScrollPane layoutX="426.0" layoutY="748.0" prefHeight="332.0" prefWidth="1494.0">
+         <content>
+            <ListView prefHeight="324.0" prefWidth="1496.0" />
+         </content>
+      </ScrollPane>
+      <MenuBar layoutX="2.0" prefHeight="32.0" prefWidth="1922.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Close" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" text="Delete" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
+            <items>
+              <MenuItem mnemonicParsing="false" text="About" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <FlowPane layoutX="2.0" layoutY="31.0" prefHeight="32.0" prefWidth="1924.0">
+         <children>
+            <Button mnemonicParsing="false" text="Play" />
+            <Button mnemonicParsing="false" text="Pause" />
+            <Button mnemonicParsing="false" text="Next" />
+         </children>
+      </FlowPane>
+   </children>
+</AnchorPane>

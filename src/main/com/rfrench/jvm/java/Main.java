@@ -1,16 +1,10 @@
 
 package main.com.rfrench.jvm.java;
 
-import javafx.animation.PauseTransition;
 import main.com.rfrench.jvm.controller.MainSceneController;
 import main.com.rfrench.jvm.ui.MainScene;
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import main.com.rfrench.jvm.controller.StageController;
 
 /*

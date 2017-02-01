@@ -1,14 +1,19 @@
 
 package main.com.rfrench.jvm.ui;
 
+import java.io.IOException;
+import java.util.HashSet;
+import javafx.fxml.FXMLLoader;
 import main.com.rfrench.jvm.java.MethodArea;
 
 import javafx.geometry.Rectangle2D;
+import javafx.scene.Parent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import main.com.rfrench.jvm.java.ExecutionEngine;
+import main.com.rfrench.jvm.controller.TestFXMLController;
 
 /*
     Program Title: MainScene.java
@@ -42,29 +47,51 @@ public class MainScene
     private UIMenu menu;
     private UIButtonPane button_pane;
     private UIByteCodeInfoPane bytecode_info_pane;
+    
+    private AnchorPane root_pane;
           
     public MainScene(MethodArea method_area, Stage primary_stage)
     {        
-        this.primary_stage = primary_stage;
-        this.method_area = method_area;
-        
-        main_pane = new BorderPane();       
-        
-        grid_pane = new GridPane();
-        
-        addMemoryPane();
-        addFramePane();
-        addStackPane(); 
-        addAssemblyPane(); 
-        addConstantPoolPane();     
-        addRegisterPane();
-        addByteCodeInfoPane();
-        addButtonPane();
-        addMenuBar();
+        try
+        {
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(getClass().getResource("/main/com/rfrench/jvm/controller/TestFXML.fxml"));            
+            Parent content = loader.load();
+            TestFXMLController controller = loader.<TestFXMLController>getController();
+            
+            controller.setupBytecodeTab(method_area);
+            controller.setupLocalVariableFrame(method_area);
+            controller.setupBytecodeInfoPane();
+            
+            root_pane = (AnchorPane) content;
+            
+            this.primary_stage = primary_stage;
+            this.method_area = method_area;
 
-        main_pane.setCenter(grid_pane);
+            main_pane = new BorderPane();       
 
-        main_pane.getStylesheets().add(getClass().getResource(CSS_FILE_PATH).toString());
+            grid_pane = new GridPane();
+
+            addMemoryPane();
+            addFramePane();
+            addStackPane(); 
+            addAssemblyPane(); 
+            addConstantPoolPane();     
+            addRegisterPane();
+            addByteCodeInfoPane();
+            addButtonPane();
+            addMenuBar();
+
+            main_pane.setCenter(grid_pane);
+
+            main_pane.getStylesheets().add(getClass().getResource(CSS_FILE_PATH).toString());
+        }
+
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    
     }
     
     private void addMemoryPane()
@@ -182,5 +209,10 @@ public class MainScene
     public UIMenu getMenu()
     {
         return menu;
+    }
+    
+    public AnchorPane getRootPane()
+    {
+        return root_pane;
     }
 }

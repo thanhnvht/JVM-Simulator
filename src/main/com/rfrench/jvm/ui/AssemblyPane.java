@@ -1,11 +1,14 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package main.com.rfrench.jvm.ui;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
@@ -13,12 +16,12 @@ import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.paint.Color;
+import static main.com.rfrench.jvm.java.Main.JSON_FILE_PATH;
 import main.com.rfrench.jvm.java.MethodArea;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import static main.com.rfrench.jvm.java.Main.JSON_FILE_PATH;
 
 /*
     Program Title: UIAssemblyPane.java
@@ -27,9 +30,9 @@ import static main.com.rfrench.jvm.java.Main.JSON_FILE_PATH;
     Version: 1.0
 */
 
-public class UIAssemblyPane 
+public class AssemblyPane 
 {
-    
+        
     private final String CSS_ASSEMBLY_ID = "ASSEMBLY";
            
     private ArrayList<ArrayList<Label>> java_program_labels_list;    
@@ -40,9 +43,7 @@ public class UIAssemblyPane
     private ArrayList<ListView> java_program_listview_list;
     private ListView java_program_listview;
         
-    @FXML
     private TabPane bytecode_pane;
-    
     private ArrayList<Tab> bytecode_tab_list;
     private Tab bytecode_tab;
     
@@ -51,9 +52,9 @@ public class UIAssemblyPane
     private MethodArea method_area;
         
     
-    public UIAssemblyPane(MethodArea method_area)
+    public AssemblyPane(TabPane bytecode_pane, MethodArea method_area)
     {                          
-        
+        this.bytecode_pane = bytecode_pane;
         this.method_area = method_area;
         
         NUMBER_OF_METHODS = method_area.getNumberOfMethods();
@@ -72,8 +73,7 @@ public class UIAssemblyPane
         {
             java_program_listview = new ListView();
             java_program_listview.setMinWidth(MainScene.WIDTH_TENTH * 30);
-            java_program_listview.setMinHeight(MainScene.HEIGHT_TENTH * 70);
-            java_program_listview.setId(CSS_ASSEMBLY_ID);              
+            java_program_listview.setMinHeight(MainScene.HEIGHT_TENTH * 70);             
             java_program_listview_list.add(java_program_listview);
         }   
     }        
@@ -196,7 +196,7 @@ public class UIAssemblyPane
     private void setupTabs()
     {
                 
-        bytecode_pane = new TabPane();
+        //bytecode_pane = new TabPane();
         
         bytecode_tab_list = new ArrayList<Tab>();
         

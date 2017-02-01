@@ -1,11 +1,17 @@
 
 package main.com.rfrench.jvm.controller;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 import java.util.Stack;
+import javafx.fxml.Initializable;
+import javafx.fxml.*;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.layout.FlowPane;
 import main.com.rfrench.jvm.ui.MainScene;
 
 /*
@@ -15,7 +21,7 @@ import main.com.rfrench.jvm.ui.MainScene;
     Version: 1.0
 */
 
-public class MainSceneController 
+public class MainSceneController implements Initializable
 {
     private MainScene main_scene;
     
@@ -23,6 +29,17 @@ public class MainSceneController
     
     private int before_branch_button_press;
     
+    @FXML
+    private FlowPane local_variable_pane;
+    @FXML
+    private TabPane bytecode_pane;
+    
+    @Override
+    public void initialize(URL url, ResourceBundle rb) 
+    {
+                        
+    }  
+     
     public MainSceneController(MainScene m)
     {                
         main_scene = m;
@@ -32,6 +49,8 @@ public class MainSceneController
         button_presses_per_method.push(-1);
         
         before_branch_button_press = -1;        
+        
+
     }
     
     public MainScene getMainScene()
@@ -74,6 +93,8 @@ public class MainSceneController
     public void BIPUSH(String value)
     {
         main_scene.getStack().push(value); 
+        
+        main_scene.getByteCodeInfoPane().addByteCodeInfo("Pushing a value onto the operand stack");
     }
     
     public void ALOAD_0(String value)
@@ -86,11 +107,15 @@ public class MainSceneController
     public void ICONST(String value)
     {
         main_scene.getStack().push(value); 
+        
+        main_scene.getByteCodeInfoPane().addByteCodeInfo("Pushing a value onto stack");
     }
     
     public void ILOAD(int frame_index)
     {
         main_scene.getStack().push(main_scene.getFrame().getFrameName(frame_index));         
+        
+        main_scene.getByteCodeInfoPane().addByteCodeInfo("Loading a value from local variable frame");
     }
     
     public void IADD()
@@ -111,6 +136,8 @@ public class MainSceneController
                 
         main_scene.getFrame().updateFrameLabel(current_method_count, frame_index, frame_value);
         
+        main_scene.getByteCodeInfoPane().addByteCodeInfo("Storing a value from local variable frame");
+        
     }
     
     public void ISUB()
@@ -129,6 +156,8 @@ public class MainSceneController
         main_scene.getStack().pop();
 
         main_scene.getStack().pop();
+        
+        main_scene.getByteCodeInfoPane().addByteCodeInfo("Branch bytecode");
       
     }
     
@@ -159,6 +188,8 @@ public class MainSceneController
         
         current_listview.getSelectionModel().select(before_branch_button_press);     
         
+        main_scene.getByteCodeInfoPane().addByteCodeInfo("GOTO bytecode");
+        
     }
     
     public void POP()
@@ -169,6 +200,8 @@ public class MainSceneController
     public void IINC(int current_method_count, int frame_index, String frame_value)
     {        
         main_scene.getFrame().updateFrameLabel(current_method_count, frame_index, frame_value);
+        
+        main_scene.getByteCodeInfoPane().addByteCodeInfo("Incrementing a value in local variable frame");
     }
     
     public void INVOKESPECIAL(int stack_size, int current_method, int max_local_var)
@@ -186,6 +219,8 @@ public class MainSceneController
         }
         
         main_scene.getFrame().addFrameUI(stack_text, current_method, max_local_var);
+        
+        main_scene.getByteCodeInfoPane().addByteCodeInfo("Invoking Method");
  
     }
     
@@ -199,6 +234,8 @@ public class MainSceneController
 //        selection_model.select(current_method);
         
           main_scene.getFrame().removeFrameUI(current_method);
+          
+          main_scene.getByteCodeInfoPane().addByteCodeInfo("Returning from method");
       
     }
 }
