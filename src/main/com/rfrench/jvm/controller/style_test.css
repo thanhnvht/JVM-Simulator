@@ -11,12 +11,17 @@
 
 .list-cell
 {
-    -fx-background-color: #333;
+    -fx-background-color: #999;
+}
+
+.list-cell:filled:selected:focused, .list-cell:filled:selected 
+{
+    -fx-background-color: #222;
 }
 
 .button
 {
-    -fx-background-color: #449d44;
+
 }
 
 .scroll-pane
@@ -29,6 +34,15 @@
     -fx-border-color: black;
     -fx-text-fill: white;
     -fx-background-color: #003333; 
+    -fx-min-width: 300px;
+    -fx-min-height: 50px;
+}
+
+#STACK
+{
+    -fx-border-color: black;
+    -fx-text-fill: white;
+    -fx-background-color: #449d44; 
     -fx-min-width: 300px;
     -fx-min-height: 50px;
 }

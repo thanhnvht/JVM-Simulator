@@ -1,7 +1,30 @@
+/*
+    MIT License
+
+    Copyright (c) 2017 Ryan French
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+*/
+
 
 package main.com.rfrench.jvm.java;
 
-import main.com.rfrench.jvm.controller.MainSceneController;
 import main.com.rfrench.jvm.ui.MainScene;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -20,7 +43,9 @@ public class Main extends Application
     //public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/multiple_methods.txt";  
     
     public static final String JSON_FILE_PATH = "/main/com/rfrench/jvm/resources/json/bytecodes.json";             
-                                
+           
+    private ExecutionEngine execution_engine;
+    
     @Override
     @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public void start(Stage primaryStage)
@@ -33,21 +58,14 @@ public class Main extends Application
         MethodArea method_area = new MethodArea(class_loader); 
 
         MainScene main_scene = new MainScene(method_area, primaryStage);                 
-        
-        MainSceneController main_scene_controller = new MainSceneController(main_scene);
                 
-        ExecutionEngine execution_engine = new ExecutionEngine(main_scene, main_scene_controller, method_area, primaryStage);                                       
+        execution_engine = new ExecutionEngine(main_scene, method_area, primaryStage, main_scene.getFXMLController());                                       
                 
-        StageController stage_controller = new StageController(primaryStage, main_scene, execution_engine);
-        
-
+        StageController stage_controller = new StageController(primaryStage, main_scene);        
     }
         
     public static void main(String[] args)
     {
         launch(args);
-    }   
-
-    
-    
+    }          
 }

@@ -22,7 +22,7 @@ public class BytecodeInfoPane
     private void setupPane()
     {   
         bytecode_info_pane.setContent(bytecode_info_listview);        
-        bytecode_info_pane.setVvalue(1.0);
+        //bytecode_info_pane.setVvalue(1.0);
     }
     
     private void setupListView()

@@ -5,6 +5,7 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
@@ -12,12 +13,7 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" stylesheets="@style_test.css" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.com.rfrench.jvm.controller.TestFXMLController">
    <children>
-      <TabPane fx:id="bytecode_pane" layoutY="69.0" prefHeight="1015.0" prefWidth="423.0" tabClosingPolicy="UNAVAILABLE" />
-      <ScrollPane layoutX="1499.0" layoutY="78.0" prefHeight="669.0" prefWidth="420.0">
-         <content>
-            <FlowPane id="frame_pane" fx:id="local_variable_pane" prefHeight="667.0" prefWidth="287.0" />
-         </content>
-      </ScrollPane>
+      <TabPane fx:id="bytecode_pane" layoutY="128.0" prefHeight="956.0" prefWidth="423.0" tabClosingPolicy="UNAVAILABLE" />
       <ScrollPane fx:id="bytecode_info_pane" layoutX="426.0" layoutY="748.0" prefHeight="332.0" prefWidth="1494.0" />
       <MenuBar layoutX="2.0" prefHeight="32.0" prefWidth="1922.0">
         <menus>
@@ -40,11 +36,26 @@
       </MenuBar>
       <FlowPane layoutX="2.0" layoutY="31.0" prefHeight="32.0" prefWidth="1924.0">
          <children>
-            <Button mnemonicParsing="false" text="Play" />
-            <Button mnemonicParsing="false" text="Pause" />
-            <Button mnemonicParsing="false" text="Next" />
+            <Button fx:id="play_button" mnemonicParsing="false" onAction="#playButton" prefHeight="80.0" prefWidth="90.0" />
+            <Button mnemonicParsing="false" prefHeight="79.0" prefWidth="89.0" text="Pause" />
+            <Button fx:id="next_button" mnemonicParsing="false" onAction="#nextButton" prefHeight="80.0" prefWidth="90.0" />
          </children>
       </FlowPane>
-      <Pane fx:id="local_variable_pane" layoutX="456.0" layoutY="80.0" prefHeight="669.0" prefWidth="1041.0" />
+      <Pane fx:id="local_variable_pane" layoutX="456.0" layoutY="80.0" prefHeight="669.0" prefWidth="536.0" />
+      <Pane fx:id="operand_stack_pane" layoutX="996.0" layoutY="79.0" prefHeight="669.0" prefWidth="503.0" />
+      <TabPane layoutX="1532.0" layoutY="113.0" prefHeight="637.0" prefWidth="253.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Java Code">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+          <Tab text="Constant Pool">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
    </children>
 </AnchorPane>
