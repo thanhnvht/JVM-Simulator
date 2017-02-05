@@ -5,7 +5,6 @@
  */
 package main.com.rfrench.jvm.ui;
 
-import javafx.geometry.Rectangle2D;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
@@ -67,10 +66,7 @@ public class UIConstantPoolPane
             Label constant_pool_label = new Label(method_ref);
             constant_pool_label.setTextFill(Color.AZURE);
             constantpool_listview.getItems().add(constant_pool_label);
-        }
-        
-        
-        
+        }                        
     }
     
     public TabPane getTabPane()

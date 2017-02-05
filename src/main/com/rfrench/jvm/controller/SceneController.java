@@ -34,6 +34,7 @@ import javafx.animation.Timeline;
 import javafx.fxml.Initializable;
 import javafx.fxml.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SingleSelectionModel;
@@ -41,6 +42,7 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 import main.com.rfrench.jvm.java.ExecutionEngine;
 import main.com.rfrench.jvm.java.MethodArea;
@@ -51,13 +53,13 @@ import main.com.rfrench.jvm.ui.MainScene;
 import main.com.rfrench.jvm.ui.OperandStackPane;
 
 /*
-    Program Title: TestFXMLController.java
+    Program Title: SceneController.java
     Author: Ryan French
     Created: 03-Feb-2016
     Version: 1.0
 */
 
-public class TestFXMLController implements Initializable {
+public class SceneController implements Initializable {
 
     @FXML
     private Pane local_variable_pane;    
@@ -73,6 +75,8 @@ public class TestFXMLController implements Initializable {
     private Button pause_button;
     @FXML
     private Pane operand_stack_pane;
+    @FXML
+    private ListView constant_pool_listview;
     
     private MainScene main_scene;
     private AssemblyPane assembly_pane;
@@ -86,7 +90,7 @@ public class TestFXMLController implements Initializable {
     
     private int before_branch_button_press;
 
-    public TestFXMLController()
+    public SceneController()
     {
         button_presses_per_method = new Stack();
         
@@ -95,17 +99,26 @@ public class TestFXMLController implements Initializable {
         before_branch_button_press = -1;     
     }
     
-    /**
-     * Initializes the controller class.
-     */
+
     @Override
     public void initialize(URL url, ResourceBundle rb) 
     {
         next_button.setGraphic(new ImageView("/main/com/rfrench/jvm/resources/images/forward-button.png"));
         play_button.setGraphic(new ImageView("/main/com/rfrench/jvm/resources/images/play-button.png"));
-        pause_button.setGraphic(new ImageView("/main/com/rfrench/jvm/resources/images/pause-button.png"));
-                              
+        pause_button.setGraphic(new ImageView("/main/com/rfrench/jvm/resources/images/pause-button.png"));                              
     }    
+    
+    public void addConstantPoolData(MethodArea method_area)
+    {        
+        final int CONSTANT_POOL_SIZE = method_area.getConstantPool().size();
+        
+        for(int i = 0; i < CONSTANT_POOL_SIZE; i++)
+        {
+            String method_ref = method_area.getConstantPool().get(i);
+            Label constant_pool_label = new Label(method_ref);
+            constant_pool_listview.getItems().add(constant_pool_label);
+        }                        
+    }        
     
     public void setupBytecodeTab(MethodArea method_area)
     {
@@ -153,24 +166,24 @@ public class TestFXMLController implements Initializable {
     
     public void playButton()
     {
-//        boolean is_paused = execution_engine.isBranch()
-//        
-        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1),
-                eve -> 
-                {
-//                    if(!pause_program)
-//                    {
-//                        if(!program_done)
-                            execution_engine.executeInstruction();
-//                    }                                           
-                }   
-                    
-                ));
-            
-                             
-                timeline.setCycleCount(Animation.INDEFINITE);                
-                timeline.play();           
-                                     
+        final float REPEAT_TIME = 1.5f;
+        
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(REPEAT_TIME),eve -> 
+        {
+            if(!execution_engine.isPaused())
+            {
+                if(!execution_engine.isProgramComplete())
+                    execution_engine.executeInstruction();
+            }                                           
+        }));
+                                        
+        timeline.setCycleCount(Animation.INDEFINITE);                
+        timeline.play();                                                
+    }
+    
+    public void pauseButton()
+    {
+        execution_engine.changePause();
     }
     
     public void setMainScene(MainScene main_scene)
@@ -188,9 +201,8 @@ public class TestFXMLController implements Initializable {
     public void hightlightLine(int current_method, int button_press_count)
     {
         ListView current_listview = assembly_pane.getCurrentListView(current_method);
-  
-        
-        current_listview.getSelectionModel().select(button_press_count);                
+          
+        current_listview.getSelectionModel().select(button_press_count);           
     }
     
     

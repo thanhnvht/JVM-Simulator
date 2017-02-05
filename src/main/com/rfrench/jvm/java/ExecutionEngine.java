@@ -25,7 +25,7 @@
 package main.com.rfrench.jvm.java;
 
 import javafx.stage.Stage;
-import main.com.rfrench.jvm.controller.TestFXMLController;
+import main.com.rfrench.jvm.controller.SceneController;
 import main.com.rfrench.jvm.ui.MainScene;
 
 /*
@@ -37,11 +37,7 @@ import main.com.rfrench.jvm.ui.MainScene;
 
 public class ExecutionEngine   
 {
-    private final int HEX = 16;
-    
-    private TestFXMLController main_controller;
-    
-    
+    private SceneController scene_controller;        
     private MethodArea method_area;
             
     private int current_method_count = 0;
@@ -53,15 +49,13 @@ public class ExecutionEngine
     private boolean method_return;
     private boolean move_tab;
     
-    private boolean program_done = false;
+    private boolean program_complete = false;
     private boolean pause_program = false;
                       
 
-    public ExecutionEngine(MainScene main_scene, MethodArea method_area, Stage primaryStage, TestFXMLController main_controller) 
+    public ExecutionEngine(MainScene main_scene, MethodArea method_area, Stage primaryStage, SceneController scene_controller) 
     {                
-        this.main_controller = main_controller;
-        
-        
+        this.scene_controller = scene_controller;                
         this.method_area = method_area;       
                 
         move_tab = false;
@@ -69,47 +63,9 @@ public class ExecutionEngine
         PC = 0;      
         
         main_scene.getFXMLController().setExecutionEngine(this);
-                                       
-//        main_scene_controller.getMainScene().getButton().getNextInstructionButton().setOnAction((ActionEvent event) -> 
-//        {
-//            executeInstruction();
-//        }); 
-//        
-//                  
-//        
-//        main_scene_controller.getMainScene().getButton().getPlayProgramButton().setOnAction((ActionEvent event) ->
-//        {
-//
-//            Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(1),
-//                eve -> 
-//                {
-//                    if(!pause_program)
-//                    {
-//                        if(!program_done)
-//                            main_scene_controller.getMainScene().getButton().getNextInstructionButton().fire();
-//                    }                                           
-//                }   
-//                    
-//                ));
-//            
-//                             
-//                timeline.setCycleCount(Animation.INDEFINITE);                
-//                timeline.play();           
-//                                                     
-//        });
-//        
-//        main_scene_controller.getMainScene().getButton().getPauseProgramButton().setOnAction((ActionEvent event) ->
-//        {
-//          pause_program = !pause_program;
-//        });
-        
-
     }
        
-    /**
-     * Read next bytecode in memory
-     * Execute instruction based on what has been read
-     */
+    
     public void executeInstruction()
     {
         Method m = method_area.getMethod(current_method_count);
@@ -178,36 +134,25 @@ public class ExecutionEngine
 
         else
         {             
-            main_controller.hightlightLine(current_method_count, PC);
+            scene_controller.hightlightLine(current_method_count, PC);
 //            main_controller.updateRegisterLabels(PC); 
             System.out.println("Program Done!!");
-            program_done = true;
+            program_complete = true;
         }       
     }
     
-    /**
-     * Reset Program
-     * - Resets Registers
-     * - Resets GUI
-     * - Memory Reloaded
-     * 
-     */
+
     public void resetProgram()
     {     
-        PC = 0;      
-//                        
-//        main_controller.getMainScene().getAssembly().highlightLine(-1);                   
-//             
-//        main_controller.updateRegisterLabels(PC);
-//        main_controller.getMainScene().getAssembly().getListView().getSelectionModel().select(0);                
+             
     }
       
     private void highlightLine()
     {
-        // Ensure method invokation changes tab on next button press
+        // Ensures method invokation changes tab on next button press
         if(move_tab) 
         {                        
-            main_controller.changeTab(current_method_count);  
+            scene_controller.changeTab(current_method_count);  
             
             move_tab = false;
         }
@@ -216,13 +161,13 @@ public class ExecutionEngine
         {
             int previous_method_count = current_method_count - 1;
 
-            int button_press_count = (int) main_controller.getButtonStack().pop();            
+            int button_press_count = (int) scene_controller.getButtonStack().pop();            
 
             button_press_count++;          
             
-            main_controller.getButtonStack().push(button_press_count);            
-            main_controller.hightlightLine(previous_method_count, button_press_count);            
-            main_controller.getButtonStack().push(-1);
+            scene_controller.getButtonStack().push(button_press_count);            
+            scene_controller.hightlightLine(previous_method_count, button_press_count);            
+            scene_controller.getButtonStack().push(-1);
             
             move_tab = true;
         }
@@ -235,21 +180,21 @@ public class ExecutionEngine
             
             int previous_method_count = current_method_count + 1;
             
-            button_press_count = (int) main_controller.getButtonStack().pop();            
+            button_press_count = (int) scene_controller.getButtonStack().pop();            
 
             button_press_count++;          
             
-            main_controller.getButtonStack().push(button_press_count);
-            main_controller.getButtonStack().push(button_press_count);            
-            main_controller.hightlightLine(previous_method_count, button_press_count);                       
-            main_controller.getButtonStack().pop();
+            scene_controller.getButtonStack().push(button_press_count);
+            scene_controller.getButtonStack().push(button_press_count);            
+            scene_controller.hightlightLine(previous_method_count, button_press_count);                       
+            scene_controller.getButtonStack().pop();
             
             if(current_method_count > 0)
-            {   button_press_count = (int) main_controller.getButtonStack().pop();
+            {   button_press_count = (int) scene_controller.getButtonStack().pop();
                 //button_press_count = (int) main_scene_controller.getButtonStack().pop();   
                 button_press_count++;   
                 //main_scene_controller.getButtonStack().push(button_press_count); 
-                main_controller.getButtonStack().push(button_press_count);
+                scene_controller.getButtonStack().push(button_press_count);
                 
                 System.out.println("current_method: " + current_method_count);
                 System.out.println("button_press: " + button_press_count);
@@ -260,17 +205,15 @@ public class ExecutionEngine
 
         else if(!branched)
         {            
-            int button_press = (int) main_controller.getButtonStack().pop();
-            //int button_press = (int) main_scene_controller.getButtonStack().pop();
+            int button_press = (int) scene_controller.getButtonStack().pop();
             
             button_press++;
-
-            //main_scene_controller.getButtonStack().push(button_press);   
-            main_controller.getButtonStack().push(button_press);
+  
+            scene_controller.getButtonStack().push(button_press);
             
-            int button_press_count = (int) main_controller.getButtonStack().peek();
+            int button_press_count = (int) scene_controller.getButtonStack().peek();
                     
-           main_controller.hightlightLine(current_method_count, button_press_count);
+            scene_controller.hightlightLine(current_method_count, button_press_count);
         }
     }
     
@@ -284,7 +227,7 @@ public class ExecutionEngine
         {
             method_area.pushOperandStack(value);
 
-            main_controller.ICONST(Integer.toString(value));
+            scene_controller.ICONST(Integer.toString(value));
         }
         
         else
@@ -306,7 +249,7 @@ public class ExecutionEngine
                      
         method_area.pushOperandStack(value);
                          
-        main_controller.BIPUSH(Integer.toString(value));
+        scene_controller.BIPUSH(Integer.toString(value));
     }
     
     /**
@@ -326,7 +269,7 @@ public class ExecutionEngine
         
         PC = offset;
         
-        main_controller.GOTO(offset, m.getMethodLineNumbers(), current_method_count);
+        scene_controller.GOTO(offset, m.getMethodLineNumbers(), current_method_count);
         
         branched = true;
     }
@@ -343,7 +286,7 @@ public class ExecutionEngine
         
         method_area.pushOperandStack(add_result);
                              
-        main_controller.IADD();
+        scene_controller.IADD();
     }
 
     private void IAND()
@@ -376,7 +319,7 @@ public class ExecutionEngine
         
         method_area.pushOperandStack(value);
         
-        main_controller.ILOAD(frame_index);
+        scene_controller.ILOAD(frame_index);
     }
     
     private void IOR() 
@@ -398,7 +341,7 @@ public class ExecutionEngine
          
         m.setLocalVariable(frame_index, value);
  
-        main_controller.ISTORE(current_method_count, frame_index, value);
+        scene_controller.ISTORE(current_method_count, frame_index, value);
     }
     
     private void ISUB() 
@@ -410,7 +353,7 @@ public class ExecutionEngine
         
         method_area.pushCallStack(sub_value);
         
-        main_controller.ISUB();
+        scene_controller.ISUB();
     }
 
     private void LDC_W()
@@ -423,7 +366,7 @@ public class ExecutionEngine
     {
         method_area.popCallStack();
         
-        main_controller.POP();
+        scene_controller.POP();
     }
     
     private void SWAP()
@@ -482,7 +425,7 @@ public class ExecutionEngine
         
         m.setLocalVariable(frame_index, value);
                         
-        main_controller.IINC(current_method_count, frame_index, value);
+        scene_controller.IINC(current_method_count, frame_index, value);
     }
     
     private void INVOKEVIRTUAL()
@@ -521,10 +464,10 @@ public class ExecutionEngine
         {
             PC = offset - 1;                    
             branched = true;            
-            main_controller.GOTO(offset, m.getMethodLineNumbers(), current_method_count);
+            scene_controller.GOTO(offset, m.getMethodLineNumbers(), current_method_count);
         }
         
-        main_controller.IF_ICMPEQ();
+        scene_controller.IF_ICMPEQ();
     }
     
     private void IF_ICMPNE()
@@ -549,7 +492,7 @@ public class ExecutionEngine
             PC = method_area.popCallStack();
         }
                 
-        main_controller.RETURN(current_method_count);
+        scene_controller.RETURN(current_method_count);
                         
         method_return = true;                
                       
@@ -559,7 +502,7 @@ public class ExecutionEngine
     {                
         String reference = method_area.getMethod(current_method_count).getLocalVariable(0);        
         method_area.pushOperandStack(0); //have put 0 for now. will hav to change to address of reference
-        main_controller.ALOAD_0(reference);
+        scene_controller.ALOAD_0(reference);
     }
     
     private void INVOKESPECIAL()
@@ -579,8 +522,6 @@ public class ExecutionEngine
         //JVM Specifcation states Constant Pool start index is 1 rather than 0, hence -1 to value
         int value = (first_operand + second_operand) - 1; 
         
-        //System.out.println("sym ref: " + symbolic_reference);
-        
         current_method_count++;
         
         Method new_method = method_area.getMethod(current_method_count);
@@ -598,7 +539,7 @@ public class ExecutionEngine
         
         int max_local_var = new_method.getLocalSize();
 
-        main_controller.INVOKESPECIAL(current_stack_size, current_method_count, max_local_var);
+        scene_controller.INVOKESPECIAL(current_stack_size, current_method_count, max_local_var);
         
         method_area.pushCallStack(PC);
         
@@ -625,5 +566,15 @@ public class ExecutionEngine
     public boolean isPaused()
     {
         return pause_program;
+    }
+    
+    public void changePause()
+    {
+        pause_program = !pause_program;
+    }
+    
+    public boolean isProgramComplete()
+    {
+        return program_complete;
     }
 }
