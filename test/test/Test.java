@@ -1,7 +1,7 @@
 
 package test;
 
-import main.com.rfrench.jvm.java.ClassLoader;
+import main.com.rfrench.jvm.java.JVMClassLoader;
 
 public class Test {
     
@@ -11,7 +11,7 @@ public class Test {
         String FILE_PATH = "/main/resources/javap/multiple_methods.txt";
         //String FILE_PATH = "/main/resources/javap/object_test.txt";   
                 
-        ClassLoader A = new ClassLoader(FILE_PATH);
+        JVMClassLoader A = new JVMClassLoader(FILE_PATH);
                    
   
 

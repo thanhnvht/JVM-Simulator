@@ -44,14 +44,33 @@ public class MethodArea
     
     private Stack operand_stack;
     
-    private final int NUMBER_OF_METHODS;
+    private int NUMBER_OF_METHODS;
     
     private HashMap bytecode_details_map;
     
     private Stack call_stack;
+    
+    private boolean hasMethods;
 
-                    
-    public MethodArea(ClassLoader class_loader)
+       
+    public MethodArea()
+    {
+        operand_stack = new Stack();
+        
+        call_stack = new Stack();  
+        
+        constant_pool = new ArrayList<String>();
+        
+        methods = new ArrayList<Method>();
+        
+        NUMBER_OF_METHODS = 0;
+        
+        bytecode_details_map = new HashMap(); 
+        
+        hasMethods = false;
+    }
+    
+    public MethodArea(JVMClassLoader class_loader)
     {     
         operand_stack = new Stack();
         
@@ -64,7 +83,26 @@ public class MethodArea
         NUMBER_OF_METHODS = methods.size();
         
         bytecode_details_map = class_loader.getByteCodeDetails();
+        
+        hasMethods = true;
     }                        
+    
+    public void setupMethodArea(JVMClassLoader class_loader)
+    {
+        operand_stack = new Stack();
+        
+        call_stack = new Stack();   
+                        
+        constant_pool = class_loader.getConstantPoolData();
+        
+        methods = class_loader.getMethods();
+        
+        NUMBER_OF_METHODS = methods.size();
+        
+        bytecode_details_map = class_loader.getByteCodeDetails();
+        
+        hasMethods = true;
+    }
     
     public ArrayList<String> getConstantPool()
     {
@@ -90,7 +128,11 @@ public class MethodArea
     
     public Method getMethod(int index)
     {
-        return methods.get(index);
+        Method M;
+
+        M = methods.get(index);
+                
+        return M;
     }
     
     public int getNumberOfMethods()
@@ -113,6 +155,11 @@ public class MethodArea
     public HashMap getBytecodeDetails()
     {
         return bytecode_details_map;
+    }
+    
+    public boolean hasMethods()
+    {
+        return hasMethods;
     }
     
 }

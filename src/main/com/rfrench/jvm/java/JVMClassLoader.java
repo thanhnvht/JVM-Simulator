@@ -25,6 +25,7 @@
 package main.com.rfrench.jvm.java;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,20 +33,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 import static main.com.rfrench.jvm.java.Main.JSON_FILE_PATH;
-import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /*
-    Program Title: ClassLoader.java
+    Program Title: JVMClassLoader.java
     Author: Ryan French
     Created: 19-Oct-2016
     Version: 1.0
 */
 
-public class ClassLoader
+public class JVMClassLoader
 {    
        
     private int NUMBER_OF_METHODS;
@@ -54,25 +54,30 @@ public class ClassLoader
           
     private JSONArray bytecode_json_array;
     
-    private ArrayList<Method> methods;
-    
+    private ArrayList<Method> methods;    
     private ArrayList<String> constant_pool_data;    
     
-    private final String FILE_PATH;
-    
+    private String FILE_PATH;    
     private final String TEMP_FOLDER_FILE_PATH;
-        
+       
+    public JVMClassLoader()
+    {
+        TEMP_FOLDER_FILE_PATH = new File("src/main/com/rfrench/jvm/resources/temp/").getAbsolutePath();
+    }
+    
     /**
      * JVMFileReader Constructor
      * @param FILE_PATH
     */
-    public ClassLoader(String FILE_PATH)
+    public JVMClassLoader(String FILE_PATH)
     {          
         this.FILE_PATH = FILE_PATH;
 
         TEMP_FOLDER_FILE_PATH = new File("src/main/com/rfrench/jvm/resources/temp/").getAbsolutePath();
     }
-                                  
+          
+
+    
     /**
      * Read a javap file. Retrieve relevant data and put into 
      * helper data structures to then be used later in program
@@ -81,20 +86,14 @@ public class ClassLoader
     {          
         try
         {
-            //FileUtils.cleanDirectory(new File(TEMP_FOLDER_FILE_PATH));
-            
-            JSONArray bytecode_json = createJSONParser();
-            
-            createByteCodeDetailsHashMap(bytecode_json);                
-            
+            JSONArray bytecode_json = createJSONParser();           
+            createByteCodeDetailsHashMap(bytecode_json);                            
             extractNumberOfMethods();
                                     
             methods = new ArrayList<Method>();
             
-            ArrayList<String> method_names_list = findMethodNames();
-            
-            ArrayList<String> method_access_type_list = findMethodAccess();
-            
+            ArrayList<String> method_names_list = findMethodNames();            
+            ArrayList<String> method_access_type_list = findMethodAccess();            
             ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);                        
             
             addConstantPoolMethodReferences(method_names_list);
@@ -106,10 +105,8 @@ public class ClassLoader
             
             for(int i = 0; i < NUMBER_OF_METHODS; i++)
             {
-                ArrayList<String> method_code = parseMethodCode(i);                                
-                                
-                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, i);                               
-                              
+                ArrayList<String> method_code = parseMethodCode(i);                                                                
+                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, i);                                                             
                 methods.add(m);
             }
         }
@@ -120,12 +117,50 @@ public class ClassLoader
         }
     }       
        
+    
+    public void readFile(String file_path)
+    {
+        try
+        {
+            this.FILE_PATH = file_path;
+            
+            JSONArray bytecode_json = createJSONParser();           
+            createByteCodeDetailsHashMap(bytecode_json);                            
+            extractNumberOfMethods();
+                                    
+            methods = new ArrayList<Method>();
+            
+            ArrayList<String> method_names_list = findMethodNames();            
+            ArrayList<String> method_access_type_list = findMethodAccess();            
+            ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);                        
+            
+            addConstantPoolMethodReferences(method_names_list);
+            
+            for(int i = 0; i < NUMBER_OF_METHODS; i++)
+            {
+                writeMethodDetailsJSON("/method_" + i + ".json", method_names_list.get(i), method_access_type_list.get(i), is_method_instance_list.get(i));
+            }
+
+            for(int i = 0; i < NUMBER_OF_METHODS; i++)
+            {
+                ArrayList<String> method_code = parseMethodCode(i);                                                                
+                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, i);                                                             
+                methods.add(m);
+            }
+        }
+        
+        catch(IOException | ParseException e)
+        {
+            e.printStackTrace();
+        }
+    }
+        
+    
+    
     private JSONArray createJSONParser() throws IOException, ParseException
     {                        
-        JSONParser parser = new JSONParser();
-            
+        JSONParser parser = new JSONParser();            
         Object obj = parser.parse(new InputStreamReader(getClass().getResourceAsStream(JSON_FILE_PATH)));
-
         JSONObject jsonObject = (JSONObject) obj;
             
         bytecode_json_array = (JSONArray) jsonObject.get("bytecodes");
@@ -159,8 +194,7 @@ public class ClassLoader
            
     private void createByteCodeDetailsHashMap(JSONArray bytecode_json)
     {
-        final int MAX_BYTECODES = 255;
-        
+        final int MAX_BYTECODES = 255;        
         final String ATTRIBUTE = "Name"; //Name of Attribute
         
         bytecode_details_map = new HashMap(MAX_BYTECODES);                      
@@ -188,9 +222,10 @@ public class ClassLoader
         }
     }        
     
-    private String findFQN()
+    private String findFQN() throws FileNotFoundException
     {
-        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        //Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        Scanner sc = new Scanner(new File(FILE_PATH));
         
         String first_keyword = "public";
         String second_keyword = "class";
@@ -199,7 +234,7 @@ public class ClassLoader
         
         boolean FQN_found = false;
                         
-        while(sc.hasNext() || !FQN_found)
+        while(sc.hasNext() && !FQN_found)
         {
             String word = sc.next();
             
@@ -218,7 +253,7 @@ public class ClassLoader
         return FQN;
     }
     
-    private ArrayList<Boolean> checkInstanceMethod(ArrayList<String> method_names)
+    private ArrayList<Boolean> checkInstanceMethod(ArrayList<String> method_names) throws FileNotFoundException
     {
         ArrayList<Boolean> is_instance_method = new ArrayList<Boolean>();
         
@@ -241,9 +276,10 @@ public class ClassLoader
         return is_instance_method;
     }
     
-    private ArrayList<String> findMethodNames()
+    private ArrayList<String> findMethodNames() throws FileNotFoundException
     {
-        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        //Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        Scanner sc = new Scanner(new File(FILE_PATH));
         
         ArrayList<String> method_names = new ArrayList<String>();
         
@@ -289,9 +325,10 @@ public class ClassLoader
         return method_names;
     }
     
-    private ArrayList<String> findMethodAccess()
+    private ArrayList<String> findMethodAccess() throws FileNotFoundException
     {
-        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        //Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        Scanner sc = new Scanner(new File(FILE_PATH));
         
         ArrayList<String> method_flags = new ArrayList<String>();
         
@@ -334,9 +371,10 @@ public class ClassLoader
      * @param occurences occurences of 'Code:' before begin extract
      * @return method_details ArrayList<String> Containing method data
      */
-    private ArrayList<String> parseMethodCode(int occurences)
+    private ArrayList<String> parseMethodCode(int occurences) throws FileNotFoundException
     {
-        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        //Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        Scanner sc = new Scanner(new File(FILE_PATH));
         
         ArrayList<String> method_code = new ArrayList<String>();
         
@@ -376,23 +414,27 @@ public class ClassLoader
         return method_code;
     }
     
-    private void extractNumberOfMethods()
+    private void extractNumberOfMethods() throws FileNotFoundException
     {
-        Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        //Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
+        Scanner sc = new Scanner(new File(FILE_PATH));
         
         int method_count = 0;
-                              
+
         while(sc.hasNext())
         {
             String word = sc.next();
-            
+
             if(word.equals("Code:"))
             {
                 method_count++;
             }            
         }                
 
-        NUMBER_OF_METHODS = method_count;        
+        NUMBER_OF_METHODS = method_count;       
+
+        System.out.println("number of methods: " + NUMBER_OF_METHODS);
+        
     }
        
     public int getNumberOfMethods()

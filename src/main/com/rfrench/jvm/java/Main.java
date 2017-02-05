@@ -51,13 +51,17 @@ public class Main extends Application
     public void start(Stage primaryStage)
     {      
                      
-        ClassLoader class_loader = new ClassLoader(FILE_PATH);
+        //JVMClassLoader class_loader = new JVMClassLoader(FILE_PATH);
                 
-        class_loader.readFile();
+        JVMClassLoader class_loader = new JVMClassLoader();
         
-        MethodArea method_area = new MethodArea(class_loader); 
+        //class_loader.readFile();
+        
+        MethodArea method_area = new MethodArea(); 
+        
+        //MethodArea method_area = new MethodArea(class_loader); 
 
-        MainScene main_scene = new MainScene(method_area, primaryStage);                 
+        MainScene main_scene = new MainScene(method_area, primaryStage, class_loader);                 
                 
         execution_engine = new ExecutionEngine(main_scene, method_area, primaryStage, main_scene.getFXMLController());                                       
                 

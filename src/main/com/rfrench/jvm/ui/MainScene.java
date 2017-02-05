@@ -34,6 +34,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import main.com.rfrench.jvm.controller.SceneController;
+import main.com.rfrench.jvm.java.JVMClassLoader;
 
 /*
     Program Title: MainScene.java
@@ -53,7 +54,7 @@ public class MainScene
     
     private AnchorPane root_pane;
           
-    public MainScene(MethodArea method_area, Stage primary_stage)
+    public MainScene(MethodArea method_area, Stage primary_stage, JVMClassLoader class_loader)
     {        
         try
         {
@@ -63,11 +64,15 @@ public class MainScene
             controller = loader.<SceneController>getController();            
             
             controller.setMainScene(this);
+            controller.setClassLoader(class_loader);
+            controller.setMethodArea(method_area);
+            controller.setStage(primary_stage);
             controller.setupBytecodeTab(method_area);
             controller.setupLocalVariableFrame(method_area);
             controller.setupBytecodeInfoPane();
             controller.setupOperandStackPane();
-            controller.addConstantPoolData(method_area);
+            controller.addConstantPoolData(method_area);          
+            
             
             root_pane = (AnchorPane) content;  
         }

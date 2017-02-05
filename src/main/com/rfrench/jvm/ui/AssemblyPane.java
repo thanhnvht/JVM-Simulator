@@ -58,11 +58,13 @@ public class AssemblyPane
         this.method_area = method_area;
         
         NUMBER_OF_METHODS = method_area.getNumberOfMethods();
-              
+                   
         setupTabs();
         setupListView();                                                       
         setupLabels();   
         setupTooltips();
+        
+        System.out.println("hello");
     }
     
     private void setupListView()
@@ -195,9 +197,7 @@ public class AssemblyPane
     
     private void setupTabs()
     {
-                
-        //bytecode_pane = new TabPane();
-        
+
         bytecode_tab_list = new ArrayList<Tab>();
         
         for(int i = 0; i < NUMBER_OF_METHODS; i++)
@@ -207,48 +207,9 @@ public class AssemblyPane
             bytecode_tab_list.add(bytecode_tab);
             bytecode_pane.getTabs().add(bytecode_tab);
         }
-                        
-//        Tab java_code_tab = new Tab();
-//        java_code_tab.setText("Java Code");
-//        setupJavaCodeField();
-//        java_code_tab.setContent(code_area);
-//                
-//        Tab hex_tab = new Tab();
-//        hex_tab.setText("Hex Code");
-//        hex_tab.setContent(hex_listview);
-                                               
-                
-//        assembly_tabpane.getTabs().addAll(java_code_tab, hex_tab);
-        bytecode_pane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
-    }            
         
-//    private void setupHex(ClassLoader input_file, Memory M)
-//    {
-//        hex_listview = new ListView();
-//        hex_listview.setId(CSS_ASSEMBLY_ID);
-//        hex_labels = new Label[input_file.getNoOpcodes()];
-//                
-//        for(int i = 0; i < input_file.getNoOpcodes(); i++)
-//        {
-//            String opcode = input_file.getOpcodeProgram(i);
-//            
-//            if(opcode.indexOf(' ') != -1)            
-//               opcode = opcode.substring(0, opcode.indexOf(' ')); 
-//                        
-//            int[] opcode_meta_data = (int[])input_file.getOpcodeMetaData().get(opcode);
-//            
-//            int mem_location = input_file.getOpcodeMemoryLocation(i);
-//            
-//            String hex_string = "";                                  
-//            
-//            for(int j = 0; j < opcode_meta_data[2]; j++)                                       
-//                hex_string += "0x" + Integer.toHexString(M.getMemoryAddress(j + mem_location)).toUpperCase() + " ";
-//                                                    
-//            hex_labels[i] = new Label(hex_string);
-//            
-//            hex_listview.getItems().add(hex_labels[i]);
-//        }               
-//    }         
+        bytecode_pane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
+    }                          
     
     public ListView getListView()
     {

@@ -24,8 +24,10 @@
 
 package main.com.rfrench.jvm.controller;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Stack;
 import javafx.animation.Animation;
@@ -44,8 +46,12 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import javafx.util.Duration;
+import main.com.rfrench.jvm.java.DisassembledFileGenerator;
 import main.com.rfrench.jvm.java.ExecutionEngine;
+import main.com.rfrench.jvm.java.JVMClassLoader;
 import main.com.rfrench.jvm.java.MethodArea;
 import main.com.rfrench.jvm.ui.AssemblyPane;
 import main.com.rfrench.jvm.ui.BytecodeInfoPane;
@@ -75,6 +81,8 @@ public class SceneController implements Initializable {
     @FXML
     private Button pause_button;
     @FXML
+    private Button open_button;
+    @FXML
     private Pane operand_stack_pane;
     @FXML
     private ListView constant_pool_listview;
@@ -88,7 +96,11 @@ public class SceneController implements Initializable {
     private ExecutionEngine execution_engine;
     private BytecodeInfoPane bytecode_info_p;
     
+    private Stage primary_stage;
     
+    private MethodArea method_area;
+    private JVMClassLoader class_loader;
+        
     private Stack button_presses_per_method;
     
     private int before_branch_button_press;
@@ -132,16 +144,31 @@ public class SceneController implements Initializable {
 
     public void setupLocalVariableFrame(MethodArea method_area)
     {
-        local_variable_p = new LocalVariablePane(local_variable_pane);
+
+        if(method_area.hasMethods())
+        {
+            local_variable_p = new LocalVariablePane(local_variable_pane);
         
-        int MAX_LOCAL_VAR = method_area.getMethod(0).getLocalSize();
+            int MAX_LOCAL_VAR = method_area.getMethod(0).getLocalSize();
         
-        String test = method_area.getMethod(0).getMethodName();
+            String test = method_area.getMethod(0).getMethodName();
         
-        String[] test_array = new String[1];
-        test_array[0] = test;
+            String[] test_array = new String[1];
+            test_array[0] = test;
         
-        local_variable_p.addFrameUI(test_array, 0, MAX_LOCAL_VAR);
+            local_variable_p.addFrameUI(test_array, 0, MAX_LOCAL_VAR);
+        }
+
+    }
+    
+    public void setMethodArea(MethodArea method_area)
+    {
+        this.method_area = method_area;
+    }
+    
+    public void setStage(Stage primary_stage)
+    {
+        this.primary_stage = primary_stage;
     }
     
     public void setupRegisterPane()
@@ -158,10 +185,8 @@ public class SceneController implements Initializable {
     
     public void updateRegister(int value)
     {
-        Label PC_label = (Label)register_pane.getChildren().get(0);
-        
-        String PC_value = Integer.toHexString(value).toUpperCase();
-        
+        Label PC_label = (Label)register_pane.getChildren().get(0);        
+        String PC_value = Integer.toHexString(value).toUpperCase();        
         PC_label.setText("PC : 0x" + PC_value);
     }
     
@@ -209,6 +234,30 @@ public class SceneController implements Initializable {
         timeline.play();                                                
     }
     
+    public void openButton()
+    {
+        FileChooser file_chooser = new FileChooser();
+        
+        File file = file_chooser.showOpenDialog(primary_stage);
+        
+        String absolute_file_path = file.getAbsolutePath();
+        
+        DisassembledFileGenerator dfg = new DisassembledFileGenerator(absolute_file_path);
+        
+        String javap_file_path = dfg.getSavedFilePath();
+        
+        class_loader.readFile(javap_file_path);
+        
+        method_area.setupMethodArea(class_loader);
+        
+        
+        setupBytecodeTab(method_area);
+        setupLocalVariableFrame(method_area);
+        
+        
+        
+    }
+    
     public void pauseButton()
     {
         execution_engine.changePause();
@@ -217,6 +266,11 @@ public class SceneController implements Initializable {
     public void setMainScene(MainScene main_scene)
     {
         this.main_scene = main_scene;
+    }
+    
+    public void setClassLoader(JVMClassLoader class_loader)
+    {
+        this.class_loader = class_loader;
     }
     
     public void ALOAD_0(String value)
