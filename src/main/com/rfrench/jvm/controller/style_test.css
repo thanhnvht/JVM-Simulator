@@ -11,6 +11,8 @@
 
 .list-cell
 {
+    -fx-font-family: Consolas;
+    -fx-font: 125%;
     -fx-background-color: #999;
 }
 
@@ -45,4 +47,10 @@
     -fx-background-color: #449d44; 
     -fx-min-width: 300px;
     -fx-min-height: 50px;
+}
+
+#register_pane
+{
+    -fx-font-family: Consolas;
+    -fx-font-size: 200%;
 }

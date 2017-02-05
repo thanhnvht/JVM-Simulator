@@ -40,9 +40,10 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
+import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
 import main.com.rfrench.jvm.java.ExecutionEngine;
 import main.com.rfrench.jvm.java.MethodArea;
@@ -77,6 +78,8 @@ public class SceneController implements Initializable {
     private Pane operand_stack_pane;
     @FXML
     private ListView constant_pool_listview;
+    @FXML
+    private StackPane register_pane;
     
     private MainScene main_scene;
     private AssemblyPane assembly_pane;
@@ -105,7 +108,9 @@ public class SceneController implements Initializable {
     {
         next_button.setGraphic(new ImageView("/main/com/rfrench/jvm/resources/images/forward-button.png"));
         play_button.setGraphic(new ImageView("/main/com/rfrench/jvm/resources/images/play-button.png"));
-        pause_button.setGraphic(new ImageView("/main/com/rfrench/jvm/resources/images/pause-button.png"));                              
+        pause_button.setGraphic(new ImageView("/main/com/rfrench/jvm/resources/images/pause-button.png"));       
+        
+        setupRegisterPane();
     }    
     
     public void addConstantPoolData(MethodArea method_area)
@@ -139,6 +144,27 @@ public class SceneController implements Initializable {
         local_variable_p.addFrameUI(test_array, 0, MAX_LOCAL_VAR);
     }
     
+    public void setupRegisterPane()
+    {
+        Label PC_label =  new Label("PC  : ");       
+        
+        Tooltip tool_tip = new Tooltip();
+        tool_tip.setText("PC - Program Counter, the location of what bytecode to run next");
+        PC_label.setTooltip(tool_tip);
+        
+        register_pane.getChildren().add(PC_label);
+    }
+
+    
+    public void updateRegister(int value)
+    {
+        Label PC_label = (Label)register_pane.getChildren().get(0);
+        
+        String PC_value = Integer.toHexString(value).toUpperCase();
+        
+        PC_label.setText("PC : 0x" + PC_value);
+    }
+    
     public void setExecutionEngine(ExecutionEngine execution_engine)
     {
         this.execution_engine = execution_engine;
@@ -166,7 +192,9 @@ public class SceneController implements Initializable {
     
     public void playButton()
     {
-        final float REPEAT_TIME = 1.5f;
+         final float REPEAT_TIME = 0.5f;
+        
+        //final float REPEAT_TIME = 1.5f;
         
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(REPEAT_TIME),eve -> 
         {
@@ -361,6 +389,8 @@ public class SceneController implements Initializable {
 //        SingleSelectionModel<Tab> selection_model = main_scene.getAssembly().getTabPane().getSelectionModel();
 //            
 //        selection_model.select(current_method);
+        
+            System.out.println("return current method: " + current_method);
         
           local_variable_p.removeFrameUI(current_method);        
           

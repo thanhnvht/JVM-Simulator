@@ -1,0 +1,11 @@
+
+#main_pane
+{
+    -fx-background-color: #000000;
+}
+
+#title_label
+{
+    -fx-text-fill: white;
+    -fx-font-size: 500%;
+}

@@ -58,7 +58,7 @@ public class MainScene
         try
         {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(getClass().getResource("/main/com/rfrench/jvm/controller/TestFXML.fxml"));   
+            loader.setLocation(getClass().getResource("/main/com/rfrench/jvm/controller/MainScene.fxml"));   
             Parent content = loader.load();
             controller = loader.<SceneController>getController();            
             
@@ -75,8 +75,7 @@ public class MainScene
         catch(IOException e)
         {
             e.printStackTrace();
-        }
-    
+        }    
     }
         
     public AnchorPane getRootPane()

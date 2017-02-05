@@ -36,6 +36,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import main.com.rfrench.jvm.ui.MainScene;
+import main.com.rfrench.jvm.ui.SplashScene;
 
 /*
     Program Title: StageController.java
@@ -55,26 +56,28 @@ public class StageController implements Initializable
     
     public StageController(Stage primaryStage, MainScene main_scene)
     {
+        SplashScene s_scene = new SplashScene();
+        
+        AnchorPane splash_scene_root_pane = s_scene.getRootPane();
+        Scene splash_scene = new Scene(splash_scene_root_pane);
+        
         AnchorPane main_scene_root_pane = main_scene.getRootPane();
-        Scene test_scene = new Scene(main_scene_root_pane);
+        Scene scene = new Scene(main_scene_root_pane);
         
         primaryStage.setMaximized(true);
         primaryStage.setTitle("JVM Simulator");
 
-        StackPane splash_pane = new StackPane();
                 
         Label title_label = new Label("JVM Simulator");
         title_label.setId("title_label");
 
-        splash_pane.getChildren().add(title_label);
-
-        Scene splash_scene = new Scene(splash_pane, MainScene.WIDTH_TENTH*100, MainScene.HEIGHT_TENTH * 100, Color.BLACK);
-
         primaryStage.setScene(splash_scene);
         primaryStage.show();                
 
-        PauseTransition delay = new PauseTransition(Duration.seconds(1));
-        delay.setOnFinished(event -> primaryStage.setScene(test_scene));
+        final int SPLASH_SCREEN_WAIT_TIME = 3;
+        
+        PauseTransition delay = new PauseTransition(Duration.seconds(SPLASH_SCREEN_WAIT_TIME));
+        delay.setOnFinished(event -> primaryStage.setScene(scene));
         delay.play();
               
     }

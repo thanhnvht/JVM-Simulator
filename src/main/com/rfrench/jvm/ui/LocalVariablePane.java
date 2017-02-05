@@ -1,8 +1,27 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+    MIT License
+
+    Copyright (c) 2017 Ryan French
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+*/
+
 package main.com.rfrench.jvm.ui;
 
 import java.util.ArrayList;
@@ -11,10 +30,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Pane;
 
-/**
- *
- * @author Ryan
- */
+/*
+    Program Title: LocalVariablePane.java
+    Author: Ryan French
+    Created: 05-Feb-2016
+    Version: 1.0
+*/
+
 public class LocalVariablePane 
 {
     private Pane java_stack_pane;
@@ -77,9 +99,7 @@ public class LocalVariablePane
     public void removeFrameUI(int current_method_count)
     {
         ArrayList<Label> current_frame_list = method_local_frames_list.get(current_method_count);
-        
-       //Label frame_label = method_local_frames_list.get(current_method_count).get(index);
-               
+                       
         int number_of_local_vars = method_local_frames_list.get(current_method_count).size();
         
         for(int i = 0; i < number_of_local_vars; i++)

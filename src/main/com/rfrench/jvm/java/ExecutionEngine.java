@@ -215,6 +215,8 @@ public class ExecutionEngine
                     
             scene_controller.hightlightLine(current_method_count, button_press_count);
         }
+        
+        scene_controller.updateRegister(PC);
     }
     
     /**
@@ -483,7 +485,7 @@ public class ExecutionEngine
     
     
     private void RETURN()
-    {
+    {                
         int previous_method_count = current_method_count;
     
         if(current_method_count > 0)
@@ -492,7 +494,7 @@ public class ExecutionEngine
             PC = method_area.popCallStack();
         }
                 
-        scene_controller.RETURN(current_method_count);
+        scene_controller.RETURN(previous_method_count);
                         
         method_return = true;                
                       

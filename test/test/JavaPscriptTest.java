@@ -5,47 +5,53 @@
  */
 package test;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 
-
-/**
- *
- * @author Ryan
- */
 public class JavaPscriptTest 
 {
-    public static void main(String [] args)
-    {
-        // Runtime.getRuntime().exec("cmd /c start build.bat");
-        // ^^ Use this later to run javap -p -v -c 'file'
+    public static void main(String [] args) throws Exception
+    {        
         
-        //java_p_build.bat\
         
-        String file_path = new File("").getAbsolutePath() + "/src/main/com/rfrench/jvm/resources/scripts/";
+        //CHANGE BY OPEN FILE PART
+        String class_file_path = "\"" + new File("").getAbsolutePath() + "/src/main/com/rfrench/jvm/simulated_programs/\"";
         
-        String class_file_path = "\"" + new File("").getAbsolutePath() + "/src/main/com/rfrench/jvm/simulated_programs/WhileTest.class\"";
-       
-        String command = "cmd /c start ";       
+        //CHANGE BY OPEN FILE PART
+        String java_class_file_name = "MultipleMethodTest";
         
-        String[] cmd_array = new String[1];
+        //STAY SAME
+        String java_file_path =  "\"" + new File("").getAbsolutePath() + "/src/main/com/rfrench/jvm/resources/javap/tesasdt.txt\"";                       
+        String javap_file_path = "\"" + new File("").getAbsolutePath() + "/src/main/com/rfrench/jvm/resources/scripts/test.bat\"";
+                               
+        ProcessBuilder javap_process = new ProcessBuilder(javap_file_path, class_file_path, java_class_file_name,  java_file_path);
         
-        cmd_array[0] = "cmd /c start javap \"" + file_path + "javap_build.bat\"";
-        //cmd_array[1] = "cd \"" + file_pat;
-                
-        //cmd_array[1] = "java_p_build.bat";
+        List <String> command = javap_process.command();
         
+        for(String s : command)
+        {
+            System.out.println(s);
+        }
+                        
         try
-        {                    
-            Runtime.getRuntime().exec(cmd_array);
-            //System.out.println(command + "\"" + file_path + "javap_build.bat\"");
+        {                                    
+            Process javap = javap_process.start();
             
+            BufferedReader br = new BufferedReader(new InputStreamReader(javap.getErrorStream()));
+            
+            String line;
+            
+            while((line = br.readLine()) != null)
+                System.out.println(line);
+                        
         }
         
         catch(IOException e)
         {
             e.printStackTrace();
-        }
-        
-    }
+        }                    
+    }    
 }
