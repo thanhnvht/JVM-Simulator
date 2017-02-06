@@ -225,17 +225,9 @@ public class ExecutionEngine
      */
     private void ICONST(int value)
     {
-        if(value <= 0 || value >= 5)
-        {
-            method_area.pushOperandStack(value);
+        method_area.pushOperandStack(value);
 
-            scene_controller.ICONST(Integer.toString(value));
-        }
-        
-        else
-        {
-            System.out.println("Invalid ICONST Value : " + value);
-        }       
+        scene_controller.ICONST(Integer.toString(value));    
     }
     
     /**
@@ -502,7 +494,7 @@ public class ExecutionEngine
     
     private void ALOAD_0()
     {                
-        String reference = method_area.getMethod(current_method_count).getLocalVariable(0);        
+        String reference = method_area.getMethod(current_method_count).getMethodName();
         method_area.pushOperandStack(0); //have put 0 for now. will hav to change to address of reference
         scene_controller.ALOAD_0(reference);
     }

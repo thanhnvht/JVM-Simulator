@@ -53,4 +53,15 @@
 {
     -fx-font-family: Consolas;
     -fx-font-size: 200%;
+    -fx-border-style: solid;
+}
+
+#bytecode_pane
+{
+    -fx-background-color: #999;
+}
+
+#general_info_pane
+{
+     -fx-background-color: #999;
 }

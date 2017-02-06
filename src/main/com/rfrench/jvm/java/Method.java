@@ -69,12 +69,13 @@ public class Method
     private HashMap bytecode_details_map;
     private JSONArray bytecode_details_json;
            
-    public Method(HashMap bytecode_details_map, JSONArray bytecode_details_json, ArrayList<String> parsed_code_data, int method_number)
+    public Method(HashMap bytecode_details_map, JSONArray bytecode_details_json, ArrayList<String> parsed_code_data, 
+            ArrayList<String> method_details, int method_number)
     {        
         this.parsed_code_data = parsed_code_data;
         this.bytecode_details_map = bytecode_details_map;   
         this.bytecode_details_json = bytecode_details_json;        
-
+        
         method_bytecode = new ArrayList<String>();
         method_line_numbers = new ArrayList<String>();  
         method_opcode = new ArrayList<Integer>();
@@ -91,36 +92,19 @@ public class Method
         
         local_variable_frame = new String[MAX_LOCAL_VAR_SIZE];
         
-        try
-        {            
-            JSONParser parser = new JSONParser();                                   
-            
-            Object obj = parser.parse(new InputStreamReader(getClass().getResourceAsStream("/main/com/rfrench/jvm/resources/temp/method_" + method_number + ".json")));
-            
-            JSONObject jsonObject = (JSONObject) obj;
-            
-            METHOD_NAME = findMethodName(jsonObject);
-            
-            METHOD_ACCESS = (String) jsonObject.get("Access");
-            
-            INSTANCE_METHOD = (boolean) jsonObject.get("Instance Method");
-            
-            if(INSTANCE_METHOD)
-            {
-                local_variable_frame[0] = METHOD_NAME;
-            }
-        }
-        catch(IOException | ParseException e)
+        METHOD_NAME = findMethodName(method_details.get(0));
+        METHOD_ACCESS = method_details.get(1);
+        INSTANCE_METHOD = Boolean.getBoolean(method_details.get(2));
+        
+        if(INSTANCE_METHOD)
         {
-            e.printStackTrace();
-        }
+            local_variable_frame[0] = METHOD_NAME;
+        }        
     }
         
-    private String findMethodName(JSONObject jsonObject)
-    {
-        String method_name_temp = (String) jsonObject.get("Name");
-        
-        String[] method_name_parts = method_name_temp.split("\\.");
+    private String findMethodName(String full_name)
+    {                
+        String[] method_name_parts = full_name.split("\\.");
         
         int number_of_full_stops = method_name_parts.length;
         
@@ -194,7 +178,7 @@ public class Method
 
     }
     
-    private int extractMethodDetails(String keyword) // MOVE THIS TO CLASS LOADER AND WRITE TO JSON
+    private int extractMethodDetails(String keyword)
     {         
         final int PARSED_DATA_SIZE = parsed_code_data.size();
         

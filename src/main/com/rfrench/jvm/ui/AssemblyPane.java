@@ -63,8 +63,6 @@ public class AssemblyPane
         setupListView();                                                       
         setupLabels();   
         setupTooltips();
-        
-        System.out.println("hello");
     }
     
     private void setupListView()

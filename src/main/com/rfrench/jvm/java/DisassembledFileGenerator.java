@@ -23,8 +23,10 @@
  */
 package main.com.rfrench.jvm.java;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 /*
     Program Title: DissambledFileGenerator.java
@@ -77,7 +79,14 @@ public class DisassembledFileGenerator
         
         try
         {
-            javap.start();
+            Process p = javap.start();
+            
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            
+            String line;
+            
+            while((line = br.readLine()) != null)
+                System.out.println(line);
             
             //setup alert if error stream contains values
             //http://code.makery.ch/blog/javafx-dialogs-official/

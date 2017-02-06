@@ -1,0 +1,94 @@
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/build/classes/main/com/rfrench/jvm/simulated_programs/SwitchTest.class
+  Last modified 06-Feb-2017; size 596 bytes
+  MD5 checksum 0e3ad24b858bedd2be142ecc22456a03
+  Compiled from "SwitchTest.java"
+public class main.com.rfrench.jvm.simulated_programs.SwitchTest
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #3.#21         // java/lang/Object."<init>":()V
+   #2 = Class              #22            // main/com/rfrench/jvm/simulated_programs/SwitchTest
+   #3 = Class              #23            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               LocalVariableTable
+   #9 = Utf8               this
+  #10 = Utf8               Lmain/com/rfrench/jvm/simulated_programs/SwitchTest;
+  #11 = Utf8               main
+  #12 = Utf8               ([Ljava/lang/String;)V
+  #13 = Utf8               args
+  #14 = Utf8               [Ljava/lang/String;
+  #15 = Utf8               a
+  #16 = Utf8               I
+  #17 = Utf8               b
+  #18 = Utf8               StackMapTable
+  #19 = Utf8               SourceFile
+  #20 = Utf8               SwitchTest.java
+  #21 = NameAndType        #4:#5          // "<init>":()V
+  #22 = Utf8               main/com/rfrench/jvm/simulated_programs/SwitchTest
+  #23 = Utf8               java/lang/Object
+{
+  public main.com.rfrench.jvm.simulated_programs.SwitchTest();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 30: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lmain/com/rfrench/jvm/simulated_programs/SwitchTest;
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=1, locals=3, args_size=1
+         0: bipush        100
+         2: istore_1
+         3: iconst_0
+         4: istore_2
+         5: iload_1
+         6: lookupswitch  { // 3
+                      10: 40
+                      50: 46
+                     100: 52
+                 default: 55
+            }
+        40: bipush        20
+        42: istore_2
+        43: goto          55
+        46: bipush        50
+        48: istore_2
+        49: goto          55
+        52: bipush        10
+        54: istore_2
+        55: return
+      LineNumberTable:
+        line 34: 0
+        line 35: 3
+        line 37: 5
+        line 39: 40
+        line 40: 46
+        line 41: 52
+        line 43: 55
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      56     0  args   [Ljava/lang/String;
+            3      53     1     a   I
+            5      51     2     b   I
+      StackMapTable: number_of_entries = 4
+        frame_type = 253 /* append */
+          offset_delta = 40
+          locals = [ int, int ]
+        frame_type = 5 /* same */
+        frame_type = 5 /* same */
+        frame_type = 2 /* same */
+}
+SourceFile: "SwitchTest.java"

@@ -118,9 +118,12 @@ public class SceneController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) 
     {
-        next_button.setGraphic(new ImageView("/main/com/rfrench/jvm/resources/images/forward-button.png"));
-        play_button.setGraphic(new ImageView("/main/com/rfrench/jvm/resources/images/play-button.png"));
-        pause_button.setGraphic(new ImageView("/main/com/rfrench/jvm/resources/images/pause-button.png"));       
+        String image_file_path = "/main/com/rfrench/jvm/resources/images/";
+        
+        next_button.setGraphic(new ImageView(image_file_path + "forward-button.png"));
+        play_button.setGraphic(new ImageView(image_file_path + "play-button.png"));
+        pause_button.setGraphic(new ImageView(image_file_path + "pause-button.png"));       
+        open_button.setGraphic(new ImageView(image_file_path + "open-folder.png"));
         
         setupRegisterPane();
     }    
@@ -217,9 +220,9 @@ public class SceneController implements Initializable {
     
     public void playButton()
     {
-         final float REPEAT_TIME = 0.5f;
+        // final float REPEAT_TIME = 0.5f;
         
-        //final float REPEAT_TIME = 1.5f;
+        final float REPEAT_TIME = 1.5f;
         
         Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(REPEAT_TIME),eve -> 
         {
@@ -249,13 +252,11 @@ public class SceneController implements Initializable {
         class_loader.readFile(javap_file_path);
         
         method_area.setupMethodArea(class_loader);
-        
-        
+        method_area.setConstantPoolData(class_loader.getConstantPoolData());
+                
         setupBytecodeTab(method_area);
-        setupLocalVariableFrame(method_area);
-        
-        
-        
+        setupLocalVariableFrame(method_area);                        
+        addConstantPoolData(method_area);
     }
     
     public void pauseButton()
@@ -271,14 +272,7 @@ public class SceneController implements Initializable {
     public void setClassLoader(JVMClassLoader class_loader)
     {
         this.class_loader = class_loader;
-    }
-    
-    public void ALOAD_0(String value)
-    {
-        operand_stack_p.push(value);
-        
-        bytecode_info_p.addByteCodeInfo(value);
-    }
+    }   
     
     public void hightlightLine(int current_method, int button_press_count)
     {
@@ -294,23 +288,18 @@ public class SceneController implements Initializable {
             
         selection_model.select(current_method);    
     }
-    
-    public void updateRegisterLabels(int PC)
-    {
-        String PC_string;
         
-        if(PC < 16)
-            PC_string = "PC  : 0x0" + Integer.toHexString(PC).toUpperCase();
-        else
-            PC_string = "PC  : 0x" + Integer.toHexString(PC).toUpperCase();
-        
-      //  main_scene.getRegister().updateLabel(PC_string, 1);
-    }   
-    
     public Stack getButtonStack()
     {
         return button_presses_per_method;
     }    
+    
+    public void ALOAD_0(String value)
+    {
+        operand_stack_p.push(value);
+        
+        bytecode_info_p.addByteCodeInfo(value);
+    }
     
     public void BIPUSH(String value)
     {
@@ -356,13 +345,13 @@ public class SceneController implements Initializable {
     
     public void ISUB()
     {
-//        String label_name = main_scene.getStack().getStackText();          
-//        main_scene.getStack().pop();
-//        
-//        label_name = main_scene.getStack().getStackText() + " - " + label_name;              
-//        main_scene.getStack().pop();                              
-//
-//        main_scene.getStack().push(label_name);
+        String label_name = operand_stack_p.getStackText();     
+        operand_stack_p.pop();
+        
+        label_name = operand_stack_p.getStackText() + " - " + label_name;                                           
+        operand_stack_p.pop();
+        
+        operand_stack_p.push(label_name);
     }
     
     public void IF_ICMPEQ()

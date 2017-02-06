@@ -26,7 +26,6 @@ package main.com.rfrench.jvm.java;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -55,16 +54,16 @@ public class JVMClassLoader
     private JSONArray bytecode_json_array;
     
     private ArrayList<Method> methods;    
+    private ArrayList<String> method_details;
     private ArrayList<String> constant_pool_data;    
     
     private String FILE_PATH;    
-    private final String TEMP_FOLDER_FILE_PATH;
-       
+
     public JVMClassLoader()
-    {
-        TEMP_FOLDER_FILE_PATH = new File("src/main/com/rfrench/jvm/resources/temp/").getAbsolutePath();
+    {          
+
     }
-    
+        
     /**
      * JVMFileReader Constructor
      * @param FILE_PATH
@@ -73,11 +72,9 @@ public class JVMClassLoader
     {          
         this.FILE_PATH = FILE_PATH;
 
-        TEMP_FOLDER_FILE_PATH = new File("src/main/com/rfrench/jvm/resources/temp/").getAbsolutePath();
+        readFile();
     }
           
-
-    
     /**
      * Read a javap file. Retrieve relevant data and put into 
      * helper data structures to then be used later in program
@@ -92,21 +89,20 @@ public class JVMClassLoader
                                     
             methods = new ArrayList<Method>();
             
-            ArrayList<String> method_names_list = findMethodNames();            
+            extractConstantPoolData(); 
+            
+            
+            ArrayList<String> method_names_list = findMethodNames();
             ArrayList<String> method_access_type_list = findMethodAccess();            
-            ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);                        
+            ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);    
             
-            addConstantPoolMethodReferences(method_names_list);
-            
+                      
+                             
             for(int i = 0; i < NUMBER_OF_METHODS; i++)
-            {
-                writeMethodDetailsJSON("/method_" + i + ".json", method_names_list.get(i), method_access_type_list.get(i), is_method_instance_list.get(i));
-            }
-            
-            for(int i = 0; i < NUMBER_OF_METHODS; i++)
-            {
+            {                
+                writeMethodDetails(method_names_list.get(i), method_access_type_list.get(i), is_method_instance_list.get(i));
                 ArrayList<String> method_code = parseMethodCode(i);                                                                
-                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, i);                                                             
+                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, method_details, i);                                                             
                 methods.add(m);
             }
         }
@@ -116,8 +112,7 @@ public class JVMClassLoader
             e.printStackTrace();
         }
     }       
-       
-    
+           
     public void readFile(String file_path)
     {
         try
@@ -134,17 +129,15 @@ public class JVMClassLoader
             ArrayList<String> method_access_type_list = findMethodAccess();            
             ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);                        
             
-            addConstantPoolMethodReferences(method_names_list);
-            
-            for(int i = 0; i < NUMBER_OF_METHODS; i++)
-            {
-                writeMethodDetailsJSON("/method_" + i + ".json", method_names_list.get(i), method_access_type_list.get(i), is_method_instance_list.get(i));
-            }
+            //addConstantPoolMethodReferences(method_names_list);            
+            extractConstantPoolData();
 
             for(int i = 0; i < NUMBER_OF_METHODS; i++)
             {
+                writeMethodDetails(method_names_list.get(i), method_access_type_list.get(i), is_method_instance_list.get(i));
+                
                 ArrayList<String> method_code = parseMethodCode(i);                                                                
-                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, i);                                                             
+                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, method_details, i);                                                               
                 methods.add(m);
             }
         }
@@ -155,8 +148,7 @@ public class JVMClassLoader
         }
     }
         
-    
-    
+        
     private JSONArray createJSONParser() throws IOException, ParseException
     {                        
         JSONParser parser = new JSONParser();            
@@ -168,28 +160,13 @@ public class JVMClassLoader
         return bytecode_json_array;
     }
     
-    private void writeMethodDetailsJSON(String file_name, String method_name, String method_access, boolean is_instance_method)
+    private void writeMethodDetails(String method_name, String method_access, boolean is_instance_method)
     {
-        try
-        {
-            JSONObject obj = new JSONObject();
-            
-            obj.put("Name", method_name);           
-            obj.put("Access", method_access);
-            obj.put("Instance Method", is_instance_method);
-            
-            FileWriter file = new FileWriter(TEMP_FOLDER_FILE_PATH + file_name);
-            
-            file.write(obj.toJSONString());
-            file.flush();
-            file.close();
-        }
+        method_details = new ArrayList<String>();
         
-        catch(IOException e)
-        {
-            System.out.println("JSON WRITE ERROR");
-            e.printStackTrace();
-        }
+        method_details.add(method_name);
+        method_details.add(method_access);
+        method_details.add(Boolean.toString(is_instance_method));
     }
            
     private void createByteCodeDetailsHashMap(JSONArray bytecode_json)
@@ -207,24 +184,48 @@ public class JVMClassLoader
             String bytecode_name = (String)bytecode_element.get(ATTRIBUTE);
             bytecode_details_map.put(bytecode_name, i);    
         }
-    }    
+    }           
     
-    private void addConstantPoolMethodReferences(ArrayList<String> method_names_list)
+    private void extractConstantPoolData() throws FileNotFoundException
     {
+        Scanner sc = new Scanner(new File(FILE_PATH));
+        
         constant_pool_data = new ArrayList<String>();
         
-        for(int i = 0; i < method_names_list.size(); i++)
-        {
-            if(i != 0)
+        String start_keyword = "pool:";
+        String end_keyword = "{";
+        
+        boolean start = false;
+        boolean end = false;
+
+        String word = "";
+        while(!end || !sc.hasNext())
+        {                                    
+            if(word.equals(start_keyword))
             {
-                constant_pool_data.add(method_names_list.get(i));
-            }            
+                start = true;
+            }
+                            
+            if(word.equals(end_keyword))
+            {
+                end = true;
+            }
+                                
+            if(!start && !end)
+            {
+                word = sc.next();
+            }
+            
+            else if(start && !end)
+            {
+                word = sc.nextLine();
+                constant_pool_data.add(word);
+            }
         }
-    }        
+    }  
     
     private String findFQN() throws FileNotFoundException
     {
-        //Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
         Scanner sc = new Scanner(new File(FILE_PATH));
         
         String first_keyword = "public";
@@ -278,7 +279,6 @@ public class JVMClassLoader
     
     private ArrayList<String> findMethodNames() throws FileNotFoundException
     {
-        //Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
         Scanner sc = new Scanner(new File(FILE_PATH));
         
         ArrayList<String> method_names = new ArrayList<String>();
@@ -327,7 +327,6 @@ public class JVMClassLoader
     
     private ArrayList<String> findMethodAccess() throws FileNotFoundException
     {
-        //Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
         Scanner sc = new Scanner(new File(FILE_PATH));
         
         ArrayList<String> method_flags = new ArrayList<String>();
@@ -349,9 +348,9 @@ public class JVMClassLoader
                 if(!method_name.contains(remove_keyword)) // Ensure no class names are in list
                 {       
                     method_flags.add(word);
-                }
-                
+                }                
             }
+            
             else
             {
                 sc.nextLine();
@@ -373,7 +372,6 @@ public class JVMClassLoader
      */
     private ArrayList<String> parseMethodCode(int occurences) throws FileNotFoundException
     {
-        //Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
         Scanner sc = new Scanner(new File(FILE_PATH));
         
         ArrayList<String> method_code = new ArrayList<String>();
@@ -392,23 +390,17 @@ public class JVMClassLoader
             
             if(word.equals(START_KEYWORD))
             {                                
-                if(current_occurences == occurences)
-                {
-                    start = true;
-                }
+                if(current_occurences == occurences)                
+                    start = true;                
                 
                 current_occurences++;
             }
             
-            if(word.equals(END_KEYWORD) && start)
-            {
-                end = true;
-            }
+            if(word.equals(END_KEYWORD) && start)            
+                end = true;            
             
-            if(start)
-            {
-                method_code.add(word);
-            }
+            if(start)            
+                method_code.add(word);            
         }
         
         return method_code;
@@ -416,7 +408,6 @@ public class JVMClassLoader
     
     private void extractNumberOfMethods() throws FileNotFoundException
     {
-        //Scanner sc = new Scanner(getClass().getResourceAsStream(FILE_PATH));
         Scanner sc = new Scanner(new File(FILE_PATH));
         
         int method_count = 0;
@@ -426,15 +417,11 @@ public class JVMClassLoader
             String word = sc.next();
 
             if(word.equals("Code:"))
-            {
                 method_count++;
-            }            
+            
         }                
 
-        NUMBER_OF_METHODS = method_count;       
-
-        System.out.println("number of methods: " + NUMBER_OF_METHODS);
-        
+        NUMBER_OF_METHODS = method_count;               
     }
        
     public int getNumberOfMethods()
