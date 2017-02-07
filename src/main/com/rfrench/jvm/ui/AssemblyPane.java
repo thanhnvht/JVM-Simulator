@@ -31,10 +31,7 @@ import org.json.simple.parser.ParseException;
 */
 
 public class AssemblyPane 
-{
-        
-    private final String CSS_ASSEMBLY_ID = "ASSEMBLY";
-           
+{                   
     private ArrayList<ArrayList<Label>> java_program_labels_list;    
     private ArrayList<Label> java_program_labels;
             
@@ -105,8 +102,7 @@ public class AssemblyPane
                 String bytecode = bytecode_text.get(j);                                
                 
                 Label new_label = new Label(line_number + "\t" + bytecode);
-                new_label.setTextFill(Color.AZURE);
-                
+                    
                 java_program_labels.add(new_label);
                 
                 listview.getItems().add(java_program_labels.get(j));

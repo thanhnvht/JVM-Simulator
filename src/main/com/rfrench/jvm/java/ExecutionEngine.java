@@ -91,13 +91,15 @@ public class ExecutionEngine
                 case ("6") :  ICONST(3);       break;  //ICONST_3
                 case ("7") :  ICONST(4);       break;  //ICONST_4
                 case ("8") :  ICONST(5);       break;  //ICONST_5
-                case ("10"):  BIPUSH();        break;                                       
+                case ("10"):  BIPUSH();        break;   
+                case ("14"):  LDC2_W();        break;
                 case ("15"):  ILOAD(-1);       break;  //ILOAD
                 case ("1A"):  ILOAD(0);        break;  //ILOAD_0
                 case ("1B"):  ILOAD(1);        break;  //ILOAD_1
                 case ("1C"):  ILOAD(2);        break;  //ILOAD_2
                 case ("1D"):  ILOAD(3);        break;  //ILOAD_3
                 case ("36"):  ISTORE(-1);      break;  //ISTORE
+                case ("37"):  LSTORE(-1);      break;
                 case ("3B"):  ISTORE(0);       break;  //ISTORE_0
                 case ("3C"):  ISTORE(1);       break;  //ISTORE_1
                 case ("3D"):  ISTORE(2);       break;  //ISTORE_2
@@ -283,6 +285,34 @@ public class ExecutionEngine
         scene_controller.IADD();
     }
 
+    private void LDC2_W()
+    {
+        Method m = method_area.getMethod(current_method_count);
+        
+        PC++;
+        
+        int operand = m.getMethodOpcodes().get(PC);
+        
+        String constant_pool_entry = method_area.getConstantPool().get(operand);
+        
+        constant_pool_entry = constant_pool_entry.replaceAll("\\s+","");
+        
+        String keyword = "Long";
+        int keyword_length = keyword.length();
+        
+        //Remove long keyword
+        constant_pool_entry = constant_pool_entry.substring(constant_pool_entry.indexOf(keyword) + keyword_length);
+        
+        //Remove 'l' character from end of number
+        constant_pool_entry = constant_pool_entry.substring(0, constant_pool_entry.length() - 1);
+
+        int constant_pool_long = Integer.parseInt(constant_pool_entry);
+        
+        method_area.pushOperandStack(constant_pool_long);
+        
+        scene_controller.LDC2_W(constant_pool_entry);
+    }
+    
     private void IAND()
     {
           
@@ -323,6 +353,25 @@ public class ExecutionEngine
     
     private void ISTORE(int frame_index)
     {   
+        Method m = method_area.getMethod(current_method_count);
+                        
+        if(frame_index < 0)
+        {
+            PC++;            
+            frame_index = method_area.getMethod(current_method_count).getMethodOpcodes().get(PC); 
+        }
+            
+        String value = Integer.toString(method_area.popOperandStack());
+         
+        m.setLocalVariable(frame_index, value);
+ 
+        scene_controller.ISTORE(current_method_count, frame_index, value);
+    }
+    
+    private void LSTORE(int frame_index)
+    {
+        //SHOULD STORE INTO 2 LOCAL VARS INSTEAD OF ONE
+        
         Method m = method_area.getMethod(current_method_count);
                         
         if(frame_index < 0)

@@ -1,5 +1,5 @@
 Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/build/classes/main/com/rfrench/jvm/simulated_programs/PrimitiveTypesTest.class
-  Last modified 06-Feb-2017; size 588 bytes
+  Last modified 07-Feb-2017; size 588 bytes
   MD5 checksum 646953341aac1e4b9ada2e1d7aed6e56
   Compiled from "PrimitiveTypesTest.java"
 public class main.com.rfrench.jvm.simulated_programs.PrimitiveTypesTest

@@ -24,8 +24,6 @@
 
 package main.com.rfrench.jvm.java;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -34,8 +32,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 /*
     Program Title: Method.java
@@ -310,6 +306,9 @@ public class Method
         operand_keywords.add("BIPUSH");
         operand_keywords.add("ILOAD");
         operand_keywords.add("ISTORE");
+        operand_keywords.add("LSTORE");
+        operand_keywords.add("LDC2_W");
+        
         
         String pattern_string_operand = "\\b(" + StringUtils.join(operand_keywords, "|") + ")\\b";
         
@@ -320,12 +319,21 @@ public class Method
         if(matcher.find())
         {
             int operand_index = index + 1;                        
-                                    
-            int operand = Integer.parseInt(parsed_code_data.get(operand_index));
-                        
+            
+            String operand_string = parsed_code_data.get(operand_index);
+            
+            if(operand_string.indexOf('#') != -1)
+            {
+                operand_string = operand_string.substring(operand_string.indexOf('#') + 1);
+            }            
+                                                
+            int operand = Integer.parseInt(operand_string);
+            
             method_opcode.add(operand);
             
             stack_opcode = true;
+            
+            
         }
                 
         return stack_opcode;

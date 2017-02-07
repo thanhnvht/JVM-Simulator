@@ -199,18 +199,32 @@
 	    },  	    
 
 	    {
-	        "Name":"IF_ICMPGQ",
-	        "Opcode":"0000",
-	        "Total Operands": 2,
-	        "Tooltip" : ""
-	    },  
-
-	    {
 	        "Name":"IF_ICMPGE",
 	        "Opcode":"A2",
 	        "Total Operands": 2,
 	        "Tooltip" : "IF_ICMPGE - If first value is greater than or equal to the second value, then branch"
 	    },  
+
+	    {
+	        "Name":"IF_ICMPGT",
+	        "Opcode":"A3",
+	        "Total Operands": 2,
+	        "Tooltip" : "IF_ICMPGE - If first value is greater than the second value, then branch"
+	    }, 
+
+	    {
+	        "Name":"IF_ICMPLE",
+	        "Opcode":"A4",
+	        "Total Operands": 2,
+	        "Tooltip" : "IF_ICMPLE - If first value is less than or equal to the second value, then branch"
+	    }, 
+
+	    {
+	        "Name":"IF_ICMPLT",
+	        "Opcode":"A1",
+	        "Total Operands": 2,
+	        "Tooltip" : "IF_ICMPLE - If first value is less than the second value, then branch"
+	    }, 
 
 	    {
 	        "Name":"IF_ICMPNE",
@@ -223,7 +237,7 @@
 	        "Name":"IF_ICMPEQ",
 	        "Opcode":"9F",
 	        "Total Operands": 2,
-	        "Tooltip" : "IF_ICMPEQ - Branch to given line number if the variables on the top of Stack are equal"
+	        "Tooltip" : "IF_ICMPEQ - Branch to given line number if the value 1 and value 2 are equal"
 	    },  	    
 
 	    {

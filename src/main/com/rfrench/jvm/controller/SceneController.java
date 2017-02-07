@@ -27,7 +27,6 @@ package main.com.rfrench.jvm.controller;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.ResourceBundle;
 import java.util.Stack;
 import javafx.animation.Animation;
@@ -71,7 +70,7 @@ public class SceneController implements Initializable {
     @FXML
     private Pane local_variable_pane;    
     @FXML
-    private TabPane bytecode_pane;    
+    private TabPane bytecode_pane;   
     @FXML
     private ScrollPane bytecode_info_pane;
     @FXML
@@ -82,6 +81,8 @@ public class SceneController implements Initializable {
     private Button pause_button;
     @FXML
     private Button open_button;
+    @FXML
+    private Button reset_button;
     @FXML
     private Pane operand_stack_pane;
     @FXML
@@ -124,6 +125,7 @@ public class SceneController implements Initializable {
         play_button.setGraphic(new ImageView(image_file_path + "play-button.png"));
         pause_button.setGraphic(new ImageView(image_file_path + "pause-button.png"));       
         open_button.setGraphic(new ImageView(image_file_path + "open-folder.png"));
+        reset_button.setGraphic(new ImageView(image_file_path + "reset.png"));
         
         setupRegisterPane();
     }    
@@ -249,11 +251,17 @@ public class SceneController implements Initializable {
         
         String javap_file_path = dfg.getSavedFilePath();
         
+        
+        
         class_loader.readFile(javap_file_path);
+        
+        
         
         method_area.setupMethodArea(class_loader);
         method_area.setConstantPoolData(class_loader.getConstantPoolData());
-                
+        
+
+        bytecode_pane.getTabs().remove(0);
         setupBytecodeTab(method_area);
         setupLocalVariableFrame(method_area);                        
         addConstantPoolData(method_area);
@@ -262,6 +270,11 @@ public class SceneController implements Initializable {
     public void pauseButton()
     {
         execution_engine.changePause();
+    }
+    
+    public void resetButton()
+    {
+        
     }
     
     public void setMainScene(MainScene main_scene)
@@ -306,6 +319,13 @@ public class SceneController implements Initializable {
         operand_stack_p.push(value); 
         
         bytecode_info_p.addByteCodeInfo("Pushing a value onto the operand stack");
+    }
+    
+    public void LDC2_W(String value)
+    {
+        operand_stack_p.push(value);
+        
+        bytecode_info_p.addByteCodeInfo("Retrieve a Long value from Constant Pool. Pushed onto Operand Stack");
     }
     
     public void ICONST(String value)

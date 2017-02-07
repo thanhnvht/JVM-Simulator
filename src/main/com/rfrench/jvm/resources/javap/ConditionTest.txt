@@ -1,0 +1,134 @@
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/build/classes/main/com/rfrench/jvm/simulated_programs/ConditionTest.class
+  Last modified 07-Feb-2017; size 690 bytes
+  MD5 checksum b9fe2fbb763a195d5458b97a358c5b73
+  Compiled from "ConditionTest.java"
+public class main.com.rfrench.jvm.simulated_programs.ConditionTest
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #3.#22         // java/lang/Object."<init>":()V
+   #2 = Class              #23            // main/com/rfrench/jvm/simulated_programs/ConditionTest
+   #3 = Class              #24            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               LocalVariableTable
+   #9 = Utf8               this
+  #10 = Utf8               Lmain/com/rfrench/jvm/simulated_programs/ConditionTest;
+  #11 = Utf8               main
+  #12 = Utf8               ([Ljava/lang/String;)V
+  #13 = Utf8               args
+  #14 = Utf8               [Ljava/lang/String;
+  #15 = Utf8               a
+  #16 = Utf8               I
+  #17 = Utf8               b
+  #18 = Utf8               c
+  #19 = Utf8               StackMapTable
+  #20 = Utf8               SourceFile
+  #21 = Utf8               ConditionTest.java
+  #22 = NameAndType        #4:#5          // "<init>":()V
+  #23 = Utf8               main/com/rfrench/jvm/simulated_programs/ConditionTest
+  #24 = Utf8               java/lang/Object
+{
+  public main.com.rfrench.jvm.simulated_programs.ConditionTest();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 30: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lmain/com/rfrench/jvm/simulated_programs/ConditionTest;
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=4, args_size=1
+         0: bipush        10
+         2: istore_1
+         3: bipush        30
+         5: istore_2
+         6: iconst_0
+         7: istore_3
+         8: iload_1
+         9: bipush        20
+        11: if_icmpge     19
+        14: iconst_0
+        15: istore_3
+        16: goto          82
+        19: iload_1
+        20: bipush        40
+        22: if_icmpgt     31
+        25: bipush        30
+        27: istore_3
+        28: goto          82
+        31: iload_1
+        32: bipush        20
+        34: if_icmple     43
+        37: bipush        10
+        39: istore_3
+        40: goto          82
+        43: iload_1
+        44: bipush        50
+        46: if_icmplt     55
+        49: bipush        30
+        51: istore_3
+        52: goto          82
+        55: iload_1
+        56: bipush        10
+        58: if_icmpne     67
+        61: bipush        40
+        63: istore_3
+        64: goto          82
+        67: iload_1
+        68: bipush        30
+        70: if_icmpeq     79
+        73: bipush        60
+        75: istore_3
+        76: goto          82
+        79: bipush        100
+        81: istore_3
+        82: return
+      LineNumberTable:
+        line 34: 0
+        line 35: 3
+        line 36: 6
+        line 38: 8
+        line 40: 14
+        line 42: 19
+        line 44: 25
+        line 46: 31
+        line 48: 37
+        line 50: 43
+        line 52: 49
+        line 54: 55
+        line 56: 61
+        line 58: 67
+        line 60: 73
+        line 64: 79
+        line 67: 82
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0      83     0  args   [Ljava/lang/String;
+            3      80     1     a   I
+            6      77     2     b   I
+            8      75     3     c   I
+      StackMapTable: number_of_entries = 7
+        frame_type = 254 /* append */
+          offset_delta = 19
+          locals = [ int, int, int ]
+        frame_type = 11 /* same */
+        frame_type = 11 /* same */
+        frame_type = 11 /* same */
+        frame_type = 11 /* same */
+        frame_type = 11 /* same */
+        frame_type = 2 /* same */
+}
+SourceFile: "ConditionTest.java"

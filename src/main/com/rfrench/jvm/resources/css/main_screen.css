@@ -13,12 +13,13 @@
 {
     -fx-font-family: Consolas;
     -fx-font: 125%;
-    -fx-background-color: #999;
+
 }
 
 .list-cell:filled:selected:focused, .list-cell:filled:selected 
 {
-    -fx-background-color: #222;
+    -fx-background-color: greenyellow;
+    
 }
 
 .button
@@ -34,8 +35,8 @@
 #FRAME
 {
     -fx-border-color: black;
-    -fx-text-fill: white;
-    -fx-background-color: #003333; 
+    -fx-text-fill: BLACK;
+    -fx-background-color: YELLOW; 
     -fx-min-width: 300px;
     -fx-min-height: 50px;
 }
@@ -44,7 +45,7 @@
 {
     -fx-border-color: black;
     -fx-text-fill: white;
-    -fx-background-color: #449d44; 
+    -fx-background-color: GREEN; 
     -fx-min-width: 300px;
     -fx-min-height: 50px;
 }
@@ -58,10 +59,15 @@
 
 #bytecode_pane
 {
-    -fx-background-color: #999;
+    -fx-background-color: WHITE; 
 }
 
 #general_info_pane
 {
-     -fx-background-color: #999;
+
+}
+
+#button_pane
+{
+    -fx-background-color: WHITE; 
 }

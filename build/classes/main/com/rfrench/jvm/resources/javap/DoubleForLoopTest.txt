@@ -1,0 +1,101 @@
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/build/classes/main/com/rfrench/jvm/simulated_programs/DoubleForLoopTest.class
+  Last modified 07-Feb-2017; size 615 bytes
+  MD5 checksum d1ebb3f1ba114577bccc3415092c1d60
+  Compiled from "DoubleForLoopTest.java"
+public class main.com.rfrench.jvm.simulated_programs.DoubleForLoopTest
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #3.#22         // java/lang/Object."<init>":()V
+   #2 = Class              #23            // main/com/rfrench/jvm/simulated_programs/DoubleForLoopTest
+   #3 = Class              #24            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               LocalVariableTable
+   #9 = Utf8               this
+  #10 = Utf8               Lmain/com/rfrench/jvm/simulated_programs/DoubleForLoopTest;
+  #11 = Utf8               main
+  #12 = Utf8               ([Ljava/lang/String;)V
+  #13 = Utf8               j
+  #14 = Utf8               I
+  #15 = Utf8               i
+  #16 = Utf8               args
+  #17 = Utf8               [Ljava/lang/String;
+  #18 = Utf8               a
+  #19 = Utf8               StackMapTable
+  #20 = Utf8               SourceFile
+  #21 = Utf8               DoubleForLoopTest.java
+  #22 = NameAndType        #4:#5          // "<init>":()V
+  #23 = Utf8               main/com/rfrench/jvm/simulated_programs/DoubleForLoopTest
+  #24 = Utf8               java/lang/Object
+{
+  public main.com.rfrench.jvm.simulated_programs.DoubleForLoopTest();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 30: 0
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+            0       5     0  this   Lmain/com/rfrench/jvm/simulated_programs/DoubleForLoopTest;
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=4, args_size=1
+         0: iconst_0
+         1: istore_1
+         2: iconst_0
+         3: istore_2
+         4: iload_2
+         5: iconst_5
+         6: if_icmpge     32
+         9: iconst_0
+        10: istore_3
+        11: iload_3
+        12: iconst_3
+        13: if_icmpge     26
+        16: iload_1
+        17: iconst_2
+        18: iadd
+        19: istore_1
+        20: iinc          3, 1
+        23: goto          11
+        26: iinc          2, 1
+        29: goto          4
+        32: return
+      LineNumberTable:
+        line 34: 0
+        line 36: 2
+        line 38: 9
+        line 40: 16
+        line 38: 20
+        line 36: 26
+        line 43: 32
+      LocalVariableTable:
+        Start  Length  Slot  Name   Signature
+           11      15     3     j   I
+            4      28     2     i   I
+            0      33     0  args   [Ljava/lang/String;
+            2      31     1     a   I
+      StackMapTable: number_of_entries = 4
+        frame_type = 253 /* append */
+          offset_delta = 4
+          locals = [ int, int ]
+        frame_type = 252 /* append */
+          offset_delta = 6
+          locals = [ int ]
+        frame_type = 250 /* chop */
+          offset_delta = 14
+        frame_type = 250 /* chop */
+          offset_delta = 5
+}
+SourceFile: "DoubleForLoopTest.java"
