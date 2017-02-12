@@ -7,6 +7,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TitledPane?>
@@ -75,8 +76,8 @@
                </FlowPane.margin></Button>
          </children>
       </FlowPane>
-      <Pane fx:id="local_variable_pane" layoutX="456.0" layoutY="80.0" prefHeight="669.0" prefWidth="536.0" />
-      <Pane fx:id="operand_stack_pane" layoutX="996.0" layoutY="79.0" prefHeight="669.0" prefWidth="503.0" />
+      <Pane fx:id="local_variable_pane" layoutX="456.0" layoutY="124.0" prefHeight="625.0" prefWidth="536.0" />
+      <Pane fx:id="operand_stack_pane" layoutX="996.0" layoutY="129.0" prefHeight="619.0" prefWidth="503.0" />
       <TabPane fx:id="general_info_pane" layoutX="1532.0" layoutY="131.0" prefHeight="618.0" prefWidth="390.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="1525.0">
         <tabs>
           <Tab text="Java Code">
@@ -97,6 +98,7 @@
          </padding>
       </StackPane>
       <TitledPane fx:id="bytecode_info_pane" animated="false" layoutX="432.0" layoutY="758.0" prefHeight="229.0" prefWidth="1480.0" text="Program Notes" />
+      <ProgressBar layoutX="448.0" layoutY="46.0" prefHeight="72.0" prefWidth="1058.0" progress="0.0" />
    </children>
    <stylesheets>
       <URL value="@../resources/css/main_screen.css" />

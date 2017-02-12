@@ -489,6 +489,7 @@ public class SceneController implements Initializable {
         operand_stack_p.pop();
         
         int number_of_cases = switch_cases.size();
+        
         bytecode_info_p.addByteCodeInfo("Switch Statement");
         
         for(int i = 0; i < number_of_cases; i++)

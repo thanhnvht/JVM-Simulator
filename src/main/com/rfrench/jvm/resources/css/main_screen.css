@@ -71,3 +71,8 @@
 {
     -fx-background-color: WHITE; 
 }
+
+#java_code_listview .list-cell:odd
+{
+    -fx-background-color: WHITE; 
+}

@@ -330,6 +330,34 @@
 	    	"Opcode" : "14",
 	    	"Total Operands" : 2,
 	    	"Tooltip" : "LDC2_W - Push a value (double or long) from constant pool onto the operand stack"
-	    }
+	    },
+
+	    {
+	    	"Name" : "NEWARRAY",
+	    	"Opcode" : "BC",
+	    	"Total Operands" : 1,
+	    	"Tooltip" : "NEWARRAY - Create an array in the Heap Memory Area. Array is of a certain data type"
+	    },
+
+	    {
+	    	"Name" : "IASTORE",
+	    	"Opcode" : "4F",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "IASTORE - Store an int into an array"
+	    },
+
+	    {
+	    	"Name" : "IALOAD",
+	    	"Opcode" : "2E",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "IALOAD - Load an int from an array"
+	    },
+
+	    {
+	    	"Name" : "ASTORE",
+	    	"Opcode" : "3A",
+	    	"Total Operands" : 1,
+	    	"Tooltip" : "ASTORE - Store a reference to an array into the local variable frame"
+	    },
 	]
 }

@@ -60,7 +60,10 @@ public class LocalVariablePane
     
     public void addFrameUI(String[] frame_text, int current_method_count, int max_local_var)
     {            
-                        
+                   
+        double PANE_HEIGHT = java_stack_pane.getHeight();
+        double PANE_WIDTH  = java_stack_pane.getWidth();
+        
         frame_labels = new ArrayList<Label>();
         
         for(int i = 0; i < max_local_var; i++)        
