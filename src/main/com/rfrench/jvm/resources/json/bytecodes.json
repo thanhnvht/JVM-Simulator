@@ -286,49 +286,49 @@
 	    {
 	    	"Name" : "LOOKUPSWITCH",
 	    	"Opcode" : "AB",
-	    	"Total Operands" : 4
+	    	"Total Operands" : 4,
 	    	"Tooltip" : "LOOKUPSWITCH - A Switch Statement"
 	    },
 
 	    {
-	    	"Name" : "LSTORE"
+	    	"Name" : "LSTORE",
 	    	"Opcode" : "37",
-	    	"Total Operands" : 1
+	    	"Total Operands" : 1,
 	    	"Tooltip" : "LSTORE - Store a Long value in a specified local variable index"
 	    },
 
 	    {
-	    	"Name" : "LSTORE_0"
+	    	"Name" : "LSTORE_0",
 	    	"Opcode" : "3F",
-	    	"Total Operands" : 0
+	    	"Total Operands" : 0,
 	    	"Tooltip" : "LSTORE_0 - Store a Long value in local variable zero"
 	    },
 
 	    {
-	    	"Name" : "LSTORE_1"
+	    	"Name" : "LSTORE_1",
 	    	"Opcode" : "40",
-	    	"Total Operands" : 0
+	    	"Total Operands" : 0,
 	    	"Tooltip" : "LSTORE_1 - Store a Long value in local variable one"
 	    },
 
 	    {
-	    	"Name" : "LSTORE_2"
+	    	"Name" : "LSTORE_2",
 	    	"Opcode" : "41",
-	    	"Total Operands" : 0
+	    	"Total Operands" : 0,
 	    	"Tooltip" : "LSTORE_2 - Store a Long value in local variable two"
 	    },
 
 	    {
-	    	"Name" : "LSTORE_3"
+	    	"Name" : "LSTORE_3",
 	    	"Opcode" : "42",
-	    	"Total Operands" : 0
+	    	"Total Operands" : 0,
 	    	"Tooltip" : "LSTORE_3 - Store a Long value in local variable three"
 	    },
 
 	    {
-	    	"Name" : "LDC2_W"
+	    	"Name" : "LDC2_W",
 	    	"Opcode" : "14",
-	    	"Total Operands" : 2
+	    	"Total Operands" : 2,
 	    	"Tooltip" : "LDC2_W - Push a value (double or long) from constant pool onto the operand stack"
 	    }
 	]

@@ -127,6 +127,7 @@ public class ExecutionEngine
                 case ("2A"):  ALOAD_0();       break;
                 case ("B7"):  INVOKESPECIAL(); break;
                 case ("B8"):  INVOKESTATIC (); break;
+                case ("AB"):  LOOKUPSWITCH();  break;
             }                         
 
             highlightLine();
@@ -543,7 +544,11 @@ public class ExecutionEngine
     
     private void ALOAD_0()
     {                
-        String reference = method_area.getMethod(current_method_count).getMethodName();
+        //String reference = method_area.getMethod(current_method_count).getMethodName();
+        String reference = method_area.getMethod(current_method_count).getLocalVariable(0);
+        
+        System.out.println("Reference: " + reference);
+        
         method_area.pushOperandStack(0); //have put 0 for now. will hav to change to address of reference
         scene_controller.ALOAD_0(reference);
     }
@@ -589,6 +594,11 @@ public class ExecutionEngine
         PC = -1;
         
         method_invoked = true;
+    }
+    
+    private void LOOKUPSWITCH()
+    {
+        System.out.println("Test");
     }
     
     public boolean isBranch()

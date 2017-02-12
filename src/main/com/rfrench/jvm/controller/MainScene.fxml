@@ -98,7 +98,6 @@
       </StackPane>
    </children>
    <stylesheets>
-      <URL value="@style_test.css" />
       <URL value="@../resources/css/main_screen.css" />
    </stylesheets>
 </AnchorPane>

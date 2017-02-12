@@ -60,8 +60,7 @@ public class Method
     
     private String METHOD_NAME;
     private String METHOD_ACCESS;
-
-            
+        
     private HashMap bytecode_details_map;
     private JSONArray bytecode_details_json;
            
@@ -90,11 +89,12 @@ public class Method
         
         METHOD_NAME = findMethodName(method_details.get(0));
         METHOD_ACCESS = method_details.get(1);
-        INSTANCE_METHOD = Boolean.getBoolean(method_details.get(2));
+        INSTANCE_METHOD = Boolean.getBoolean(method_details.get(2)); //THIS ISN'T WORKING
         
         if(INSTANCE_METHOD)
         {
-            local_variable_frame[0] = METHOD_NAME;
+            //local_variable_frame[0] = METHOD_NAME; //for non main classes
+            local_variable_frame[0] = "<init>"; // for main classes
         }        
     }
         
@@ -261,7 +261,7 @@ public class Method
             temp_count += 2;    
         
         if(checkSwitch(word, count))
-            temp_count++;
+            temp_count ++;
         
         return temp_count;
     }
@@ -313,11 +313,87 @@ public class Method
            
         if(matcher.find())
         {
-            System.out.println("LOOKUPSWITCH FOUND");
+            switch_opcode = true;
+            
+            parseSwitch(index);        
+        }
+                
+        return switch_opcode;
+    }    
+    
+    private void parseSwitch(int index)
+    {
+        int start_index = index;        
+        int end_index = start_index;
+        
+        String switch_word = parsed_code_data.get(start_index);
+        
+        while(!switch_word.contains("}"))
+        {
+            switch_word = parsed_code_data.get(end_index);
+            end_index++;
+        }    
+               
+        ArrayList<Integer> case_values = getCaseValues(start_index, end_index);
+        ArrayList<Integer> branch_values = getBranchValues(start_index, end_index);            
+
+        for(int i = 0; i < branch_values.size(); i++)
+        {
+            if(i == branch_values.size() - 1)
+            {
+                method_opcode.add(0); //NEED TO MAKE THIS UNIQUE VALUE SO EXECUTION
+                                      //ENGINE KNOWS IT MEANS THE DEFAULT VALUE
+            }
+            else
+            {
+                method_opcode.add(case_values.get(i));
+            }
+            
+            method_opcode.add(branch_values.get(i));
         }
         
+    }
+    
+    private ArrayList<Integer> getCaseValues(int start_index, int end_index)
+    {
+        ArrayList<Integer> case_values = new ArrayList<Integer>();
         
-        return switch_opcode;
+        for(int i = start_index; i < end_index; i++)
+        {
+            String case_word = parsed_code_data.get(i);
+            
+            if(case_word.contains(":") && !case_word.equals("default:"))
+            {
+                case_word = case_word.substring(0, case_word.indexOf(":"));
+                
+                int case_value = Integer.parseInt(case_word);
+
+                case_values.add(case_value);                
+            }
+        }
+        
+        return case_values;
+    }
+    
+    private ArrayList<Integer> getBranchValues(int start_index, int end_index)
+    {
+        ArrayList<Integer> branch_values = new ArrayList<Integer>();
+        
+        for(int i = start_index; i < end_index; i++)
+        {
+            String branch_word = parsed_code_data.get(i);
+            
+            if(branch_word.contains(":"))
+            {
+                branch_word = parsed_code_data.get(i + 1);
+                
+                int branch_value = Integer.parseInt(branch_word);
+
+                branch_values.add(branch_value);                
+            }
+        }
+        
+        return branch_values;
     }
     
     private Matcher setupMatcher(List<String> operand_keywords, String word)
@@ -493,17 +569,8 @@ public class Method
     
     public String getLocalVariable(int index)
     {
-        String local_var = null;
-        
-        if(index > MAX_LOCAL_VAR_SIZE - 1)
-        {
-            System.out.println("Index out of bounds");
-        }
-        else
-        {
-           local_var = local_variable_frame[index];
-        }
-            
+        String local_var = local_variable_frame[index];
+
         return local_var;
     }
     

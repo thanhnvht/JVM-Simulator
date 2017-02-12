@@ -37,21 +37,16 @@ import java.util.Stack;
 
 public class MethodArea 
 {                
+    private HashMap bytecode_details_map;
     
-    private ArrayList<String> constant_pool;
-    
+    private ArrayList<String> constant_pool;    
     private ArrayList<Method> methods;
     
     private Stack operand_stack;
-    
-    private int NUMBER_OF_METHODS;
-    
-    private HashMap bytecode_details_map;
-    
     private Stack call_stack;
     
+    private int NUMBER_OF_METHODS;                    
     private boolean hasMethods;
-
        
     public MethodArea()
     {

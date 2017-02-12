@@ -1,4 +1,4 @@
-Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/src/main/com/rfrench/jvm/simulated_programs/SwitchTest.class
+Classfile /M:/Y03/ICP 3099/jvm_prototype/JVM-Simulator/src/main/com/rfrench/jvm/simulated_programs/SwitchTest.class
   Last modified 12-Feb-2017; size 416 bytes
   MD5 checksum e3c06d41f776fb1848305de73cacfb05
   Compiled from "SwitchTest.java"

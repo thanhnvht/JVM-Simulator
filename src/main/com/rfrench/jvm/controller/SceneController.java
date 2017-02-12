@@ -157,10 +157,10 @@ public class SceneController implements Initializable {
         
             int MAX_LOCAL_VAR = method_area.getMethod(0).getLocalSize();
         
-            String test = method_area.getMethod(0).getMethodName();
+            String init_method = "<init>";
         
             String[] test_array = new String[1];
-            test_array[0] = test;
+            test_array[0] = init_method;
         
             local_variable_p.addFrameUI(test_array, 0, MAX_LOCAL_VAR);
         }

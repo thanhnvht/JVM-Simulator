@@ -15,7 +15,6 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
-import javafx.scene.paint.Color;
 import static main.com.rfrench.jvm.java.Main.JSON_FILE_PATH;
 import main.com.rfrench.jvm.java.MethodArea;
 import org.json.simple.JSONArray;
@@ -29,6 +28,8 @@ import org.json.simple.parser.ParseException;
     Created: 07-Nov-2016
     Version: 1.0
 */
+
+// TODO : ADD ACCORDION FOR LOOKUPSWITCH BYTECODE, ADD TABLE WITHING ACCORDION
 
 public class AssemblyPane 
 {                   
