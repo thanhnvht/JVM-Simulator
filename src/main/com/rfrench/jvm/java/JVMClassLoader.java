@@ -98,14 +98,11 @@ public class JVMClassLoader
             methods = new ArrayList<Method>();
             
             extractConstantPoolData(); 
-            
-            
+                        
             ArrayList<String> method_names_list = findMethodNames();
             ArrayList<String> method_access_type_list = findMethodAccess();            
             ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);    
-            
-                      
-                             
+                                                               
             for(int i = 0; i < NUMBER_OF_METHODS; i++)
             {                
                 writeMethodDetails(method_names_list.get(i), method_access_type_list.get(i), is_method_instance_list.get(i));

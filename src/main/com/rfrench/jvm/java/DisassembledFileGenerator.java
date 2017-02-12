@@ -72,8 +72,7 @@ public class DisassembledFileGenerator
     }
     
     private void detectFileType()
-    {        
-        
+    {                
         file_type = FILE_ABSOLUTE_PATH.split("\\.")[1]; //Presuming all file paths have only one dot
         
         file_type = file_type.substring(0, file_type.length() - 1); //Remove trailing "                
@@ -109,9 +108,11 @@ public class DisassembledFileGenerator
         try
         {
             Process p = javac.start();
+            
+            Thread.sleep(1000);
         }
         
-        catch(IOException e)
+        catch(IOException | InterruptedException e)
         {
             e.printStackTrace();
         }
@@ -122,11 +123,7 @@ public class DisassembledFileGenerator
         javap_file_destination =  "\"" + DESTINATION_FOLDER_PATH + file_name + ".txt\"";                       
                         
         final String JAVAP_SCRIPT_PATH = SCRIPTS_FOLDER_PATH + "javap_script.bat\"";
-        
-        System.out.println("javap");
-        System.out.println(folder_path);
-        System.out.println(file_name);
-        
+
         ProcessBuilder javap = new ProcessBuilder(JAVAP_SCRIPT_PATH, folder_path, file_name, javap_file_destination);
         
         boolean error_found = false;
@@ -152,10 +149,12 @@ public class DisassembledFileGenerator
 
             //setup alert if error stream contains values
             //http://code.makery.ch/blog/javafx-dialogs-official/
-                        
+                 
+            Thread.sleep(1000);
+            
         }
         
-        catch(IOException e)
+        catch(IOException | InterruptedException e)
         {
             e.printStackTrace();
         }

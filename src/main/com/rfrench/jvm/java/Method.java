@@ -40,9 +40,6 @@ import org.json.simple.JSONObject;
     Version: 1.0
 */
 
-/*
-    
-*/
 public class Method 
 {
     private final int HEX = 16;
@@ -261,7 +258,10 @@ public class Method
             temp_count += 2;
         
         if(checkMethodOpcode(word, count))        
-            temp_count += 2;        
+            temp_count += 2;    
+        
+        if(checkSwitch(word, count))
+            temp_count++;
         
         return temp_count;
     }
@@ -304,7 +304,7 @@ public class Method
     private boolean checkSwitch(String word, int index)
     {
         boolean switch_opcode = false;
-        
+                        
         List<String> operand_keywords = new ArrayList<String>();
         
         operand_keywords.add("LOOKUPSWITCH");
@@ -313,7 +313,7 @@ public class Method
            
         if(matcher.find())
         {
-            
+            System.out.println("LOOKUPSWITCH FOUND");
         }
         
         
