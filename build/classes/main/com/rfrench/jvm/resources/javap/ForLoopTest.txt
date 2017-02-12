@@ -1,35 +1,27 @@
-Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/build/classes/main/com/rfrench/jvm/simulated_programs/ForLoopTest.class
-  Last modified 07-Feb-2017; size 557 bytes
-  MD5 checksum b4cc2eb8141cfa7aa7e5fe59f53bf1b5
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/src/main/com/rfrench/jvm/simulated_programs/ForLoopTest.class
+  Last modified 12-Feb-2017; size 376 bytes
+  MD5 checksum 96eece445757aa6da2c9639e18ff70ba
   Compiled from "ForLoopTest.java"
 public class main.com.rfrench.jvm.simulated_programs.ForLoopTest
   minor version: 0
   major version: 52
   flags: ACC_PUBLIC, ACC_SUPER
 Constant pool:
-   #1 = Methodref          #3.#21         // java/lang/Object."<init>":()V
-   #2 = Class              #22            // main/com/rfrench/jvm/simulated_programs/ForLoopTest
-   #3 = Class              #23            // java/lang/Object
+   #1 = Methodref          #3.#13         // java/lang/Object."<init>":()V
+   #2 = Class              #14            // main/com/rfrench/jvm/simulated_programs/ForLoopTest
+   #3 = Class              #15            // java/lang/Object
    #4 = Utf8               <init>
    #5 = Utf8               ()V
    #6 = Utf8               Code
    #7 = Utf8               LineNumberTable
-   #8 = Utf8               LocalVariableTable
-   #9 = Utf8               this
-  #10 = Utf8               Lmain/com/rfrench/jvm/simulated_programs/ForLoopTest;
-  #11 = Utf8               main
-  #12 = Utf8               ([Ljava/lang/String;)V
-  #13 = Utf8               i
-  #14 = Utf8               I
-  #15 = Utf8               args
-  #16 = Utf8               [Ljava/lang/String;
-  #17 = Utf8               a
-  #18 = Utf8               StackMapTable
-  #19 = Utf8               SourceFile
-  #20 = Utf8               ForLoopTest.java
-  #21 = NameAndType        #4:#5          // "<init>":()V
-  #22 = Utf8               main/com/rfrench/jvm/simulated_programs/ForLoopTest
-  #23 = Utf8               java/lang/Object
+   #8 = Utf8               main
+   #9 = Utf8               ([Ljava/lang/String;)V
+  #10 = Utf8               StackMapTable
+  #11 = Utf8               SourceFile
+  #12 = Utf8               ForLoopTest.java
+  #13 = NameAndType        #4:#5          // "<init>":()V
+  #14 = Utf8               main/com/rfrench/jvm/simulated_programs/ForLoopTest
+  #15 = Utf8               java/lang/Object
 {
   public main.com.rfrench.jvm.simulated_programs.ForLoopTest();
     descriptor: ()V
@@ -40,10 +32,7 @@ Constant pool:
          1: invokespecial #1                  // Method java/lang/Object."<init>":()V
          4: return
       LineNumberTable:
-        line 30: 0
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-            0       5     0  this   Lmain/com/rfrench/jvm/simulated_programs/ForLoopTest;
+        line 5: 0
 
   public static void main(java.lang.String[]);
     descriptor: ([Ljava/lang/String;)V
@@ -65,16 +54,11 @@ Constant pool:
         18: goto          5
         21: return
       LineNumberTable:
-        line 34: 0
-        line 36: 3
-        line 38: 11
-        line 36: 15
-        line 40: 21
-      LocalVariableTable:
-        Start  Length  Slot  Name   Signature
-            5      16     2     i   I
-            0      22     0  args   [Ljava/lang/String;
-            3      19     1     a   I
+        line 9: 0
+        line 11: 3
+        line 13: 11
+        line 11: 15
+        line 15: 21
       StackMapTable: number_of_entries = 2
         frame_type = 253 /* append */
           offset_delta = 5

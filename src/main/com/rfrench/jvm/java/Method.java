@@ -40,6 +40,9 @@ import org.json.simple.JSONObject;
     Version: 1.0
 */
 
+/*
+    
+*/
 public class Method 
 {
     private final int HEX = 16;
@@ -210,7 +213,11 @@ public class Method
         
         return value;
     }
-           
+          
+    /*
+        Create a Opcode ArrayList containing all the opcodes of the class file
+        Hence an ArrayList of hex values        
+    */
     private void extractOpcodes()
     {
         final int PARSED_DATA_SIZE = parsed_code_data.size();
@@ -233,31 +240,32 @@ public class Method
                
                 method_opcode.add(Integer.parseInt(bytecode, HEX));
                 
-                if(checkBranchOpcode(word, count))
-                {
-                    count++;
-                }
-                
-                if(checkStackOpcode(word, count))
-                {
-                    count ++;
-                }
-                
-                if(checkIINCOpcode(word, count))
-                {
-                    count += 2;
-                }
-                
-                if(checkMethodOpcode(word, count))
-                {
-                    count += 2;
-                }
+                checkBytecode(word, count);
             }
                         
             count++;
         }
     }        
           
+    private int checkBytecode(String word, int count)
+    {
+        int temp_count = count;
+                
+        if(checkBranchOpcode(word, count))
+            temp_count++;        
+
+        if(checkStackOpcode(word, count))        
+            temp_count ++;        
+
+        if(checkIINCOpcode(word, count))        
+            temp_count += 2;
+        
+        if(checkMethodOpcode(word, count))        
+            temp_count += 2;        
+        
+        return temp_count;
+    }
+    
     private boolean checkMethodOpcode(String word, int index)
     {
         boolean is_method_opcode = false;
@@ -267,11 +275,7 @@ public class Method
         method_keywords.add("INVOKESPECIAL");
         method_keywords.add("INVOKESTATIC");
         
-        String pattern_string_operand = "\\b(" + StringUtils.join(method_keywords, "|") + ")\\b";
-        
-        Pattern pattern = Pattern.compile(pattern_string_operand);
-        
-        Matcher matcher = pattern.matcher(word);        
+        Matcher matcher = setupMatcher(method_keywords, word);      
         
         if(matcher.find())
         {            
@@ -297,6 +301,36 @@ public class Method
         return is_method_opcode;
     }
     
+    private boolean checkSwitch(String word, int index)
+    {
+        boolean switch_opcode = false;
+        
+        List<String> operand_keywords = new ArrayList<String>();
+        
+        operand_keywords.add("LOOKUPSWITCH");
+        
+        Matcher matcher = setupMatcher(operand_keywords, word);
+           
+        if(matcher.find())
+        {
+            
+        }
+        
+        
+        return switch_opcode;
+    }
+    
+    private Matcher setupMatcher(List<String> operand_keywords, String word)
+    {
+        String pattern_string_operand = "\\b(" + StringUtils.join(operand_keywords, "|") + ")\\b";
+        
+        Pattern pattern = Pattern.compile(pattern_string_operand);
+        
+        Matcher matcher = pattern.matcher(word);  
+        
+        return matcher;
+    }
+    
     private boolean checkStackOpcode(String word, int index)
     {
         boolean stack_opcode = false;
@@ -309,12 +343,7 @@ public class Method
         operand_keywords.add("LSTORE");
         operand_keywords.add("LDC2_W");
         
-        
-        String pattern_string_operand = "\\b(" + StringUtils.join(operand_keywords, "|") + ")\\b";
-        
-        Pattern pattern = Pattern.compile(pattern_string_operand);
-        
-        Matcher matcher = pattern.matcher(word);        
+        Matcher matcher = setupMatcher(operand_keywords, word);     
         
         if(matcher.find())
         {
@@ -381,11 +410,7 @@ public class Method
         branch_keywords.add("IF_ICMPEQ");
         branch_keywords.add("GOTO");        
         
-        String pattern_string_branch = "\\b(" + StringUtils.join(branch_keywords, "|") + ")\\b";
-        
-        Pattern pattern = Pattern.compile(pattern_string_branch);
-        
-        Matcher matcher = pattern.matcher(word);
+        Matcher matcher = setupMatcher(branch_keywords, word);
         
         if(matcher.find())
         {

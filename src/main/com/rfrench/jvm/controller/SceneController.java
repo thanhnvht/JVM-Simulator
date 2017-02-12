@@ -88,6 +88,8 @@ public class SceneController implements Initializable {
     @FXML
     private ListView constant_pool_listview;
     @FXML
+    private ListView java_code_listview;
+    @FXML
     private StackPane register_pane;
     
     private MainScene main_scene;
@@ -115,7 +117,6 @@ public class SceneController implements Initializable {
         before_branch_button_press = -1;     
     }
     
-
     @Override
     public void initialize(URL url, ResourceBundle rb) 
     {
@@ -250,21 +251,30 @@ public class SceneController implements Initializable {
         DisassembledFileGenerator dfg = new DisassembledFileGenerator(absolute_file_path);
         
         String javap_file_path = dfg.getSavedFilePath();
-        
-        
+        ArrayList<String> java_code_data = dfg.getJavaCode();
         
         class_loader.readFile(javap_file_path);
-        
-        
-        
+                        
         method_area.setupMethodArea(class_loader);
         method_area.setConstantPoolData(class_loader.getConstantPoolData());
-        
-
+               
         bytecode_pane.getTabs().remove(0);
+        
         setupBytecodeTab(method_area);
         setupLocalVariableFrame(method_area);                        
         addConstantPoolData(method_area);
+        addJavaCodeData(java_code_data);
+        
+    }
+    
+    private void addJavaCodeData(ArrayList<String> java_code_data)
+    {
+        for(int i = 0; i < java_code_data.size(); i++)
+        {
+            String java_code_line = java_code_data.get(i);
+            Label java_code_label = new Label(java_code_line);
+            java_code_listview.getItems().add(java_code_label);
+        }
     }
     
     public void pauseButton()

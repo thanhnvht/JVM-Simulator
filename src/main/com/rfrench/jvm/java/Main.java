@@ -22,7 +22,6 @@
     SOFTWARE.
 */
 
-
 package main.com.rfrench.jvm.java;
 
 import main.com.rfrench.jvm.ui.MainScene;
@@ -39,31 +38,20 @@ import main.com.rfrench.jvm.controller.StageController;
 
 public class Main extends Application
 {    
-    public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/while_test_verbose.txt";   
-    //public static final String FILE_PATH = "/main/com/rfrench/jvm/resources/javap/multiple_methods.txt";  
-    
+
     public static final String JSON_FILE_PATH = "/main/com/rfrench/jvm/resources/json/bytecodes.json";             
-           
-    private ExecutionEngine execution_engine;
-    
+
     @Override
     @SuppressWarnings("ResultOfObjectAllocationIgnored")
     public void start(Stage primaryStage)
     {      
-                     
-        //JVMClassLoader class_loader = new JVMClassLoader(FILE_PATH);
-                
         JVMClassLoader class_loader = new JVMClassLoader();
         
-        //class_loader.readFile();
-        
         MethodArea method_area = new MethodArea(); 
-        
-        //MethodArea method_area = new MethodArea(class_loader); 
 
         MainScene main_scene = new MainScene(method_area, primaryStage, class_loader);                 
                 
-        execution_engine = new ExecutionEngine(main_scene, method_area, primaryStage, main_scene.getFXMLController());                                       
+        ExecutionEngine execution_engine = new ExecutionEngine(main_scene, method_area, primaryStage, main_scene.getFXMLController());                                       
                 
         StageController stage_controller = new StageController(primaryStage, main_scene);        
     }

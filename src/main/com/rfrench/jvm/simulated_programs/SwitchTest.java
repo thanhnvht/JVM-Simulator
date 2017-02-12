@@ -38,7 +38,7 @@ public class SwitchTest
         {
             case(10) : b = 20; break;
             case(50) : b = 50; break;
-            case(100): b = 10; break;
+            case(200) : b = 100; break;
         }
     }
 }

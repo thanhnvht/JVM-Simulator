@@ -44,6 +44,14 @@ import org.json.simple.parser.ParseException;
     Version: 1.0
 */
 
+/*
+    Simulation of JVM Classloader
+    Imports a JSON containing details regarding bytecodes
+    Finds the amount of methods within the class file
+    Extracts the Constant Pool data of the class
+    Extracts Method names, access, whether static, whether instance, bytecodes
+    Creates Method Objects containing above information
+*/
 public class JVMClassLoader
 {    
        

@@ -25,8 +25,11 @@ package main.com.rfrench.jvm.java;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 /*
     Program Title: DissambledFileGenerator.java
@@ -38,17 +41,42 @@ public class DisassembledFileGenerator
 {
     private String folder_path;
     private String file_name;
-    private String saved_file_path;
+    private String file_type;
+    private String javap_file_destination;
+    private String[] split_path;
+        
+    private ArrayList<String> java_parsed_code;
+    
+    private final String FILE_ABSOLUTE_PATH;
+    
+    private static final String SCRIPTS_FOLDER_PATH =  "\"" + new File("").getAbsolutePath() + "/src/main/com/rfrench/jvm/resources/scripts/";
+    private final String DESTINATION_FOLDER_PATH =  new File("").getAbsolutePath() + "/src/main/com/rfrench/jvm/resources/javap/";
     
     public DisassembledFileGenerator(String absolute_file_path)
     {
-        System.out.println(absolute_file_path);
+        FILE_ABSOLUTE_PATH = "\"" + absolute_file_path + "\"";
+        split_path = FILE_ABSOLUTE_PATH.split("\\\\"); // Split string by backslash '/'
         
-        String[] split_path = absolute_file_path.split("\\\\"); // Split string by backslash '/'
+        detectFileType();
         
         extractFolderPath(split_path);
         extractFileName(split_path);      
-        saveDissambledFile();
+        
+        if(file_type.equals("java"))
+        {
+            parseJavaFile();
+            runJavaCompiler();
+        }
+        
+        saveJavaPFile();
+    }
+    
+    private void detectFileType()
+    {        
+        
+        file_type = FILE_ABSOLUTE_PATH.split("\\.")[1]; //Presuming all file paths have only one dot
+        
+        file_type = file_type.substring(0, file_type.length() - 1); //Remove trailing "                
     }
     
     private void extractFolderPath(String[] split_path)
@@ -59,23 +87,49 @@ public class DisassembledFileGenerator
         {
             folder_path += split_path[i] + "/";
         }        
+        
+        folder_path += "\"";
     }
     
     private void extractFileName(String[] split_path)
     {        
         int end_word_count = split_path.length - 1;
         
-        file_name = split_path[end_word_count];
+        file_name = split_path[end_word_count];                
         
         file_name = file_name.substring(0, file_name.indexOf('.'));               
     }
  
-    private void saveDissambledFile()
+    private void runJavaCompiler()
     {
-        saved_file_path =  new File("").getAbsolutePath() + "/src/main/com/rfrench/jvm/resources/javap/" + file_name + ".txt";                       
-        String script_file_path = "\"" + new File("").getAbsolutePath() + "/src/main/com/rfrench/jvm/resources/scripts/test.bat\"";
+        final String JAVAC_SCRIPT_PATH = SCRIPTS_FOLDER_PATH + "javac_script.bat\"";
+
+        ProcessBuilder javac = new ProcessBuilder(JAVAC_SCRIPT_PATH, FILE_ABSOLUTE_PATH);
         
-        ProcessBuilder javap = new ProcessBuilder(script_file_path, folder_path, file_name, "\"" + saved_file_path + "\"");
+        try
+        {
+            Process p = javac.start();
+        }
+        
+        catch(IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+    
+    private void saveJavaPFile()
+    {
+        javap_file_destination =  "\"" + DESTINATION_FOLDER_PATH + file_name + ".txt\"";                       
+                        
+        final String JAVAP_SCRIPT_PATH = SCRIPTS_FOLDER_PATH + "javap_script.bat\"";
+        
+        System.out.println("javap");
+        System.out.println(folder_path);
+        System.out.println(file_name);
+        
+        ProcessBuilder javap = new ProcessBuilder(JAVAP_SCRIPT_PATH, folder_path, file_name, javap_file_destination);
+        
+        boolean error_found = false;
         
         try
         {
@@ -83,11 +137,19 @@ public class DisassembledFileGenerator
             
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             
-            String line;
-            
+            String line = null;
+                        
             while((line = br.readLine()) != null)
+            {
+                if(!error_found)
+                {
+                    error_found = true;
+                    System.out.println("* JavaP Script Error *");
+                }
+                
                 System.out.println(line);
-            
+            }
+
             //setup alert if error stream contains values
             //http://code.makery.ch/blog/javafx-dialogs-official/
                         
@@ -99,8 +161,37 @@ public class DisassembledFileGenerator
         }
     }
     
+    private void parseJavaFile()
+    {
+        String temp_path = FILE_ABSOLUTE_PATH.replaceAll("\"", "");
+        
+        java_parsed_code = new ArrayList<String>();
+        
+        try
+        {
+            Scanner sc = new Scanner(new File(temp_path));  
+            
+            while(sc.hasNext())
+            {
+                String line = sc.nextLine();
+                java_parsed_code.add(line);
+            }
+        }
+        
+        catch(FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+    
     public String getSavedFilePath()
     {
-        return saved_file_path;
+        return javap_file_destination.replaceAll("\"", "");
+    }
+    
+    public ArrayList<String> getJavaCode()
+    {
+        return java_parsed_code;
     }
 }
