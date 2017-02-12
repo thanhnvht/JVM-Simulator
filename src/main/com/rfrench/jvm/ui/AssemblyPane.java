@@ -15,6 +15,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeView;
 import static main.com.rfrench.jvm.java.Main.JSON_FILE_PATH;
 import main.com.rfrench.jvm.java.MethodArea;
 import org.json.simple.JSONArray;
@@ -100,7 +102,7 @@ public class AssemblyPane
             {
                 String line_number = line_numbers.get(j);
 
-                String bytecode = bytecode_text.get(j);                                
+                String bytecode = bytecode_text.get(j);                                                                
                 
                 Label new_label = new Label(line_number + "\t" + bytecode);
                     
@@ -134,7 +136,6 @@ public class AssemblyPane
                 {
                     word = word.substring(0, word.indexOf(' '));
                 }
-
                 
                 if (bytecode_details_map.containsKey(word)) 
                 {

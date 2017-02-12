@@ -337,30 +337,52 @@ public class Method
         ArrayList<Integer> case_values = getCaseValues(start_index, end_index);
         ArrayList<Integer> branch_values = getBranchValues(start_index, end_index);            
 
+        int number_of_switch_cases = branch_values.size(); //includes a default case 
+                                                           //which is unseen in 
+                                                           //normal java code
+        
+        method_opcode.add(number_of_switch_cases);
+        
+        final int NUMBER_OF_PADDED_ENTRIES = 3;
+        final int DEFAULT_SWITCH_UNIQUE_VALUE = 0;
+        
         for(int i = 0; i < branch_values.size(); i++)
         {
+            addOpcodePadding(NUMBER_OF_PADDED_ENTRIES);
+            
             if(i == branch_values.size() - 1)
             {
-                method_opcode.add(0); //NEED TO MAKE THIS UNIQUE VALUE SO EXECUTION
-                                      //ENGINE KNOWS IT MEANS THE DEFAULT VALUE
+                method_opcode.add(DEFAULT_SWITCH_UNIQUE_VALUE); 
             }
             else
             {
                 method_opcode.add(case_values.get(i));
             }
             
+            addOpcodePadding(NUMBER_OF_PADDED_ENTRIES);
             method_opcode.add(branch_values.get(i));
         }
         
     }
     
+    private void addOpcodePadding(int number_padded_values)
+    {
+        final int PAD_VALUE = 0;
+        
+        for(int i = 0; i < number_padded_values; i++)
+        {
+            method_opcode.add(PAD_VALUE);
+        }
+    }
+    
     private ArrayList<Integer> getCaseValues(int start_index, int end_index)
     {
         ArrayList<Integer> case_values = new ArrayList<Integer>();
-        
+
         for(int i = start_index; i < end_index; i++)
         {
             String case_word = parsed_code_data.get(i);
+            
             
             if(case_word.contains(":") && !case_word.equals("default:"))
             {
@@ -368,7 +390,7 @@ public class Method
                 
                 int case_value = Integer.parseInt(case_word);
 
-                case_values.add(case_value);                
+                case_values.add(case_value);   
             }
         }
         
@@ -378,7 +400,7 @@ public class Method
     private ArrayList<Integer> getBranchValues(int start_index, int end_index)
     {
         ArrayList<Integer> branch_values = new ArrayList<Integer>();
-        
+
         for(int i = start_index; i < end_index; i++)
         {
             String branch_word = parsed_code_data.get(i);

@@ -34,13 +34,16 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.Initializable;
 import javafx.fxml.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
@@ -72,7 +75,7 @@ public class SceneController implements Initializable {
     @FXML
     private TabPane bytecode_pane;   
     @FXML
-    private ScrollPane bytecode_info_pane;
+    private TitledPane bytecode_info_pane;
     @FXML
     private Button next_button;
     @FXML
@@ -91,6 +94,8 @@ public class SceneController implements Initializable {
     private ListView java_code_listview;
     @FXML
     private StackPane register_pane;
+    @FXML
+    private MenuItem menu_item_credits;
     
     private MainScene main_scene;
     private AssemblyPane assembly_pane;
@@ -187,7 +192,6 @@ public class SceneController implements Initializable {
         
         register_pane.getChildren().add(PC_label);
     }
-
     
     public void updateRegister(int value)
     {
@@ -286,6 +290,16 @@ public class SceneController implements Initializable {
     {
         
     }
+    
+    public void creditsMenuItem()
+    {
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Credits");
+        alert.setContentText("Icons made by: Freepik");
+
+        alert.showAndWait();
+    }
+    
     
     public void setMainScene(MainScene main_scene)
     {
@@ -468,6 +482,27 @@ public class SceneController implements Initializable {
           local_variable_p.removeFrameUI(current_method);        
           
           bytecode_info_p.addByteCodeInfo("Returning from Method");     
+    }
+    
+    public void LOOKUPSWITCH(ArrayList<Integer> switch_cases, ArrayList<Integer> switch_branches)
+    {
+        operand_stack_p.pop();
+        
+        int number_of_cases = switch_cases.size();
+        bytecode_info_p.addByteCodeInfo("Switch Statement");
+        
+        for(int i = 0; i < number_of_cases; i++)
+        {
+            if(i == number_of_cases - 1)
+            {
+                 bytecode_info_p.addByteCodeInfo("    Default, Branch to: " + switch_branches.get(i));
+            }
+            else
+            {
+                bytecode_info_p.addByteCodeInfo("    Case: " + switch_cases.get(i) + ": Branch to: " + switch_branches.get(i));
+            }
+        }
+                
     }
     
 }

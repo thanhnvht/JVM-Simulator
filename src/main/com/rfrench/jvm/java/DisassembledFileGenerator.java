@@ -65,7 +65,7 @@ public class DisassembledFileGenerator
         switch(file_type)
         {
             case("java") :  parseJavaFile();
-                            //runJavaCompiler();                            
+                            runJavaCompiler();                            
                 
             case("class") : saveJavaPFile();
                             break;
@@ -126,40 +126,40 @@ public class DisassembledFileGenerator
                         
         final String JAVAP_SCRIPT_PATH = SCRIPTS_FOLDER_PATH + "javap_script.bat\"";
 
-//        ProcessBuilder javap = new ProcessBuilder(JAVAP_SCRIPT_PATH, folder_path, file_name, javap_file_destination);
-//        
-//        boolean error_found = false;
-//        
-//        try
-//        {
-//            Process p = javap.start();
-//            
-//            BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-//            
-//            String line = null;
-//                        
-//            while((line = br.readLine()) != null)
-//            {
-//                if(!error_found)
-//                {
-//                    error_found = true;
-//                    System.out.println("* JavaP Script Error *");
-//                }
-//                
-//                System.out.println(line);
-//            }
-//
-//            //setup alert if error stream contains values
-//            //http://code.makery.ch/blog/javafx-dialogs-official/
-//                 
-//            Thread.sleep(1000);
-//            
-//        }
-//        
-//        catch(IOException | InterruptedException e)
-//        {
-//            e.printStackTrace();
-//        }
+        ProcessBuilder javap = new ProcessBuilder(JAVAP_SCRIPT_PATH, folder_path, file_name, javap_file_destination);
+        
+        boolean error_found = false;
+        
+        try
+        {
+            Process p = javap.start();
+            
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+            
+            String line = null;
+                        
+            while((line = br.readLine()) != null)
+            {
+                if(!error_found)
+                {
+                    error_found = true;
+                    System.out.println("* JavaP Script Error *");
+                }
+                
+                System.out.println(line);
+            }
+
+            //setup alert if error stream contains values
+            //http://code.makery.ch/blog/javafx-dialogs-official/
+                 
+            Thread.sleep(1000);
+            
+        }
+        
+        catch(IOException | InterruptedException e)
+        {
+            e.printStackTrace();
+        }
     }
     
     private void parseJavaFile()

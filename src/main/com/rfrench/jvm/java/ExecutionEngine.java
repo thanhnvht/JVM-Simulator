@@ -24,6 +24,7 @@
 
 package main.com.rfrench.jvm.java;
 
+import java.util.ArrayList;
 import javafx.stage.Stage;
 import main.com.rfrench.jvm.controller.SceneController;
 import main.com.rfrench.jvm.ui.MainScene;
@@ -598,7 +599,52 @@ public class ExecutionEngine
     
     private void LOOKUPSWITCH()
     {
-        System.out.println("Test");
+        ArrayList<Integer> current_method_opcodes = method_area.getMethod(current_method_count).getMethodOpcodes();
+        ArrayList<Integer> switch_cases = new ArrayList<Integer>();
+        ArrayList<Integer> switch_branches = new ArrayList<Integer>();
+        
+        final int NUMBER_OF_PADDED_ENTRIES = 3;
+        
+        int switch_condition_value = method_area.popOperandStack(); 
+        
+        PC++;                        
+        int number_of_switch_cases = current_method_opcodes.get(PC); // -1 for the hidden default switch case
+                                       
+        for(int i = 0; i < number_of_switch_cases; i++)
+        {
+            PC += NUMBER_OF_PADDED_ENTRIES;
+            PC++;
+            int switch_case = current_method_opcodes.get(PC);
+            switch_cases.add(switch_case);
+            
+            PC += NUMBER_OF_PADDED_ENTRIES;
+            PC++;
+            int switch_branch_value = current_method_opcodes.get(PC);
+            switch_branches.add(switch_branch_value);
+        }
+        
+        boolean switch_case_found = false;
+        
+        for(int i = 0; i < number_of_switch_cases - 1; i++)
+        {
+            int switch_case = switch_cases.get(i);
+            
+            if(switch_case == switch_condition_value)
+            {
+                int switch_branch_value = switch_branches.get(i) - 1;
+                PC = switch_branch_value;
+                switch_case_found = true;
+            }
+        }
+        
+        if(!switch_case_found)
+        {
+            int switch_branch_value = switch_branches.get(number_of_switch_cases - 1);
+            switch_branch_value -= 1;
+            PC = switch_branch_value;
+        }
+                        
+        scene_controller.LOOKUPSWITCH(switch_cases, switch_branches);
     }
     
     public boolean isBranch()
@@ -630,4 +676,5 @@ public class ExecutionEngine
     {
         return program_complete;
     }
+    
 }
