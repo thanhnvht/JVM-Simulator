@@ -366,12 +366,34 @@ public class SceneController implements Initializable {
         bytecode_info_p.addByteCodeInfo("Loading a value from local variable frame");
     }
     
+    public void IARITHMETIC(String arithmetic_symbol)            
+    {
+        String label_name = operand_stack_p.getStackText();     
+        operand_stack_p.pop();
+        
+        label_name = operand_stack_p.getStackText() + " " + arithmetic_symbol + " " + label_name;                                           
+        operand_stack_p.pop();
+        
+        operand_stack_p.push(label_name); 
+    }
+    
     public void IADD()
     {       
         String label_name = operand_stack_p.getStackText();     
         operand_stack_p.pop();
         
         label_name = operand_stack_p.getStackText() + " + " + label_name;                                           
+        operand_stack_p.pop();
+        
+        operand_stack_p.push(label_name);
+    }
+    
+    public void ISUB()
+    {
+        String label_name = operand_stack_p.getStackText();     
+        operand_stack_p.pop();
+        
+        label_name = operand_stack_p.getStackText() + " - " + label_name;                                           
         operand_stack_p.pop();
         
         operand_stack_p.push(label_name);
@@ -387,25 +409,20 @@ public class SceneController implements Initializable {
         
     }
     
-    public void ISUB()
+    public void branchComparisionZero()
     {
-        String label_name = operand_stack_p.getStackText();     
         operand_stack_p.pop();
-        
-        label_name = operand_stack_p.getStackText() + " - " + label_name;                                           
-        operand_stack_p.pop();
-        
-        operand_stack_p.push(label_name);
+        bytecode_info_p.addByteCodeInfo("Conditional Branch"); 
     }
     
-    public void IF_ICMPEQ()
+    public void branchComparisionNonZero()
     {
         operand_stack_p.pop();
         operand_stack_p.pop();
 
-        bytecode_info_p.addByteCodeInfo("Branch bytecode");      
+        bytecode_info_p.addByteCodeInfo("Conditional Branch");  
     }
-    
+        
     public void GOTO(int offset, ArrayList<String> Linenumbers, int current_method)
     {          
         String offset_string = Integer.toString(offset);

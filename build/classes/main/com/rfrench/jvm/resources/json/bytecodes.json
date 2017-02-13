@@ -48,7 +48,14 @@
 	        "Name":"BIPUSH",
 	        "Opcode":"10",
 	        "Total Operands":1,
-	        "Tooltip": "BIPUSH - Push a value onto the stack"    
+	        "Tooltip": "BIPUSH - Push a byte onto the stack"    
+	    },
+
+	    {
+	        "Name":"SIPUSH",
+	        "Opcode":"11",
+	        "Total Operands":2,
+	        "Tooltip": "SIPUSH - Push a short onto the stack"    
 	    },
 
 	    {
@@ -157,10 +164,38 @@
 	    },  	    
 
 	    {
+	        "Name":"IFNE",
+	        "Opcode":"9A",
+	        "Total Operands": 2,
+	        "Tooltip" : "IFEQ - If value is not 0, branch to line number in operand"
+	    },  	
+
+	    {
 	        "Name":"IFLT",
 	        "Opcode":"9B",
 	        "Total Operands": 2,
 	        "Tooltip" : "IFLT - If value is less than 0, branch to the line number given"
+	    },  
+
+	    {
+	        "Name":"IFGE",
+	        "Opcode":"9C",
+	        "Total Operands": 2,
+	        "Tooltip" : "IFGE - If value is greater than or equal to 0, branch to operand number"
+	    },  
+
+	    {
+	        "Name":"IFGT",
+	        "Opcode":"9D",
+	        "Total Operands": 2,
+	        "Tooltip" : "IFGT - If value is greater than 0, branch to operand number"
+	    },  
+
+	    {
+	        "Name":"IFLE",
+	        "Opcode":"9E",
+	        "Total Operands": 2,
+	        "Tooltip" : "IFLE - If value is less than or equal to 0, branch to operand number"
 	    },  
 
 	    {
@@ -358,6 +393,34 @@
 	    	"Opcode" : "3A",
 	    	"Total Operands" : 1,
 	    	"Tooltip" : "ASTORE - Store a reference to an array into the local variable frame"
+	    },
+
+	    {
+	    	"Name" : "IMUL",
+	    	"Opcode" : "68",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "IMUL - Multiply two integers from the operand stack. Push result onto operand stack"
+	    },
+
+	    {
+	    	"Name" : "IDIV",
+	    	"Opcode" : "6C",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "IDIV - Divide two integers from the operand stack. Push result onto operand stack"
+	    },
+
+	    {
+	    	"Name" : "IREM",
+	    	"Opcode" : "70",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "IREM - Divide two integers from operand stack. Push remainder onto operand stack"
+	    },
+
+	    {
+	    	"Name" : "ICONST_M1",
+	    	"Opcode" : "02",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "ICONST_M1 - Push -1 onto the operand stack"
 	    },
 	]
 }

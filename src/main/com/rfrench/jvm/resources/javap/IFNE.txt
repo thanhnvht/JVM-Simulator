@@ -1,0 +1,69 @@
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/src/main/com/rfrench/jvm/simulated_programs/IFNE.class
+  Last modified 13-Feb-2017; size 368 bytes
+  MD5 checksum f0860bbca9eb6886355f98984af78ea7
+  Compiled from "IFNE.java"
+public class main.com.rfrench.jvm.simulated_programs.IFNE
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #3.#13         // java/lang/Object."<init>":()V
+   #2 = Class              #14            // main/com/rfrench/jvm/simulated_programs/IFNE
+   #3 = Class              #15            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               main
+   #9 = Utf8               ([Ljava/lang/String;)V
+  #10 = Utf8               StackMapTable
+  #11 = Utf8               SourceFile
+  #12 = Utf8               IFNE.java
+  #13 = NameAndType        #4:#5          // "<init>":()V
+  #14 = Utf8               main/com/rfrench/jvm/simulated_programs/IFNE
+  #15 = Utf8               java/lang/Object
+{
+  public main.com.rfrench.jvm.simulated_programs.IFNE();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 5: 0
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=1, locals=3, args_size=1
+         0: bipush        10
+         2: istore_1
+         3: iconst_0
+         4: istore_2
+         5: iload_1
+         6: ifne          13
+         9: sipush        777
+        12: istore_1
+        13: iload_2
+        14: ifne          21
+        17: sipush        777
+        20: istore_2
+        21: return
+      LineNumberTable:
+        line 9: 0
+        line 10: 3
+        line 13: 5
+        line 15: 9
+        line 19: 13
+        line 21: 17
+        line 24: 21
+      StackMapTable: number_of_entries = 2
+        frame_type = 253 /* append */
+          offset_delta = 13
+          locals = [ int, int ]
+        frame_type = 7 /* same */
+}
+SourceFile: "IFNE.java"

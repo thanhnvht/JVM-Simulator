@@ -435,7 +435,7 @@ public class Method
         
         List<String> operand_keywords = new ArrayList<String>();
         
-        operand_keywords.add("BIPUSH");
+        operand_keywords.add("BIPUSH");        
         operand_keywords.add("ILOAD");
         operand_keywords.add("ISTORE");
         operand_keywords.add("LSTORE");
@@ -448,7 +448,7 @@ public class Method
             int operand_index = index + 1;                        
             
             String operand_string = parsed_code_data.get(operand_index);
-            
+
             if(operand_string.indexOf('#') != -1)
             {
                 operand_string = operand_string.substring(operand_string.indexOf('#') + 1);
@@ -464,7 +464,7 @@ public class Method
         }
                 
         return stack_opcode;
-    }
+    }        
     
     private boolean checkIINCOpcode(String word, int index)
     {
@@ -500,13 +500,22 @@ public class Method
         
         List<String> branch_keywords = new ArrayList<String>();
         
+        branch_keywords.add("IFNE");
         branch_keywords.add("IFEQ");
+        branch_keywords.add("IFGE");
+        branch_keywords.add("IFGT");
+        branch_keywords.add("IFLE");
         branch_keywords.add("IFLT");
-        branch_keywords.add("IF_ICMPGQ");  
+        
         branch_keywords.add("IF_ICMPGE");
+        branch_keywords.add("IF_ICMPGT");
         branch_keywords.add("IF_ICMPNE");
         branch_keywords.add("IF_ICMPEQ");
-        branch_keywords.add("GOTO");        
+        branch_keywords.add("IF_ICMPLE");
+        branch_keywords.add("IF_ICMPLT");
+        
+        branch_keywords.add("GOTO");  
+        branch_keywords.add("SIPUSH");
         
         Matcher matcher = setupMatcher(branch_keywords, word);
         

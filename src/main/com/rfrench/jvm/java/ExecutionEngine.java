@@ -86,6 +86,7 @@ public class ExecutionEngine
             //Change this to HashMap?
             switch(bytecode)
             {
+                case ("2") :  ICONST(-1);      break;  //ICONST_M1
                 case ("3") :  ICONST(0);       break;  //ICONST_0
                 case ("4") :  ICONST(1);       break;  //ICONST_1
                 case ("5") :  ICONST(2);       break;  //ICONST_2
@@ -93,6 +94,7 @@ public class ExecutionEngine
                 case ("7") :  ICONST(4);       break;  //ICONST_4
                 case ("8") :  ICONST(5);       break;  //ICONST_5
                 case ("10"):  BIPUSH();        break;   
+                case ("11"):  SIPUSH();        break;
                 case ("14"):  LDC2_W();        break;
                 case ("15"):  ILOAD(-1);       break;  //ILOAD
                 case ("1A"):  ILOAD(0);        break;  //ILOAD_0
@@ -106,14 +108,20 @@ public class ExecutionEngine
                 case ("3D"):  ISTORE(2);       break;  //ISTORE_2
                 case ("3E"):  ISTORE(3);       break;  //ISTORE_3
                 case ("60"):  IADD();          break;
-                case ("64"):  ISUB();          break;                    
-                case ("9F"):  IF_ICMPEQ();     break;                                   
+                case ("64"):  ISUB();          break;
+                case ("68"):  IMUL();          break;
+                case ("6C"):  IDIV();          break;
+                case ("70"):  IREM();          break;                                                 
                 case ("A7"):  GOTO();          break;
                 case ("59"):  DUP();           break;
+                case ("84"):  IINC();          break;
                 case ("7E"):  IAND();          break;
                 case ("99"):  IFEQ();          break;
+                case ("9A"):  IFNE();          break;                
                 case ("9B"):  IFLT();          break;
-                case ("84"):  IINC();          break;
+                case ("9C"):  IFGE();          break;
+                case ("9D"):  IFGT();          break;
+                case ("9E"):  IFLE();          break;
 //                case ("B6"):  INVOKEVIRTUAL(); break;
 //                case ("80"):  IOR();           break;
 //                case ("AC"):  IRETURN();       break;
@@ -121,13 +129,17 @@ public class ExecutionEngine
                 case ("00"):  NOP();           break;
                 case ("57"):  POP();           break;
                 case ("5F"):  SWAP();          break;
-                case ("A2"):  IF_ICMPGE();     break;                                 
+                case ("A2"):  IF_ICMPGE();     break;
+                case ("A3"):  IF_ICMPGT();     break;
+                case ("A4"):  IF_ICMPLE();     break;
+                case ("A1"):  IF_ICMPLT();     break;
                 case ("A0"):  IF_ICMPNE();     break;
+                case ("9F"):  IF_ICMPEQ();     break;
 //                case ("0xC4"):  WIDE();          break;
                 case ("B1"):  RETURN();        break;
                 case ("2A"):  ALOAD_0();       break;
                 case ("B7"):  INVOKESPECIAL(); break;
-                case ("B8"):  INVOKESTATIC (); break;
+                case ("B8"):  INVOKESTATIC(); break;
                 case ("AB"):  LOOKUPSWITCH();  break;
             }                         
 
@@ -250,6 +262,21 @@ public class ExecutionEngine
         scene_controller.BIPUSH(Integer.toString(value));
     }
     
+    private void SIPUSH()
+    {
+        Method m = method_area.getMethod(current_method_count);
+        
+        PC++;              
+        
+        int value = m.getMethodOpcodes().get(PC);       
+        PC++;
+        value += m.getMethodOpcodes().get(PC); 
+        
+        method_area.pushOperandStack(value);
+                         
+        scene_controller.BIPUSH(Integer.toString(value));
+    }
+    
     /**
      * Move current position in program according to the value
      * of the two parameters
@@ -284,9 +311,62 @@ public class ExecutionEngine
         
         method_area.pushOperandStack(add_result);
                              
-        scene_controller.IADD();
+        String arithmetic_symbol = "+";
+        scene_controller.IARITHMETIC(arithmetic_symbol);
     }
 
+    private void ISUB() 
+    {        
+        int value_1 = method_area.popOperandStack();
+        int value_2 = method_area.popOperandStack();
+                     
+        int sub_value = value_2 - value_1;
+        
+        method_area.pushOperandStack(sub_value);
+        
+        String arithmetic_symbol = "-";
+        scene_controller.IARITHMETIC(arithmetic_symbol);
+    }
+    
+    private void IDIV()
+    {
+        int value_1 = method_area.popOperandStack();        
+        int value_2 = method_area.popOperandStack();
+               
+        int div_result = value_2 / value_1;
+        
+        method_area.pushOperandStack(div_result);
+              
+        String arithmetic_symbol = "/";
+        scene_controller.IARITHMETIC(arithmetic_symbol);
+    }
+    
+    private void IMUL()
+    {
+        int value_1 = method_area.popOperandStack();
+        int value_2 = method_area.popOperandStack();
+                     
+        int mul_result = value_2 * value_1;
+        
+        method_area.pushOperandStack(mul_result);
+        
+        String arithmetic_symbol = "*";
+        scene_controller.IARITHMETIC(arithmetic_symbol);
+    }
+    
+    private void IREM()
+    {
+        int value_1 = method_area.popOperandStack();
+        int value_2 = method_area.popOperandStack();
+                     
+        int remainder_result = value_2 % value_1;
+        
+        method_area.pushOperandStack(remainder_result);
+        
+        String arithmetic_symbol = "%";
+        scene_controller.IARITHMETIC(arithmetic_symbol);
+    }
+    
     private void LDC2_W()
     {
         Method m = method_area.getMethod(current_method_count);
@@ -319,26 +399,223 @@ public class ExecutionEngine
     {
           
     }
+       
+    private void IFNE()
+    {
+        int offset = branchGetOffset();
+        int number_to_pop = 1;        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (0 != operand_stack_values[0])
+        {
+            branchTrue(offset);
+            
+        }
+                
+        scene_controller.branchComparisionZero();
+    }
+            
+    private void IFEQ()
+    {
+        int offset = branchGetOffset();
+        int number_to_pop = 1;        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (0 == operand_stack_values[0])
+        {
+            branchTrue(offset);
+        }
         
-    /**
-     * IF_ICMPEQ Opcode Command
-     * Branch to new location in program if the two values on the
-     * top of operand stack are equal
-     */
-    private void IF_ICMPEQ() 
-    {           
-    
-        
-//        if (stack_element_1 == stack_element_2)       
-//        {
-//            calculateBranch(offset);       
-//        }
-                       
-//        main_controller.IF_ICMPEQ();
+        scene_controller.branchComparisionZero();       
     }
     
+    private void IFLT()
+    {
+        int offset = branchGetOffset();
+        int number_to_pop = 1;        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (0 < operand_stack_values[0])
+        {
+            branchTrue(offset);
+        }
+        
+        scene_controller.branchComparisionZero();
+    }
+    
+    private void IFLE()
+    {
+        int offset = branchGetOffset();
+        int number_to_pop = 1;        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (0 <= operand_stack_values[0])
+        {
+            branchTrue(offset);
+        }
+        
+        scene_controller.branchComparisionZero();
+    }
+    
+    private void IFGT()
+    {
+        int offset = branchGetOffset();
+        int number_to_pop = 1;        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (0 > operand_stack_values[0])
+        {
+            branchTrue(offset);
+        }
+        
+        scene_controller.branchComparisionZero();
+    }
+    
+    private void IFGE()
+    {
+        int offset = branchGetOffset();
+        int number_to_pop = 1;        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (0 <= operand_stack_values[0])
+        {
+            branchTrue(offset);
+        }
+        
+        scene_controller.branchComparisionZero();
+    }
+        
+    private void IF_ICMPEQ() 
+    {           
+        int offset = branchGetOffset();
+
+        int number_to_pop = 2;
+        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (operand_stack_values[1] == operand_stack_values[0])
+        {
+            branchTrue(offset);
+        }
+        
+        scene_controller.branchComparisionNonZero();
+    }
+    
+    private void IF_ICMPNE()
+    {
+        int offset = branchGetOffset();
+
+        int number_to_pop = 2;
+        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (operand_stack_values[1] != operand_stack_values[0])
+        {
+            branchTrue(offset);
+        }
+        
+        scene_controller.branchComparisionNonZero();
+    }
+    
+    private void IF_ICMPGE()
+    {                                   
+        int offset = branchGetOffset();
+
+        int number_to_pop = 2;
+        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (operand_stack_values[1] >= operand_stack_values[0])
+        {
+            branchTrue(offset);
+        }
+        
+        scene_controller.branchComparisionNonZero();
+    }
+        
+    private void IF_ICMPGT()
+    {
+        int offset = branchGetOffset();
+
+        int number_to_pop = 2;
+        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (operand_stack_values[1] > operand_stack_values[0])
+        {
+            branchTrue(offset);
+        }
+        
+        scene_controller.branchComparisionNonZero();
+    }
+    
+    private void IF_ICMPLE()
+    {
+        int offset = branchGetOffset();
+
+        int number_to_pop = 2;
+        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (operand_stack_values[1] <= operand_stack_values[0])
+        {
+            branchTrue(offset);
+        }
+        
+        scene_controller.branchComparisionNonZero();
+    }
+    
+    private void IF_ICMPLT()
+    {
+        int offset = branchGetOffset();
+
+        int number_to_pop = 2;
+        
+        int[] operand_stack_values = getValuesStack(number_to_pop);
+                
+        if (operand_stack_values[1] < operand_stack_values[0])
+        {
+            branchTrue(offset);
+        }
+        
+        scene_controller.branchComparisionNonZero();
+    }
+    
+    private void branchTrue(int offset)
+    {
+        Method m = method_area.getMethod(current_method_count);            
+        PC = offset - 1;      
+        branched = true;            
+        scene_controller.GOTO(offset, m.getMethodLineNumbers(), current_method_count);
+    }
+    
+    private int branchGetOffset()
+    {
+        Method m = method_area.getMethod(current_method_count);
+        
+        PC++;               
+        int offset = m.getMethodOpcodes().get(PC);    
+
+        PC++;           
+        offset += m.getMethodOpcodes().get(PC);
+        
+        return offset;
+    }
+        
+    private int[] getValuesStack(int number_to_pop)
+    {
+        int[] popped_values = new int[number_to_pop];
+        
+        for(int i = 0; i < number_to_pop; i++)
+        {
+            popped_values[i] = method_area.popOperandStack();
+        }
+                
+        return popped_values;
+    }
+                
     private void ILOAD(int frame_index) 
-    {               
+    {                       
         Method m = method_area.getMethod(current_method_count);
         
         int value = Integer.parseInt(m.getLocalVariable(frame_index));
@@ -387,19 +664,7 @@ public class ExecutionEngine
         m.setLocalVariable(frame_index, value);
  
         scene_controller.ISTORE(current_method_count, frame_index, value);
-    }
-    
-    private void ISUB() 
-    {        
-        int value_1 = method_area.popOperandStack();
-        int value_2 = method_area.popOperandStack();
-                     
-        int sub_value = value_2 - value_1;
-        
-        method_area.pushCallStack(sub_value);
-        
-        scene_controller.ISUB();
-    }
+    }    
 
     private void LDC_W()
     {
@@ -430,27 +695,7 @@ public class ExecutionEngine
         method_area.pushOperandStack(value);
         
         method_area.pushOperandStack(value);
-    }
-    
-    private void IFEQ()
-    {
-      
-        
-//        if (x == 0)            
-//        {
-//            PC = (PC + offset - 3);
-//        }
-           
-    }
-    
-    private void IFLT()
-    {
-        
-//        if (x < 0)            
-//        {
-//            PC = (PC + offset - 3);
-//        }
-    }
+    }    
     
     private void IINC()
     {
@@ -492,41 +737,7 @@ public class ExecutionEngine
     {
         
     }
-    
-    private void IF_ICMPGE()
-    {
-        Method m = method_area.getMethod(current_method_count);
-                
-        PC++;               
-        int offset = m.getMethodOpcodes().get(PC);        
-        PC++;           
-        offset += m.getMethodOpcodes().get(PC);
-
-        int value_1 = method_area.popOperandStack();                    
-        int value_2 = method_area.popOperandStack();
-                
-        if (value_2 >= value_1)
-        {
-            PC = offset - 1;                    
-            branched = true;            
-            scene_controller.GOTO(offset, m.getMethodLineNumbers(), current_method_count);
-        }
         
-        scene_controller.IF_ICMPEQ();
-    }
-    
-    private void IF_ICMPNE()
-    {
-
-//        if (x != y)
-//        {
-//            calculateBranch(offset);
-//        }
-                
-//       main_controller.IF_ICMPEQ(offset, m.getMethodLineNumbers());
-    }
-    
-    
     private void RETURN()
     {                
         int previous_method_count = current_method_count;
