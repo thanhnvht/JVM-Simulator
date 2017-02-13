@@ -406,7 +406,7 @@ public class ExecutionEngine
         int number_to_pop = 1;        
         int[] operand_stack_values = getValuesStack(number_to_pop);
                 
-        if (0 != operand_stack_values[0])
+        if (operand_stack_values[0] != 0)
         {
             branchTrue(offset);
             
@@ -421,7 +421,7 @@ public class ExecutionEngine
         int number_to_pop = 1;        
         int[] operand_stack_values = getValuesStack(number_to_pop);
                 
-        if (0 == operand_stack_values[0])
+        if (operand_stack_values[0] == 0)
         {
             branchTrue(offset);
         }
@@ -435,7 +435,7 @@ public class ExecutionEngine
         int number_to_pop = 1;        
         int[] operand_stack_values = getValuesStack(number_to_pop);
                 
-        if (0 < operand_stack_values[0])
+        if (operand_stack_values[0] < 0)
         {
             branchTrue(offset);
         }
@@ -449,7 +449,7 @@ public class ExecutionEngine
         int number_to_pop = 1;        
         int[] operand_stack_values = getValuesStack(number_to_pop);
                 
-        if (0 <= operand_stack_values[0])
+        if (operand_stack_values[0] <= 0)
         {
             branchTrue(offset);
         }
@@ -463,7 +463,7 @@ public class ExecutionEngine
         int number_to_pop = 1;        
         int[] operand_stack_values = getValuesStack(number_to_pop);
                 
-        if (0 > operand_stack_values[0])
+        if (operand_stack_values[0] > 0)
         {
             branchTrue(offset);
         }
@@ -477,7 +477,7 @@ public class ExecutionEngine
         int number_to_pop = 1;        
         int[] operand_stack_values = getValuesStack(number_to_pop);
                 
-        if (0 <= operand_stack_values[0])
+        if (operand_stack_values[0] <= 0)
         {
             branchTrue(offset);
         }
