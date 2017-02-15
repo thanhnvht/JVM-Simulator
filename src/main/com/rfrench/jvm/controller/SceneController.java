@@ -331,6 +331,13 @@ public class SceneController implements Initializable {
         return button_presses_per_method;
     }    
     
+    public String getTopStackElement()
+    {
+        String top_stack_string = operand_stack_p.peek();
+        
+        return top_stack_string;
+    }
+    
     public void ALOAD_0(String value)
     {
         operand_stack_p.push(value);
@@ -407,6 +414,34 @@ public class SceneController implements Initializable {
         
         bytecode_info_p.addByteCodeInfo("Storing a value from local variable frame");
         
+    }
+    
+    public void DUP()
+    {
+        String dup_string = operand_stack_p.peek();
+        
+        operand_stack_p.push(dup_string);
+    }
+
+    public void arrayLoad(String array_value)
+    {
+        operand_stack_p.pop();
+        operand_stack_p.pop();
+        operand_stack_p.push(array_value);
+    }
+    
+    public void arrayStore()
+    {
+        operand_stack_p.pop();
+        operand_stack_p.pop();
+        operand_stack_p.pop();
+    }
+    
+    public void NEWARRAY(String reference)
+    {
+        operand_stack_p.push(reference);
+        
+        bytecode_info_p.addByteCodeInfo("New Array created in Heap");
     }
     
     public void branchComparisionZero()

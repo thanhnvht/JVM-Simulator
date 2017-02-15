@@ -24,6 +24,7 @@
 
 package main.com.rfrench.jvm.java;
 
+import com.google.common.collect.BiMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -61,6 +62,7 @@ public class Method
     private String METHOD_NAME;
     private String METHOD_ACCESS;
         
+    private BiMap ARRAY_TYPE_MAP = MethodArea.ARRAY_TYPES_MAP;
     private HashMap bytecode_details_map;
     private JSONArray bytecode_details_json;
            
@@ -87,6 +89,8 @@ public class Method
         
         local_variable_frame = new String[MAX_LOCAL_VAR_SIZE];
         
+        System.out.println("local frame size: " + local_variable_frame.length);
+        
         METHOD_NAME = findMethodName(method_details.get(0));
         METHOD_ACCESS = method_details.get(1);
         INSTANCE_METHOD = Boolean.getBoolean(method_details.get(2)); //THIS ISN'T WORKING
@@ -96,6 +100,8 @@ public class Method
             //local_variable_frame[0] = METHOD_NAME; //for non main classes
             local_variable_frame[0] = "<init>"; // for main classes
         }        
+        
+        
     }
         
     private String findMethodName(String full_name)
@@ -248,13 +254,13 @@ public class Method
     {
         int temp_count = count;
                 
-        if(checkBranchOpcode(word, count))
+        if(checkIfBranchOpcode(word, count))
             temp_count++;        
 
-        if(checkStackOpcode(word, count))        
+        if(checkIfStackOpcode(word, count))        
             temp_count ++;        
 
-        if(checkIINCOpcode(word, count))        
+        if(checkIfIINCOpcode(word, count))        
             temp_count += 2;
         
         if(checkMethodOpcode(word, count))        
@@ -262,6 +268,8 @@ public class Method
         
         if(checkSwitch(word, count))
             temp_count ++;
+        
+        temp_count += checkIfArray(word, count);        
         
         return temp_count;
     }
@@ -429,14 +437,38 @@ public class Method
         return matcher;
     }
     
-    private boolean checkStackOpcode(String word, int index)
+    private int checkIfArray(String word, int index)
+    {
+        int memory_elements_taken = 0;
+        
+        List<String> operand_keywords = new ArrayList<String>();        
+        operand_keywords.add("NEWARRAY");                
+        Matcher matcher = setupMatcher(operand_keywords, word);     
+        
+        if(matcher.find())
+        {
+            memory_elements_taken = 2;
+            
+            int operand_index = index + 1;           
+            
+            String operand_string = parsed_code_data.get(operand_index);    
+                        
+            int operand_value = (int)ARRAY_TYPE_MAP.get(operand_string);   
+            
+            method_opcode.add(operand_value);                                    
+        }
+                
+        return memory_elements_taken;
+    }
+        
+    private boolean checkIfStackOpcode(String word, int index)
     {
         boolean stack_opcode = false;
         
         List<String> operand_keywords = new ArrayList<String>();
         
         operand_keywords.add("BIPUSH");        
-        operand_keywords.add("ILOAD");
+        operand_keywords.add("ILOAD_");
         operand_keywords.add("ISTORE");
         operand_keywords.add("LSTORE");
         operand_keywords.add("LDC2_W");
@@ -466,7 +498,7 @@ public class Method
         return stack_opcode;
     }        
     
-    private boolean checkIINCOpcode(String word, int index)
+    private boolean checkIfIINCOpcode(String word, int index)
     {
         boolean iinc_opcode = false;
         
@@ -492,7 +524,7 @@ public class Method
         return iinc_opcode;
     }
     
-    private boolean checkBranchOpcode(String word, int index)
+    private boolean checkIfBranchOpcode(String word, int index)
     {
         final int MAX_BYTE_VALUE = 255;
         
@@ -602,6 +634,8 @@ public class Method
     {
         String local_var = local_variable_frame[index];
 
+        
+        
         return local_var;
     }
     

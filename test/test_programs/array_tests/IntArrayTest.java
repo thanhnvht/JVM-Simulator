@@ -2,13 +2,13 @@
 package test_programs.array_tests;
 
 
-public class ArrayTest {
+public class IntArrayTest {
 
     public static void main(String [] args)
     {
-        int[] test = new int[]{1, 100, 56, -29, 15};
+        int[] test = new int[]{12 ,-100, 43, 12};
         
-        test[2] = test[2] + 10;
+        int x = test[3];
     }
     
 }

@@ -23,17 +23,114 @@
  */
 package main.com.rfrench.jvm.java;
 
+import com.google.common.collect.BiMap;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /*
-    Program Title: SceneController.java
+    Program Title: Heap.java
     Author: Ryan French
-    Created: 12-Feb-2016
+    Created: 14-Feb-2016
     Version: 1.0
 */
 
 public class Heap 
 {
+    
+    private BiMap ARRAY_TYPES_MAP = MethodArea.ARRAY_TYPES_MAP;
+
+    private Map<Integer, Object> ARRAYS_MAP;
+
+    private static int array_count;
+    
     public Heap()
     {
+        ARRAYS_MAP = new HashMap();
         
+        array_count = 0;
     }
+    
+    public int addArray(int array_type_code, int array_size)
+    {
+       String array_type = (String)ARRAY_TYPES_MAP.inverse().get(array_type_code);
+       
+       int array_reference = array_count;
+       
+       switch(array_type)
+       {
+           case("int") : int[] int_array = new int[array_size];
+                         ARRAYS_MAP.put(array_reference, int_array);
+                         break;
+                         
+           case("char") : char[] char_array = new char[array_size];
+                          ARRAYS_MAP.put(array_reference, char_array);
+                          break;
+                          
+           case("byte") : byte[] byte_array = new byte[array_size];
+                          ARRAYS_MAP.put(array_reference, byte_array);
+                          break;
+       }
+       
+       
+       array_count++;
+       
+       return array_reference;
+    }
+    
+    public void setElement(int value, int index, int ref)
+    {
+        if(ARRAYS_MAP.get(ref) instanceof int[])
+        {
+            int[] temp_int_array = (int[])ARRAYS_MAP.get(ref);
+            
+            temp_int_array[index] = value;
+        }
+        
+        else if(ARRAYS_MAP.get(ref) instanceof char[])
+        {
+            char[] temp_char_array = (char[])ARRAYS_MAP.get(ref);
+                    
+            temp_char_array[index] = (char)value;
+        }
+        
+        else if(ARRAYS_MAP.get(ref) instanceof byte[])
+        {
+            byte[] temp_array = (byte[])ARRAYS_MAP.get(ref);
+                    
+            temp_array[index] = (byte)value;
+        }
+                
+    }
+    
+    public int getElement(int index, int ref)
+    {
+        int element = 0;
+        
+        if(ARRAYS_MAP.get(ref) instanceof int[])
+        {
+            int[] temp_int_array = (int[])ARRAYS_MAP.get(ref);
+            
+            element = temp_int_array[index];
+        }
+        
+        else if(ARRAYS_MAP.get(ref) instanceof char[])
+        {
+            char[] temp_char_array = (char[])ARRAYS_MAP.get(ref);
+                    
+            element = (char)temp_char_array[index];
+        }
+        
+        else if(ARRAYS_MAP.get(ref) instanceof byte[])
+        {
+            byte[] temp_array = (byte[])ARRAYS_MAP.get(ref);
+                    
+            element = (byte)temp_array[index];
+        }
+                
+        return element;
+    }
+
 }

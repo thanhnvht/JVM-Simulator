@@ -1,0 +1,78 @@
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/test/test_programs/array_tests/LongArrayTest.class
+  Last modified 15-Feb-2017; size 387 bytes
+  MD5 checksum fa5ccfa663bef63e1e1536e75531cd64
+  Compiled from "LongArrayTest.java"
+public class test_programs.array_tests.LongArrayTest
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #13.#22        // java/lang/Object."<init>":()V
+   #2 = Long               12l
+   #4 = Long               -100l
+   #6 = Long               43l
+   #8 = Long               325l
+  #10 = Long               6345l
+  #12 = Class              #23            // test_programs/array_tests/LongArrayTest
+  #13 = Class              #24            // java/lang/Object
+  #14 = Utf8               <init>
+  #15 = Utf8               ()V
+  #16 = Utf8               Code
+  #17 = Utf8               LineNumberTable
+  #18 = Utf8               main
+  #19 = Utf8               ([Ljava/lang/String;)V
+  #20 = Utf8               SourceFile
+  #21 = Utf8               LongArrayTest.java
+  #22 = NameAndType        #14:#15        // "<init>":()V
+  #23 = Utf8               test_programs/array_tests/LongArrayTest
+  #24 = Utf8               java/lang/Object
+{
+  public test_programs.array_tests.LongArrayTest();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 5: 0
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=5, locals=2, args_size=1
+         0: bipush        6
+         2: newarray       long
+         4: dup
+         5: iconst_0
+         6: ldc2_w        #2                  // long 12l
+         9: lastore
+        10: dup
+        11: iconst_1
+        12: ldc2_w        #4                  // long -100l
+        15: lastore
+        16: dup
+        17: iconst_2
+        18: ldc2_w        #6                  // long 43l
+        21: lastore
+        22: dup
+        23: iconst_3
+        24: ldc2_w        #2                  // long 12l
+        27: lastore
+        28: dup
+        29: iconst_4
+        30: ldc2_w        #8                  // long 325l
+        33: lastore
+        34: dup
+        35: iconst_5
+        36: ldc2_w        #10                 // long 6345l
+        39: lastore
+        40: astore_1
+        41: return
+      LineNumberTable:
+        line 9: 0
+        line 10: 41
+}
+SourceFile: "LongArrayTest.java"

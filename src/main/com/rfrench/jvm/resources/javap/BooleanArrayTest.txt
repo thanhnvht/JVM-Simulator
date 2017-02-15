@@ -1,0 +1,77 @@
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/test/test_programs/array_tests/BooleanArrayTest.class
+  Last modified 15-Feb-2017; size 341 bytes
+  MD5 checksum e2bd0172be48ded6d8262b72e989fa2a
+  Compiled from "BooleanArrayTest.java"
+public class test_programs.array_tests.BooleanArrayTest
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #3.#12         // java/lang/Object."<init>":()V
+   #2 = Class              #13            // test_programs/array_tests/BooleanArrayTest
+   #3 = Class              #14            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               main
+   #9 = Utf8               ([Ljava/lang/String;)V
+  #10 = Utf8               SourceFile
+  #11 = Utf8               BooleanArrayTest.java
+  #12 = NameAndType        #4:#5          // "<init>":()V
+  #13 = Utf8               test_programs/array_tests/BooleanArrayTest
+  #14 = Utf8               java/lang/Object
+{
+  public test_programs.array_tests.BooleanArrayTest();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 5: 0
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=4, locals=2, args_size=1
+         0: bipush        7
+         2: newarray       boolean
+         4: dup
+         5: iconst_0
+         6: iconst_1
+         7: bastore
+         8: dup
+         9: iconst_1
+        10: iconst_0
+        11: bastore
+        12: dup
+        13: iconst_2
+        14: iconst_0
+        15: bastore
+        16: dup
+        17: iconst_3
+        18: iconst_1
+        19: bastore
+        20: dup
+        21: iconst_4
+        22: iconst_0
+        23: bastore
+        24: dup
+        25: iconst_5
+        26: iconst_1
+        27: bastore
+        28: dup
+        29: bipush        6
+        31: iconst_1
+        32: bastore
+        33: astore_1
+        34: return
+      LineNumberTable:
+        line 9: 0
+        line 10: 34
+}
+SourceFile: "BooleanArrayTest.java"

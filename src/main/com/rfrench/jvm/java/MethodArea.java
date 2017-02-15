@@ -24,6 +24,8 @@
 
 package main.com.rfrench.jvm.java;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Stack;
@@ -38,6 +40,8 @@ import java.util.Stack;
 public class MethodArea 
 {                
     private HashMap bytecode_details_map;
+        
+    public final static BiMap<String, Integer> ARRAY_TYPES_MAP = HashBiMap.create();
     
     private ArrayList<String> constant_pool;    
     private ArrayList<Method> methods;
@@ -61,7 +65,10 @@ public class MethodArea
         bytecode_details_map = new HashMap(); 
         
         hasMethods = false;
+        
+        setupArrayDataTypesMap();
     }
+        
     
     public MethodArea(JVMClassLoader class_loader)
     {     
@@ -77,6 +84,23 @@ public class MethodArea
         
         hasMethods = true;
     }                        
+    
+    private void setupArrayDataTypesMap()
+    {
+        ArrayList<String> data_types = new ArrayList<String>();
+        
+        data_types.add("int");
+        data_types.add("char");
+        data_types.add("byte");
+        data_types.add("boolean");
+        data_types.add("long");
+        
+        for(int i = 0; i < data_types.size(); i++)
+        {
+            ARRAY_TYPES_MAP.put(data_types.get(i), i);
+        }
+
+    }
     
     public void setupMethodArea(JVMClassLoader class_loader)
     {

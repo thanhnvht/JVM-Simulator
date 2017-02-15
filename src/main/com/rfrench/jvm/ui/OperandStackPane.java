@@ -80,6 +80,15 @@ public class OperandStackPane
         operand_stack_pane.getChildren().remove(operand_stack_label);             
     }
     
+    public String peek()
+    {
+        Label l = (Label)operand_stack_labels.peek();
+        
+        String element_text = l.getText();
+        
+        return element_text;
+    }
+    
     public Pane getStackPane()
     {
         return stack_pane;

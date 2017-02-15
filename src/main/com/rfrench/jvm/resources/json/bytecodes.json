@@ -367,18 +367,53 @@
 	    	"Tooltip" : "LDC2_W - Push a value (double or long) from constant pool onto the operand stack"
 	    },
 
+    	{
+	    	"Name" : "IALOAD",
+	    	"Opcode" : "2E",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "IALOAD - Load an int from an int array and push onto operand stack"
+	    },
+
+   		{
+	    	"Name" : "CALOAD",
+	    	"Opcode" : "34",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "CALOAD - Load a char from a char array and push onto operand stack"
+	    },
+
 	    {
 	    	"Name" : "NEWARRAY",
 	    	"Opcode" : "BC",
 	    	"Total Operands" : 1,
-	    	"Tooltip" : "NEWARRAY - Create an array in the Heap Memory Area. Array is of a certain data type"
+	    	"Tooltip" : "NEWARRAY - Create an array in the Heap Memory Area. Array data type is determined by operand"
 	    },
 
 	    {
 	    	"Name" : "IASTORE",
 	    	"Opcode" : "4F",
 	    	"Total Operands" : 0,
-	    	"Tooltip" : "IASTORE - Store an int into an array"
+	    	"Tooltip" : "IASTORE - Store an int into an int array"
+	    },
+
+   		{
+	    	"Name" : "LASTORE",
+	    	"Opcode" : "50",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "LASTORE - Store a long into a long array"
+	    },
+
+ 		{
+	    	"Name" : "BASTORE",
+	    	"Opcode" : "54",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "BASTORE - Store a byte or boolean into an array"
+	    },
+
+   		{
+	    	"Name" : "CASTORE",
+	    	"Opcode" : "55",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "CASTORE - Store a char into a char array"
 	    },
 
 	    {

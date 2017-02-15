@@ -25,7 +25,6 @@
 package main.com.rfrench.jvm.java;
 
 import java.util.ArrayList;
-import javafx.stage.Stage;
 import main.com.rfrench.jvm.controller.SceneController;
 import main.com.rfrench.jvm.ui.MainScene;
 
@@ -39,8 +38,12 @@ import main.com.rfrench.jvm.ui.MainScene;
 public class ExecutionEngine   
 {
     private SceneController scene_controller;        
+    
     private MethodArea method_area;
+    private Heap heap;
             
+    
+    
     private int current_method_count = 0;
     
     private int PC;
@@ -54,19 +57,20 @@ public class ExecutionEngine
     private boolean pause_program = false;
                       
 
-    public ExecutionEngine(MainScene main_scene, MethodArea method_area, Stage primaryStage, SceneController scene_controller) 
+    public ExecutionEngine(MainScene main_scene, MethodArea method_area, Heap heap) 
     {                
-        this.scene_controller = scene_controller;                
+        this.scene_controller = main_scene.getFXMLController();      
+        
         this.method_area = method_area;       
-                
+        this.heap = heap;
+        
         move_tab = false;
         
         PC = 0;      
         
         main_scene.getFXMLController().setExecutionEngine(this);
     }
-       
-    
+           
     public void executeInstruction()
     {
         Method m = method_area.getMethod(current_method_count);
@@ -79,8 +83,6 @@ public class ExecutionEngine
                         
         if(PC < NUMBER_OF_OPCODES)
         {            
-//            main_controller.updateRegisterLabels(PC);    
-            
             String bytecode = Integer.toHexString(m.getMethodOpcodes().get(PC)).toUpperCase();
 
             //Change this to HashMap?
@@ -101,12 +103,18 @@ public class ExecutionEngine
                 case ("1B"):  ILOAD(1);        break;  //ILOAD_1
                 case ("1C"):  ILOAD(2);        break;  //ILOAD_2
                 case ("1D"):  ILOAD(3);        break;  //ILOAD_3
+                case ("2E"):  IALOAD();        break;
+                case ("34"):  CALOAD();        break;
                 case ("36"):  ISTORE(-1);      break;  //ISTORE
                 case ("37"):  LSTORE(-1);      break;
                 case ("3B"):  ISTORE(0);       break;  //ISTORE_0
                 case ("3C"):  ISTORE(1);       break;  //ISTORE_1
                 case ("3D"):  ISTORE(2);       break;  //ISTORE_2
                 case ("3E"):  ISTORE(3);       break;  //ISTORE_3
+                case ("4F"):  IASTORE();       break;
+                case ("50"):  LASTORE();       break;
+                case ("54"):  BASTORE();       break;
+                case ("55"):  CASTORE();       break;
                 case ("60"):  IADD();          break;
                 case ("64"):  ISUB();          break;
                 case ("68"):  IMUL();          break;
@@ -139,7 +147,8 @@ public class ExecutionEngine
                 case ("B1"):  RETURN();        break;
                 case ("2A"):  ALOAD_0();       break;
                 case ("B7"):  INVOKESPECIAL(); break;
-                case ("B8"):  INVOKESTATIC(); break;
+                case ("B8"):  INVOKESTATIC();  break;
+                case ("BC"):  NEWARRAY();      break;
                 case ("AB"):  LOOKUPSWITCH();  break;
             }                         
 
@@ -616,7 +625,9 @@ public class ExecutionEngine
                 
     private void ILOAD(int frame_index) 
     {                       
-        Method m = method_area.getMethod(current_method_count);
+        Method m = method_area.getMethod(current_method_count); 
+        
+        System.out.println("ILOAD: frame index: " + frame_index);
         
         int value = Integer.parseInt(m.getLocalVariable(frame_index));
         
@@ -694,7 +705,9 @@ public class ExecutionEngine
         
         method_area.pushOperandStack(value);
         
-        method_area.pushOperandStack(value);
+        method_area.pushOperandStack(value);       
+        
+        scene_controller.DUP();
     }    
     
     private void IINC()
@@ -765,6 +778,49 @@ public class ExecutionEngine
         scene_controller.ALOAD_0(reference);
     }
     
+    private void IALOAD()
+    {
+        int index = method_area.popOperandStack();
+        int array_reference = method_area.popOperandStack();
+        
+        int array_value = heap.getElement(index, array_reference);        
+        method_area.pushOperandStack(array_value);
+        
+        String array_value_string = Integer.toString(array_value);
+        scene_controller.arrayLoad(array_value_string);
+    }
+    
+    private void CALOAD()
+    {
+        IALOAD();
+    }
+    
+    private void IASTORE()
+    {
+        int value = method_area.popOperandStack();
+        int index = method_area.popOperandStack();
+        int array_reference = method_area.popOperandStack();
+        
+        heap.setElement(value, index, array_reference);
+        
+        scene_controller.arrayStore();
+    }
+    
+    private void LASTORE()
+    {
+        IASTORE();
+    }
+    
+    private void BASTORE()
+    {
+        IASTORE();
+    }
+    
+    private void CASTORE()
+    {
+        IASTORE();
+    }
+    
     private void INVOKESPECIAL()
     {
         INVOKESTATIC();      
@@ -813,14 +869,23 @@ public class ExecutionEngine
         ArrayList<Integer> current_method_opcodes = method_area.getMethod(current_method_count).getMethodOpcodes();
         ArrayList<Integer> switch_cases = new ArrayList<Integer>();
         ArrayList<Integer> switch_branches = new ArrayList<Integer>();
-        
-        final int NUMBER_OF_PADDED_ENTRIES = 3;
-        
-        int switch_condition_value = method_area.popOperandStack(); 
-        
+                                        
         PC++;                        
         int number_of_switch_cases = current_method_opcodes.get(PC); // -1 for the hidden default switch case
                                        
+        setupSwitchTables(number_of_switch_cases, switch_cases, switch_branches);
+        
+        checkSwitchTable(number_of_switch_cases, switch_cases, switch_branches);
+                        
+        scene_controller.LOOKUPSWITCH(switch_cases, switch_branches);
+    }
+    
+    private void setupSwitchTables(int number_of_switch_cases, ArrayList<Integer> switch_cases, ArrayList<Integer> switch_branches)
+    {        
+        ArrayList<Integer> current_method_opcodes = method_area.getMethod(current_method_count).getMethodOpcodes();
+        
+        final int NUMBER_OF_PADDED_ENTRIES = 3;
+                                               
         for(int i = 0; i < number_of_switch_cases; i++)
         {
             PC += NUMBER_OF_PADDED_ENTRIES;
@@ -833,9 +898,14 @@ public class ExecutionEngine
             int switch_branch_value = current_method_opcodes.get(PC);
             switch_branches.add(switch_branch_value);
         }
+    }
+    
+    private void checkSwitchTable(int number_of_switch_cases, ArrayList<Integer> switch_cases, ArrayList<Integer> switch_branches)
+    {
+        int switch_condition_value = method_area.popOperandStack(); 
         
-        boolean switch_case_found = false;
-        
+        boolean switch_case_found = false;     
+                        
         for(int i = 0; i < number_of_switch_cases - 1; i++)
         {
             int switch_case = switch_cases.get(i);
@@ -854,8 +924,22 @@ public class ExecutionEngine
             switch_branch_value -= 1;
             PC = switch_branch_value;
         }
+    }
+    
+    private void NEWARRAY()
+    {
+        final int ARRAY_SIZE = method_area.popOperandStack();
                         
-        scene_controller.LOOKUPSWITCH(switch_cases, switch_branches);
+        ArrayList<Integer> current_method_opcodes = method_area.getMethod(current_method_count).getMethodOpcodes();
+        
+        PC++;
+        final int ARRAY_TYPE_CODE = current_method_opcodes.get(PC);
+                
+        int array_reference = heap.addArray(ARRAY_TYPE_CODE, ARRAY_SIZE);        
+        method_area.pushOperandStack(array_reference);
+        
+        String array_reference_string = "Array Ref: " + Integer.toString(array_reference);
+        scene_controller.NEWARRAY(array_reference_string);
     }
     
     public boolean isBranch()

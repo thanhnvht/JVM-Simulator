@@ -1,7 +1,8 @@
 
 package test_programs.branch_tests;
 
-public class IFGE {
+public class IFGE 
+{
     
     public static void main(String[]args)
     {

@@ -48,10 +48,11 @@ public class Main extends Application
         JVMClassLoader class_loader = new JVMClassLoader();
         
         MethodArea method_area = new MethodArea(); 
-
+        Heap heap = new Heap();
+        
         MainScene main_scene = new MainScene(method_area, primaryStage, class_loader);                 
                 
-        ExecutionEngine execution_engine = new ExecutionEngine(main_scene, method_area, primaryStage, main_scene.getFXMLController());                                       
+        ExecutionEngine execution_engine = new ExecutionEngine(main_scene, method_area, heap);                                       
                 
         StageController stage_controller = new StageController(primaryStage, main_scene);        
     }
