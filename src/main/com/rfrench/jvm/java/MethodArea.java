@@ -94,6 +94,7 @@ public class MethodArea
         data_types.add("byte");
         data_types.add("boolean");
         data_types.add("long");
+        data_types.add("short");
         
         for(int i = 0; i < data_types.size(); i++)
         {

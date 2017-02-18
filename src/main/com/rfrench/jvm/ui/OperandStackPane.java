@@ -25,10 +25,12 @@
 package main.com.rfrench.jvm.ui;
 
 import java.util.Stack;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.geometry.VPos;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 
 /*
     Program Title: OperandStackPane.java
@@ -38,55 +40,71 @@ import javafx.scene.layout.Pane;
 */
 
 public class OperandStackPane 
-{
-    private final String CSS_STACK_ID = "STACK";
-    private Pane operand_stack_pane;
+{    
+    private Canvas operand_stack_canvas;
+    private GraphicsContext gc;
+    
     private Pane stack_pane;
 
+    private final double RECT_WIDTH;
+    private final double RECT_HEIGHT;
+    private final double RECT_X_OFFSET;    
+    private final double CANVAS_HEIGHT;
     
-    private Stack operand_stack_labels; 
-    
-    public OperandStackPane(Pane operand_stack_pane)
-    {      
-        this.operand_stack_pane = operand_stack_pane;
-        Tooltip tooltip = new Tooltip();
-        tooltip.setText("Operand Stack");
-                      
-        operand_stack_labels = new Stack();
+    private Stack operand_stack_text; 
+
+    public OperandStackPane(Canvas operand_stack_canvas)
+    {
+        this.operand_stack_canvas = operand_stack_canvas;
+        this.gc = this.operand_stack_canvas.getGraphicsContext2D();
+     
+        RECT_WIDTH = 350;
+        RECT_HEIGHT = 50;
+        RECT_X_OFFSET = (operand_stack_canvas.getWidth() - RECT_WIDTH) / 2;
+        CANVAS_HEIGHT = operand_stack_canvas.getHeight();         
+        
+        operand_stack_text = new Stack();
     }
-    
-    public void push(String label_name)
-    {     
-        int current_stack_size = operand_stack_labels.size();
+
+    public void push(String operand_element_text)
+    {
+        int current_stack_size = operand_stack_text.size();
         
-        Label operand_stack_label = new Label(label_name);
-        operand_stack_label.setId(CSS_STACK_ID);
-        operand_stack_label.setAlignment(Pos.CENTER);
-        operand_stack_label.setTranslateY((-51 * (current_stack_size))+ (MainScene.HEIGHT_TENTH * 55));
+        System.out.println(operand_element_text);
         
-        Tooltip tool_tip = new Tooltip();
-        tool_tip.setText("Operand Stack element: " + current_stack_size);        
-        operand_stack_label.setTooltip(tool_tip); 
-               
-        operand_stack_labels.push(operand_stack_label);                       
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);     
         
-        operand_stack_pane.getChildren().add(operand_stack_label);
-    } 
+        double rect_y_pos = CANVAS_HEIGHT - ((current_stack_size * RECT_HEIGHT) + 100);
+            
+        gc.setFill(Color.GREEN);        
+        gc.fillRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH, RECT_HEIGHT);
+        gc.setStroke(Color.BLACK);
+        gc.strokeRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH, RECT_HEIGHT);
+
+        double text_x_pos = RECT_X_OFFSET + (RECT_WIDTH / 2);
+        double text_y_pos = CANVAS_HEIGHT - ((current_stack_size * RECT_HEIGHT) + 100) + (RECT_HEIGHT / 2);
+            
+        gc.setStroke(Color.BLACK);  
+        gc.strokeText(operand_element_text, text_x_pos, text_y_pos);
+
+        operand_stack_text.push(operand_element_text);
+    }
     
     public void pop()
-    {        
-        Label operand_stack_label = (Label) operand_stack_labels.pop();
+    {
+        operand_stack_text.pop();
         
-        operand_stack_pane.getChildren().remove(operand_stack_label);             
+        int current_stack_size = operand_stack_text.size();                
+        
+        double rect_y_pos = CANVAS_HEIGHT - ((current_stack_size * RECT_HEIGHT) + 100);
+      
+        gc.clearRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH+1, RECT_HEIGHT+1);                
     }
-    
+        
     public String peek()
     {
-        Label l = (Label)operand_stack_labels.peek();
-        
-        String element_text = l.getText();
-        
-        return element_text;
+        return (String)operand_stack_text.peek();
     }
     
     public Pane getStackPane()
@@ -94,17 +112,8 @@ public class OperandStackPane
         return stack_pane;
     }
         
-    public String getStackText()
-    {
-        Label operand_stack_label = (Label) operand_stack_labels.peek();
-        
-        String stack_element_text = operand_stack_label.getText();
-       
-        return stack_element_text;
-    }
-    
     public int getCurrentStackSize()
     {
-        return operand_stack_labels.size();
+        return operand_stack_text.size();
     }
 }

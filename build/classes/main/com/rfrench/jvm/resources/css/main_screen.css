@@ -22,33 +22,6 @@
     
 }
 
-.button
-{
-
-}
-
-.scroll-pane
-{
-    
-}
-
-#FRAME
-{
-    -fx-border-color: black;
-    -fx-text-fill: BLACK;
-    -fx-background-color: YELLOW; 
-    -fx-min-width: 300px;
-    -fx-min-height: 50px;
-}
-
-#STACK
-{
-    -fx-border-color: black;
-    -fx-text-fill: white;
-    -fx-background-color: GREEN; 
-    -fx-min-width: 300px;
-    -fx-min-height: 50px;
-}
 
 #register_pane
 {

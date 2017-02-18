@@ -24,10 +24,7 @@
 package main.com.rfrench.jvm.java;
 
 import com.google.common.collect.BiMap;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /*
@@ -72,6 +69,8 @@ public class Heap
            case("byte") : byte[] byte_array = new byte[array_size];
                           ARRAYS_MAP.put(array_reference, byte_array);
                           break;
+                          
+            //NEED: SHORT, LONG, BOOLEAN
        }
        
        

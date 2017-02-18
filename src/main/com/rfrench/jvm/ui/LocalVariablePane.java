@@ -25,10 +25,11 @@
 package main.com.rfrench.jvm.ui;
 
 import java.util.ArrayList;
-import javafx.geometry.Pos;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
-import javafx.scene.layout.Pane;
+import javafx.geometry.VPos;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 
 /*
     Program Title: LocalVariablePane.java
@@ -39,77 +40,85 @@ import javafx.scene.layout.Pane;
 
 public class LocalVariablePane 
 {
-    private Pane java_stack_pane;
-            
-    private ArrayList<ArrayList<Label>> method_local_frames_list;
+    private Canvas local_var_canvas;
+    private GraphicsContext gc;
+
+    private final double RECT_WIDTH;
+    private final double RECT_HEIGHT;
+    private final double RECT_X_OFFSET;    
+    private final double CANVAS_HEIGHT;
+        
+    private ArrayList<ArrayList<String>> method_local_frames_list;
     
-    private ArrayList<Label> frame_labels;    
+    private ArrayList<String> local_frame_text;    
     
     private final String CSS_FRAME_ID = "FRAME";
     
     private int number_of_frames; // used to calculate where to put next frame in UI
     
-    public LocalVariablePane(Pane memory_pane)
+    public LocalVariablePane(Canvas local_var_canvas)
     {
-        this.java_stack_pane = memory_pane;
+        this.local_var_canvas = local_var_canvas;
+        this.gc = this.local_var_canvas.getGraphicsContext2D();
+       
+        RECT_WIDTH = 350;
+        RECT_HEIGHT = 50;
+        RECT_X_OFFSET = 75;
+        CANVAS_HEIGHT = local_var_canvas.getHeight(); 
         
         number_of_frames = 0;
-                                       
-        method_local_frames_list = new ArrayList<ArrayList<Label>>();
+        
+        method_local_frames_list = new ArrayList<ArrayList<String>>();
     }
     
-    public void addFrameUI(String[] frame_text, int current_method_count, int max_local_var)
-    {            
-                   
-        double PANE_HEIGHT = java_stack_pane.getHeight();
-        double PANE_WIDTH  = java_stack_pane.getWidth();
-        
-        frame_labels = new ArrayList<Label>();
-        
-        for(int i = 0; i < max_local_var; i++)        
-        {
-            String f_text = "";
+    public void addMethodLocalFrame(String[] frame_text, int current_method_count, int max_local_var)    
+    {        
+        local_frame_text = new ArrayList<String>();
+
+        gc.setTextAlign(TextAlignment.CENTER);
+        gc.setTextBaseline(VPos.CENTER);
+                        
+        for(int i = 0; i < max_local_var; i++)
+        {           
+            double rect_y_pos = CANVAS_HEIGHT - ((number_of_frames * RECT_HEIGHT) + 100);
+           
+            gc.setFill(Color.YELLOW);        
+            gc.fillRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH, RECT_HEIGHT);
+            gc.setStroke(Color.BLACK);
+            gc.strokeRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH, RECT_HEIGHT);
+            
+            String frame_element_text = "";
             
             if(i < frame_text.length)
             {
-                f_text = frame_text[i];
+                frame_element_text = frame_text[i];
             }
             
-            Label f_label = new Label(f_text);
-        
-            f_label.setId(CSS_FRAME_ID);        
-            f_label.setAlignment(Pos.CENTER);             
-            f_label.setTranslateX(10);        
-            f_label.setTranslateY((-51 * number_of_frames) + (MainScene.HEIGHT_TENTH * 55));
-
-            Tooltip tool_tip = new Tooltip();
-
-            tool_tip.setText("Local Frame Variable: " + i);        
-
-            f_label.setTooltip(tool_tip); 
-
-            ++number_of_frames;
-
-            frame_labels.add(f_label);
+            double text_x_pos = RECT_X_OFFSET + (RECT_WIDTH / 2);
+            double text_y_pos = CANVAS_HEIGHT - ((number_of_frames * RECT_HEIGHT) + 100) + (RECT_HEIGHT / 2);
+                        
+            gc.setStroke(Color.BLACK);  
+            gc.strokeText(frame_element_text, text_x_pos, text_y_pos);
             
-            java_stack_pane.getChildren().add(f_label); 
+            number_of_frames++;
+            
+            local_frame_text.add(frame_element_text);
         }
         
-        method_local_frames_list.add(frame_labels);
-       
+        method_local_frames_list.add(local_frame_text); 
     }
-            
+                    
     public void removeFrameUI(int current_method_count)
-    {
-        ArrayList<Label> current_frame_list = method_local_frames_list.get(current_method_count);
-                       
+    {                       
         int number_of_local_vars = method_local_frames_list.get(current_method_count).size();
-        
+                        
         for(int i = 0; i < number_of_local_vars; i++)
         {
-            Label frame_label = current_frame_list.get(i);
+            double rect_y_pos = CANVAS_HEIGHT - ((number_of_frames * RECT_HEIGHT) + 100);
             
-            java_stack_pane.getChildren().remove(frame_label);
+            gc.clearRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH+1, RECT_HEIGHT);
+            
+            number_of_frames--;
         }
     }
     
@@ -120,13 +129,37 @@ public class LocalVariablePane
     
     public String getFrameName(int index)
     {
-        return frame_labels.get(index).getText();        
+        return local_frame_text.get(index);        
     }
         
     public void updateFrameLabel(int current_method_count, int index, String new_text)
-    {
-        Label label = method_local_frames_list.get(current_method_count).get(index);
+    {        
+
+        //CAN CHANGE TO HAVE RUNNING COUNT OF ALL FRAMES - (MAX_LOCAL_VAR_CURRENT_FRAME - index)
+        int number_of_elements_in_frame = 0;
         
-        label.setText(new_text);
+        for(int i = 0; i < current_method_count; i++)
+        {
+            number_of_elements_in_frame += method_local_frames_list.get(i).size();
+        }
+        
+        int index_frame_to_update = number_of_elements_in_frame + index;
+        
+        System.out.println("index: " + index_frame_to_update);
+        
+        double rect_y_pos = CANVAS_HEIGHT - ((index_frame_to_update * RECT_HEIGHT) + 100);
+            
+        gc.setFill(Color.YELLOW);        
+        gc.setStroke(Color.BLACK);
+        gc.clearRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH, RECT_HEIGHT);
+        gc.fillRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH, RECT_HEIGHT);
+        gc.strokeRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH, RECT_HEIGHT);
+        
+        double text_x_pos = RECT_X_OFFSET + (RECT_WIDTH / 2);
+        double text_y_pos = CANVAS_HEIGHT - ((index_frame_to_update * RECT_HEIGHT) + 100) + (RECT_HEIGHT / 2);
+        
+        gc.strokeText(new_text, text_x_pos, text_y_pos);
+                                      
+        method_local_frames_list.get(current_method_count).set(index, new_text);
     }
 }

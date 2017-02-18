@@ -1,14 +1,14 @@
-Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/src/main/com/rfrench/jvm/simulated_programs/ForLoopTest.class
-  Last modified 12-Feb-2017; size 376 bytes
-  MD5 checksum 96eece445757aa6da2c9639e18ff70ba
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/test/test_programs/loop_tests/ForLoopTest.class
+  Last modified 15-Feb-2017; size 361 bytes
+  MD5 checksum 800550e86899b6ce3f157f21c49fe80f
   Compiled from "ForLoopTest.java"
-public class main.com.rfrench.jvm.simulated_programs.ForLoopTest
+public class test_programs.loop_tests.ForLoopTest
   minor version: 0
   major version: 52
   flags: ACC_PUBLIC, ACC_SUPER
 Constant pool:
    #1 = Methodref          #3.#13         // java/lang/Object."<init>":()V
-   #2 = Class              #14            // main/com/rfrench/jvm/simulated_programs/ForLoopTest
+   #2 = Class              #14            // test_programs/loop_tests/ForLoopTest
    #3 = Class              #15            // java/lang/Object
    #4 = Utf8               <init>
    #5 = Utf8               ()V
@@ -20,10 +20,10 @@ Constant pool:
   #11 = Utf8               SourceFile
   #12 = Utf8               ForLoopTest.java
   #13 = NameAndType        #4:#5          // "<init>":()V
-  #14 = Utf8               main/com/rfrench/jvm/simulated_programs/ForLoopTest
+  #14 = Utf8               test_programs/loop_tests/ForLoopTest
   #15 = Utf8               java/lang/Object
 {
-  public main.com.rfrench.jvm.simulated_programs.ForLoopTest();
+  public test_programs.loop_tests.ForLoopTest();
     descriptor: ()V
     flags: ACC_PUBLIC
     Code:

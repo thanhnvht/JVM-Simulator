@@ -27,11 +27,14 @@ package main.com.rfrench.jvm.controller;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.animation.PauseTransition;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import main.com.rfrench.jvm.ui.MainScene;
 import main.com.rfrench.jvm.ui.SplashScene;
@@ -61,8 +64,9 @@ public class StageController implements Initializable
         
         AnchorPane main_scene_root_pane = main_scene.getRootPane();
         Scene scene = new Scene(main_scene_root_pane);
-        
-        primaryStage.setMaximized(true);
+        primaryStage.setWidth(800);
+        primaryStage.setHeight(600);
+                
         primaryStage.setTitle("JVM Simulator");
 
                 
@@ -70,12 +74,22 @@ public class StageController implements Initializable
         title_label.setId("title_label");
 
         primaryStage.setScene(splash_scene);
+        //primaryStage.initStyle(StageStyle.UNDECORATED);
+        
         primaryStage.show();                
 
         final int SPLASH_SCREEN_WAIT_TIME = 3;
         
         PauseTransition delay = new PauseTransition(Duration.seconds(SPLASH_SCREEN_WAIT_TIME));
-        delay.setOnFinished(event -> primaryStage.setScene(scene));
+        delay.setOnFinished(new EventHandler<ActionEvent>(){
+            public void handle(ActionEvent actionevent)
+            {
+                 primaryStage.setScene(scene);
+                 //primaryStage.initStyle(StageStyle.DECORATED);
+                 primaryStage.setMaximized(true);
+            }
+        });
+
         delay.play();
               
     }

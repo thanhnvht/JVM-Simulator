@@ -89,8 +89,6 @@ public class Method
         
         local_variable_frame = new String[MAX_LOCAL_VAR_SIZE];
         
-        System.out.println("local frame size: " + local_variable_frame.length);
-        
         METHOD_NAME = findMethodName(method_details.get(0));
         METHOD_ACCESS = method_details.get(1);
         INSTANCE_METHOD = Boolean.getBoolean(method_details.get(2)); //THIS ISN'T WORKING

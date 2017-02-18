@@ -2,18 +2,18 @@
 
 <?import java.net.URL?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.com.rfrench.jvm.controller.SceneController">
@@ -76,9 +76,7 @@
                </FlowPane.margin></Button>
          </children>
       </FlowPane>
-      <Pane fx:id="local_variable_pane" layoutX="456.0" layoutY="124.0" prefHeight="625.0" prefWidth="536.0" />
-      <Pane fx:id="operand_stack_pane" layoutX="996.0" layoutY="129.0" prefHeight="619.0" prefWidth="503.0" />
-      <TabPane fx:id="general_info_pane" layoutX="1532.0" layoutY="131.0" prefHeight="618.0" prefWidth="390.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="1525.0">
+      <TabPane fx:id="general_info_pane" layoutX="1476.0" layoutY="132.0" prefHeight="858.0" prefWidth="433.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.leftAnchor="1476.0">
         <tabs>
           <Tab text="Java Code">
                <content>
@@ -92,13 +90,50 @@
           </Tab>
         </tabs>
       </TabPane>
-      <StackPane fx:id="register_pane" layoutX="1525.0" layoutY="35.0" prefHeight="91.0" prefWidth="390.0" AnchorPane.leftAnchor="1525.0">
+      <StackPane fx:id="register_pane" layoutX="1474.0" layoutY="35.0" prefHeight="91.0" prefWidth="433.0" AnchorPane.leftAnchor="1474.0">
          <padding>
             <Insets bottom="5.0" right="5.0" top="5.0" />
          </padding>
       </StackPane>
-      <TitledPane fx:id="bytecode_info_pane" animated="false" layoutX="432.0" layoutY="758.0" prefHeight="229.0" prefWidth="1480.0" text="Program Notes" />
-      <ProgressBar layoutX="448.0" layoutY="46.0" prefHeight="72.0" prefWidth="1058.0" progress="0.0" />
+      <SplitPane dividerPositions="0.502851711026616" layoutX="440.0" layoutY="132.0" prefHeight="616.0" prefWidth="1020.0">
+        <items>
+            <TabPane prefHeight="614.0" prefWidth="407.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Local Variable Frame">
+                     <content>
+                        <ScrollPane fx:id="local_var_scroll_pane" prefHeight="1039.0" prefWidth="503.0">
+                           <content>
+                              <Canvas fx:id="local_var_canvas" height="1010.0" width="450.0" />
+                           </content>
+                        </ScrollPane>
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+            <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+              <tabs>
+                <Tab text="Operand Stack">
+                     <content>
+                        <ScrollPane fx:id="operand_scroll_pane" prefHeight="200.0" prefWidth="200.0">
+                           <content>
+                              <Canvas fx:id="operand_stack_canvas" height="826.0" width="474.0" />
+                           </content>
+                        </ScrollPane>
+                     </content>
+                </Tab>
+              </tabs>
+            </TabPane>
+        </items>
+      </SplitPane>
+      <TabPane layoutX="445.0" layoutY="758.0" prefHeight="232.0" prefWidth="1024.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab fx:id="bytecode_info_pane" text="Program Notes">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
    </children>
    <stylesheets>
       <URL value="@../resources/css/main_screen.css" />

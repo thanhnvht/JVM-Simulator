@@ -67,7 +67,7 @@ public class MainScene
             controller.setClassLoader(class_loader);
             controller.setMethodArea(method_area);
             controller.setStage(primary_stage);
-            controller.setupBytecodeTab(method_area);
+            controller.setupAssemblyCodePane(method_area);
             controller.setupLocalVariableFrame(method_area);
             controller.setupBytecodeInfoPane();
             controller.setupOperandStackPane();

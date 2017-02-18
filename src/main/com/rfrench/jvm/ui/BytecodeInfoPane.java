@@ -26,15 +26,16 @@ package main.com.rfrench.jvm.ui;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
 import javafx.scene.control.TitledPane;
 
 
 public class BytecodeInfoPane 
 {
-    private TitledPane bytecode_info_pane;
+    private Tab bytecode_info_pane;
     private ListView bytecode_info_listview;
         
-    public BytecodeInfoPane(TitledPane bytecode_info_pane)
+    public BytecodeInfoPane(Tab bytecode_info_pane)
     {        
         this.bytecode_info_pane = bytecode_info_pane;
         setupListView();        
@@ -65,7 +66,7 @@ public class BytecodeInfoPane
         bytecode_info_listview.scrollTo(size - 1);
     }
     
-    public TitledPane getPane()
+    public Tab getTab()
     {
         return bytecode_info_pane;
     }
