@@ -66,6 +66,106 @@ public class ExecutionEngine
         
         main_scene.getFXMLController().setExecutionEngine(this);
     }
+    
+    
+    public void executeInstruction()
+    {
+        Method m = method_area.getMethod(current_method_count);
+        
+        branched = false;
+        method_invoked = false;
+        method_return = false;
+        
+        int NUMBER_OF_OPCODES = m.getNumberOfOpcodes();
+        
+        if(PC < NUMBER_OF_OPCODES)
+        {
+            String bytecode = Integer.toHexString(m.getMethodOpcodes().get(PC)).toUpperCase();
+            
+            if(PC >= 0)
+                scene_controller.highlightJavaLine(current_method_count, PC);
+            
+            //Change this to HashMap?
+            switch(bytecode)
+            {
+                case ("2") :  ICONST(-1);      break;  //ICONST_M1
+                case ("3") :  ICONST(0);       break;  //ICONST_0
+                case ("4") :  ICONST(1);       break;  //ICONST_1
+                case ("5") :  ICONST(2);       break;  //ICONST_2
+                case ("6") :  ICONST(3);       break;  //ICONST_3
+                case ("7") :  ICONST(4);       break;  //ICONST_4
+                case ("8") :  ICONST(5);       break;  //ICONST_5
+                case ("10"):  BIPUSH();        break;
+                case ("11"):  SIPUSH();        break;
+                case ("14"):  LDC2_W();        break;
+                case ("15"):  ILOAD(-1);       break;  //ILOAD
+                case ("1A"):  ILOAD(0);        break;  //ILOAD_0
+                case ("1B"):  ILOAD(1);        break;  //ILOAD_1
+                case ("1C"):  ILOAD(2);        break;  //ILOAD_2
+                case ("1D"):  ILOAD(3);        break;  //ILOAD_3
+                case ("2E"):  IALOAD();        break;
+                case ("34"):  CALOAD();        break;
+                case ("36"):  ISTORE(-1);      break;  //ISTORE
+                case ("37"):  LSTORE(-1);      break;
+                case ("3B"):  ISTORE(0);       break;  //ISTORE_0
+                case ("3C"):  ISTORE(1);       break;  //ISTORE_1
+                case ("3D"):  ISTORE(2);       break;  //ISTORE_2
+                case ("3E"):  ISTORE(3);       break;  //ISTORE_3
+                case ("4F"):  IASTORE();       break;
+                case ("50"):  LASTORE();       break;
+                case ("54"):  BASTORE();       break;
+                case ("55"):  CASTORE();       break;
+                case ("60"):  IADD();          break;
+                case ("64"):  ISUB();          break;
+                case ("68"):  IMUL();          break;
+                case ("6C"):  IDIV();          break;
+                case ("70"):  IREM();          break;
+                case ("A7"):  GOTO();          break;
+                case ("59"):  DUP();           break;
+                case ("84"):  IINC();          break;
+                case ("7E"):  IAND();          break;
+                case ("99"):  IFEQ();          break;
+                case ("9A"):  IFNE();          break;
+                case ("9B"):  IFLT();          break;
+                case ("9C"):  IFGE();          break;
+                case ("9D"):  IFGT();          break;
+                case ("9E"):  IFLE();          break;
+//                case ("B6"):  INVOKEVIRTUAL(); break;
+//                case ("80"):  IOR();           break;
+//                case ("AC"):  IRETURN();       break;
+                case ("13"):  LDC_W();         break;
+                case ("00"):  NOP();           break;
+                case ("57"):  POP();           break;
+                case ("5F"):  SWAP();          break;
+                case ("A2"):  IF_ICMPGE();     break;
+                case ("A3"):  IF_ICMPGT();     break;
+                case ("A4"):  IF_ICMPLE();     break;
+                case ("A1"):  IF_ICMPLT();     break;
+                case ("A0"):  IF_ICMPNE();     break;
+                case ("9F"):  IF_ICMPEQ();     break;
+//                case ("0xC4"):  WIDE();          break;
+                case ("B1"):  RETURN();        break;
+                case ("2A"):  ALOAD_0();       break;
+                case ("B7"):  INVOKESPECIAL(); break;
+                case ("B8"):  INVOKESTATIC();  break;
+                case ("BC"):  NEWARRAY();      break;
+                case ("AB"):  LOOKUPSWITCH();  break;
+            }
+            
+            highlightLine();
+            
+            PC++;
+        }
+        
+        else
+        {
+            scene_controller.hightlightLine(current_method_count, PC);
+//            main_controller.updateRegisterLabels(PC);
+            System.out.println("Program Done!!");
+            program_complete = true;
+        }
+    }
+    
     private void ALOAD_0()
     {
         //String reference = method_area.getMethod(current_method_count).getMethodName();
@@ -98,14 +198,17 @@ public class ExecutionEngine
                          
         scene_controller.BIPUSH(Integer.toString(value));
     }
+    
     private void CALOAD()
     {
         IALOAD();
     }
+    
     private void CASTORE()
     {
         IASTORE();
     }
+    
     private void DUP()
     {
         int value = method_area.popOperandStack();
@@ -710,100 +813,7 @@ public class ExecutionEngine
             PC = switch_branch_value;
         }
     }
-    public void executeInstruction()
-    {
-        Method m = method_area.getMethod(current_method_count);
-        
-        branched = false;
-        method_invoked = false;
-        method_return = false;
-        
-        int NUMBER_OF_OPCODES = m.getNumberOfOpcodes();
-        
-        if(PC < NUMBER_OF_OPCODES)
-        {
-            String bytecode = Integer.toHexString(m.getMethodOpcodes().get(PC)).toUpperCase();
-            
-            //Change this to HashMap?
-            switch(bytecode)
-            {
-                case ("2") :  ICONST(-1);      break;  //ICONST_M1
-                case ("3") :  ICONST(0);       break;  //ICONST_0
-                case ("4") :  ICONST(1);       break;  //ICONST_1
-                case ("5") :  ICONST(2);       break;  //ICONST_2
-                case ("6") :  ICONST(3);       break;  //ICONST_3
-                case ("7") :  ICONST(4);       break;  //ICONST_4
-                case ("8") :  ICONST(5);       break;  //ICONST_5
-                case ("10"):  BIPUSH();        break;
-                case ("11"):  SIPUSH();        break;
-                case ("14"):  LDC2_W();        break;
-                case ("15"):  ILOAD(-1);       break;  //ILOAD
-                case ("1A"):  ILOAD(0);        break;  //ILOAD_0
-                case ("1B"):  ILOAD(1);        break;  //ILOAD_1
-                case ("1C"):  ILOAD(2);        break;  //ILOAD_2
-                case ("1D"):  ILOAD(3);        break;  //ILOAD_3
-                case ("2E"):  IALOAD();        break;
-                case ("34"):  CALOAD();        break;
-                case ("36"):  ISTORE(-1);      break;  //ISTORE
-                case ("37"):  LSTORE(-1);      break;
-                case ("3B"):  ISTORE(0);       break;  //ISTORE_0
-                case ("3C"):  ISTORE(1);       break;  //ISTORE_1
-                case ("3D"):  ISTORE(2);       break;  //ISTORE_2
-                case ("3E"):  ISTORE(3);       break;  //ISTORE_3
-                case ("4F"):  IASTORE();       break;
-                case ("50"):  LASTORE();       break;
-                case ("54"):  BASTORE();       break;
-                case ("55"):  CASTORE();       break;
-                case ("60"):  IADD();          break;
-                case ("64"):  ISUB();          break;
-                case ("68"):  IMUL();          break;
-                case ("6C"):  IDIV();          break;
-                case ("70"):  IREM();          break;
-                case ("A7"):  GOTO();          break;
-                case ("59"):  DUP();           break;
-                case ("84"):  IINC();          break;
-                case ("7E"):  IAND();          break;
-                case ("99"):  IFEQ();          break;
-                case ("9A"):  IFNE();          break;
-                case ("9B"):  IFLT();          break;
-                case ("9C"):  IFGE();          break;
-                case ("9D"):  IFGT();          break;
-                case ("9E"):  IFLE();          break;
-//                case ("B6"):  INVOKEVIRTUAL(); break;
-//                case ("80"):  IOR();           break;
-//                case ("AC"):  IRETURN();       break;
-                case ("13"):  LDC_W();         break;
-                case ("00"):  NOP();           break;
-                case ("57"):  POP();           break;
-                case ("5F"):  SWAP();          break;
-                case ("A2"):  IF_ICMPGE();     break;
-                case ("A3"):  IF_ICMPGT();     break;
-                case ("A4"):  IF_ICMPLE();     break;
-                case ("A1"):  IF_ICMPLT();     break;
-                case ("A0"):  IF_ICMPNE();     break;
-                case ("9F"):  IF_ICMPEQ();     break;
-//                case ("0xC4"):  WIDE();          break;
-                case ("B1"):  RETURN();        break;
-                case ("2A"):  ALOAD_0();       break;
-                case ("B7"):  INVOKESPECIAL(); break;
-                case ("B8"):  INVOKESTATIC();  break;
-                case ("BC"):  NEWARRAY();      break;
-                case ("AB"):  LOOKUPSWITCH();  break;
-            }
-            
-            highlightLine();
-            
-            PC++;
-        }
-        
-        else
-        {
-            scene_controller.hightlightLine(current_method_count, PC);
-//            main_controller.updateRegisterLabels(PC);
-System.out.println("Program Done!!");
-program_complete = true;
-        }
-    }
+    
     private int[] getValuesStack(int number_to_pop)
     {
         int[] popped_values = new int[number_to_pop];

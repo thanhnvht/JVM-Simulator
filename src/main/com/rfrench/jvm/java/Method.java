@@ -48,7 +48,9 @@ public class Method
     private ArrayList<String> parsed_code_data;
     private ArrayList<String> method_bytecode;
     private ArrayList<String> method_line_numbers;
+    private ArrayList<String> method_details;
     private ArrayList<Integer> method_opcode;    
+    private BiMap java_line_numbers;
     
     private String[] local_variable_frame;
         
@@ -66,12 +68,14 @@ public class Method
     private HashMap bytecode_details_map;
     private JSONArray bytecode_details_json;
            
-    public Method(HashMap bytecode_details_map, JSONArray bytecode_details_json, ArrayList<String> parsed_code_data, 
-            ArrayList<String> method_details, int method_number)
-    {        
-        this.parsed_code_data = parsed_code_data;
-        this.bytecode_details_map = bytecode_details_map;   
-        this.bytecode_details_json = bytecode_details_json;        
+    public Method(int method_number, JVMClassLoader jvm_class_loader)
+    {                        
+        parsed_code_data = jvm_class_loader.getMethodParsedCodeData();
+        bytecode_details_map = jvm_class_loader.getByteCodeDetails();
+        bytecode_details_json = jvm_class_loader.getByteCodeJSON();        
+        method_details = jvm_class_loader.getMethodDetails();
+        java_line_numbers = jvm_class_loader.getJavaLineNumbers();
+        
         
         method_bytecode = new ArrayList<String>();
         method_line_numbers = new ArrayList<String>();  
@@ -81,6 +85,8 @@ public class Method
         extractLineNumbers();              
         extractOpcodes();
         
+        
+                        
         MAX_STACK_SIZE = extractMethodDetails("stack=");
 
         MAX_LOCAL_VAR_SIZE = extractMethodDetails("locals=");
@@ -98,8 +104,7 @@ public class Method
             //local_variable_frame[0] = METHOD_NAME; //for non main classes
             local_variable_frame[0] = "<init>"; // for main classes
         }        
-        
-        
+                
     }
         
     private String findMethodName(String full_name)
@@ -586,6 +591,11 @@ public class Method
     public final int getArgSize()
     {
         return MAX_ARG_SIZE;
+    }
+    
+    public BiMap getJavaLineNumbers()
+    {
+        return java_line_numbers;
     }
     
     public ArrayList<String> getMethodBytecode()

@@ -25,6 +25,7 @@
 package main.com.rfrench.jvm.controller;
 
 
+import com.google.common.collect.BiMap;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -45,10 +46,8 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SingleSelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -56,6 +55,7 @@ import javafx.util.Duration;
 import main.com.rfrench.jvm.java.DisassembledFileGenerator;
 import main.com.rfrench.jvm.java.ExecutionEngine;
 import main.com.rfrench.jvm.java.JVMClassLoader;
+import main.com.rfrench.jvm.java.Method;
 import main.com.rfrench.jvm.java.MethodArea;
 import main.com.rfrench.jvm.ui.AssemblyPane;
 import main.com.rfrench.jvm.ui.BytecodeInfoPane;
@@ -132,6 +132,8 @@ public class SceneController implements Initializable
         before_branch_button_press = -1;     
                 
     }
+    
+
     
     public void ALOAD_0(String value) 
     {
@@ -416,6 +418,23 @@ public class SceneController implements Initializable
         ListView current_listview = assembly_pane.getCurrentListView(current_method);    
         
         current_listview.getSelectionModel().select(button_press_count);
+    }
+    
+    public void highlightJavaLine(int current_method, int PC)
+    {
+        Method m = method_area.getMethod(current_method);
+        
+        BiMap java_line_numbers = m.getJavaLineNumbers();
+        
+        java_line_numbers = java_line_numbers.inverse();
+             
+        
+        if(java_line_numbers.containsKey(PC))
+        {
+            int current_java_line = (int)java_line_numbers.get(PC) - 1;        
+            
+            java_code_listview.getSelectionModel().select(current_java_line);    
+        }            
     }
     
     @Override

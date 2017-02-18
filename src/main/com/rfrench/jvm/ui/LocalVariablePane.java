@@ -51,8 +51,7 @@ public class LocalVariablePane
     private ArrayList<ArrayList<String>> method_local_frames_list;
     
     private ArrayList<String> local_frame_text;    
-    
-    private final String CSS_FRAME_ID = "FRAME";
+
     
     private int number_of_frames; // used to calculate where to put next frame in UI
     

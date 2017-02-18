@@ -24,6 +24,8 @@
 
 package main.com.rfrench.jvm.java;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -63,7 +65,10 @@ public class JVMClassLoader
     
     private ArrayList<Method> methods;    
     private ArrayList<String> method_details;
+    private ArrayList<String> method_code;
     private ArrayList<String> constant_pool_data;    
+    
+    private BiMap<Integer, Integer> java_line_numbers;
     
     private String FILE_PATH;    
 
@@ -79,45 +84,8 @@ public class JVMClassLoader
     public JVMClassLoader(String FILE_PATH)
     {          
         this.FILE_PATH = FILE_PATH;
-
-        readFile();
     }
           
-    /**
-     * Read a javap file. Retrieve relevant data and put into 
-     * helper data structures to then be used later in program
-     */
-    public void readFile()
-    {          
-        try
-        {
-            JSONArray bytecode_json = createJSONParser();           
-            createByteCodeDetailsHashMap(bytecode_json);                            
-            extractNumberOfMethods();
-                                    
-            methods = new ArrayList<Method>();
-            
-            extractConstantPoolData(); 
-                        
-            ArrayList<String> method_names_list = findMethodNames();
-            ArrayList<String> method_access_type_list = findMethodAccess();            
-            ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);    
-                                                               
-            for(int i = 0; i < NUMBER_OF_METHODS; i++)
-            {                
-                writeMethodDetails(method_names_list.get(i), method_access_type_list.get(i), is_method_instance_list.get(i));
-                ArrayList<String> method_code = parseMethodCode(i);                                                                
-                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, method_details, i);                                                             
-                methods.add(m);
-            }
-        }
-        
-        catch(IOException | ParseException e)
-        {
-            e.printStackTrace();
-        }
-    }       
-           
     public void readFile(String file_path)
     {
         try
@@ -127,22 +95,22 @@ public class JVMClassLoader
             JSONArray bytecode_json = createJSONParser();           
             createByteCodeDetailsHashMap(bytecode_json);                            
             extractNumberOfMethods();
-                                    
+                                            
             methods = new ArrayList<Method>();
             
             ArrayList<String> method_names_list = findMethodNames();            
             ArrayList<String> method_access_type_list = findMethodAccess();            
             ArrayList<Boolean> is_method_instance_list = checkInstanceMethod(method_names_list);                        
-            
-            //addConstantPoolMethodReferences(method_names_list);            
+                      
             extractConstantPoolData();
 
             for(int i = 0; i < NUMBER_OF_METHODS; i++)
             {
                 writeMethodDetails(method_names_list.get(i), method_access_type_list.get(i), is_method_instance_list.get(i));
+                parseLineNumbers(i);               
+                parseMethodCode(i);                                                                
+                Method m = new Method(i, this);
                 
-                ArrayList<String> method_code = parseMethodCode(i);                                                                
-                Method m = new Method(bytecode_details_map, bytecode_json_array, method_code, method_details, i);                                                               
                 methods.add(m);
             }
         }
@@ -375,11 +343,11 @@ public class JVMClassLoader
      * @param occurences occurences of 'Code:' before begin extract
      * @return method_details ArrayList<String> Containing method data
      */
-    private ArrayList<String> parseMethodCode(int occurences) throws FileNotFoundException
+    private void parseMethodCode(int occurences) throws FileNotFoundException
     {
         Scanner sc = new Scanner(new File(FILE_PATH));
         
-        ArrayList<String> method_code = new ArrayList<String>();
+        method_code = new ArrayList<String>();
         
         final String START_KEYWORD = "Code:";
         final String END_KEYWORD = "LineNumberTable:";
@@ -407,8 +375,55 @@ public class JVMClassLoader
             if(start)            
                 method_code.add(word);            
         }
+
+    }
+    
+    private void parseLineNumbers(int method_number) throws FileNotFoundException
+    {
+        java_line_numbers = HashBiMap.create();
         
-        return method_code;
+        Scanner sc = new Scanner(new File(FILE_PATH));
+             
+        final String START_KEYWORD = "LineNumberTable:";
+        final String KEYWORD = "line";
+        
+        int current_method_code_number = 0;
+        
+        boolean start = false;
+        boolean end = false;
+        
+        while(sc.hasNext() && !end)
+        {
+            String word = sc.next();
+
+            if(word.equals(START_KEYWORD))
+            {
+                if(current_method_code_number != method_number)                
+                    current_method_code_number++;
+                
+                else
+                    start = true;
+            }
+            
+            if(start)
+            {
+                word = sc.next();
+                
+                while(word.equals(KEYWORD))
+                {
+                    String java_line_string = sc.next();
+                    int java_line = Integer.parseInt(java_line_string.substring(0, java_line_string.indexOf(":")));
+                    int bytecode_line = Integer.parseInt(sc.next());
+                    
+                    java_line_numbers.put(java_line, bytecode_line);
+                    
+                    
+                    word = sc.next();
+                }
+                
+                end = true;
+            }
+        }        
     }
     
     private void extractNumberOfMethods() throws FileNotFoundException
@@ -434,6 +449,16 @@ public class JVMClassLoader
         return NUMBER_OF_METHODS;
     }
     
+    protected ArrayList<String> getMethodParsedCodeData()
+    {
+        return method_code;
+    }
+    
+    protected ArrayList<String> getMethodDetails()
+    {
+        return method_details;
+    }
+    
     public HashMap getByteCodeDetails()
     {
         return bytecode_details_map;
@@ -444,8 +469,18 @@ public class JVMClassLoader
         return methods;
     }
     
+    public JSONArray getByteCodeJSON()
+    {
+        return bytecode_json_array;
+    }
+    
     public ArrayList<String> getConstantPoolData()
     {
         return constant_pool_data;
+    }
+    
+    public BiMap getJavaLineNumbers()
+    {
+        return java_line_numbers;
     }
 }
