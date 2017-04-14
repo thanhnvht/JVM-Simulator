@@ -1,0 +1,80 @@
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/test/test_programs/counter/Counter.class
+  Last modified 09-Mar-2017; size 381 bytes
+  MD5 checksum 5be7f4c61112026b35b348ca7beb722c
+  Compiled from "Counter.java"
+public class test_programs.counter.Counter
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #4.#16         // java/lang/Object."<init>":()V
+   #2 = Fieldref           #3.#17         // test_programs/counter/Counter.value:I
+   #3 = Class              #18            // test_programs/counter/Counter
+   #4 = Class              #19            // java/lang/Object
+   #5 = Utf8               value
+   #6 = Utf8               I
+   #7 = Utf8               <init>
+   #8 = Utf8               ()V
+   #9 = Utf8               Code
+  #10 = Utf8               LineNumberTable
+  #11 = Utf8               count
+  #12 = Utf8               getValue
+  #13 = Utf8               ()I
+  #14 = Utf8               SourceFile
+  #15 = Utf8               Counter.java
+  #16 = NameAndType        #7:#8          // "<init>":()V
+  #17 = NameAndType        #5:#6          // value:I
+  #18 = Utf8               test_programs/counter/Counter
+  #19 = Utf8               java/lang/Object
+{
+  private int value;
+    descriptor: I
+    flags: ACC_PRIVATE
+
+  public test_programs.counter.Counter();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=2, locals=2, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: aload_0
+         5: iconst_0
+         6: putfield      #2                  // Field value:I
+         9: bipush        10
+        11: istore_1
+        12: return
+      LineNumberTable:
+        line 10: 0
+        line 11: 4
+        line 13: 9
+        line 14: 12
+
+  public void count();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=3, locals=1, args_size=1
+         0: aload_0
+         1: aload_0
+         2: getfield      #2                  // Field value:I
+         5: iconst_1
+         6: iadd
+         7: putfield      #2                  // Field value:I
+        10: return
+      LineNumberTable:
+        line 18: 0
+        line 19: 10
+
+  public int getValue();
+    descriptor: ()I
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: getfield      #2                  // Field value:I
+         4: ireturn
+      LineNumberTable:
+        line 23: 0
+}
+SourceFile: "Counter.java"

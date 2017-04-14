@@ -1,0 +1,48 @@
+Classfile /C:/Users/Ryan/Downloads/HelloWorld.class
+  Last modified 12-Apr-2017; size 271 bytes
+  MD5 checksum 2c1bed529eed59ba4b04a1ddbb050a30
+  Compiled from "HelloWorld.java"
+public class HelloWorld
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #3.#12         // java/lang/Object."<init>":()V
+   #2 = Class              #13            // HelloWorld
+   #3 = Class              #14            // java/lang/Object
+   #4 = Utf8               <init>
+   #5 = Utf8               ()V
+   #6 = Utf8               Code
+   #7 = Utf8               LineNumberTable
+   #8 = Utf8               main
+   #9 = Utf8               ([Ljava/lang/String;)V
+  #10 = Utf8               SourceFile
+  #11 = Utf8               HelloWorld.java
+  #12 = NameAndType        #4:#5          // "<init>":()V
+  #13 = Utf8               HelloWorld
+  #14 = Utf8               java/lang/Object
+{
+  public HelloWorld();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 1: 0
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=1, locals=2, args_size=1
+         0: iconst_4
+         1: istore_1
+         2: return
+      LineNumberTable:
+        line 5: 0
+        line 6: 2
+}
+SourceFile: "HelloWorld.java"

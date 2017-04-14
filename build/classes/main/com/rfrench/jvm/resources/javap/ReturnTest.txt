@@ -1,0 +1,75 @@
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/test/test_programs/method_tests/ReturnTest.class
+  Last modified 19-Feb-2017; size 394 bytes
+  MD5 checksum d0cf5f3b042908ffd595f4915252e80f
+  Compiled from "ReturnTest.java"
+public class test_programs.method_tests.ReturnTest
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #4.#15         // java/lang/Object."<init>":()V
+   #2 = Methodref          #3.#16         // test_programs/method_tests/ReturnTest.addValues:(II)I
+   #3 = Class              #17            // test_programs/method_tests/ReturnTest
+   #4 = Class              #18            // java/lang/Object
+   #5 = Utf8               <init>
+   #6 = Utf8               ()V
+   #7 = Utf8               Code
+   #8 = Utf8               LineNumberTable
+   #9 = Utf8               main
+  #10 = Utf8               ([Ljava/lang/String;)V
+  #11 = Utf8               addValues
+  #12 = Utf8               (II)I
+  #13 = Utf8               SourceFile
+  #14 = Utf8               ReturnTest.java
+  #15 = NameAndType        #5:#6          // "<init>":()V
+  #16 = NameAndType        #11:#12        // addValues:(II)I
+  #17 = Utf8               test_programs/method_tests/ReturnTest
+  #18 = Utf8               java/lang/Object
+{
+  public test_programs.method_tests.ReturnTest();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 5: 0
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=4, args_size=1
+         0: bipush        7
+         2: istore_1
+         3: bipush        -3
+         5: istore_2
+         6: iload_1
+         7: iload_2
+         8: invokestatic  #2                  // Method addValues:(II)I
+        11: istore_3
+        12: return
+      LineNumberTable:
+        line 9: 0
+        line 10: 3
+        line 12: 6
+        line 14: 12
+
+  private static int addValues(int, int);
+    descriptor: (II)I
+    flags: ACC_PRIVATE, ACC_STATIC
+    Code:
+      stack=2, locals=3, args_size=2
+         0: iload_0
+         1: iload_1
+         2: iadd
+         3: istore_2
+         4: iload_2
+         5: ireturn
+      LineNumberTable:
+        line 21: 0
+        line 23: 4
+}
+SourceFile: "ReturnTest.java"

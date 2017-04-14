@@ -1,0 +1,84 @@
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/test/test_programs/counter/CounterTester.class
+  Last modified 18-Feb-2017; size 465 bytes
+  MD5 checksum 5b324c8a52eb8c170cc77559b9683252
+  Compiled from "CounterTester.java"
+public class test_programs.counter.CounterTester
+  minor version: 0
+  major version: 52
+  flags: ACC_PUBLIC, ACC_SUPER
+Constant pool:
+   #1 = Methodref          #7.#18         // java/lang/Object."<init>":()V
+   #2 = Class              #19            // test_programs/counter/Counter
+   #3 = Methodref          #2.#18         // test_programs/counter/Counter."<init>":()V
+   #4 = Methodref          #2.#20         // test_programs/counter/Counter.count:()V
+   #5 = Methodref          #2.#21         // test_programs/counter/Counter.getValue:()I
+   #6 = Class              #22            // test_programs/counter/CounterTester
+   #7 = Class              #23            // java/lang/Object
+   #8 = Utf8               <init>
+   #9 = Utf8               ()V
+  #10 = Utf8               Code
+  #11 = Utf8               LineNumberTable
+  #12 = Utf8               main
+  #13 = Utf8               ([Ljava/lang/String;)V
+  #14 = Utf8               StackMapTable
+  #15 = Class              #19            // test_programs/counter/Counter
+  #16 = Utf8               SourceFile
+  #17 = Utf8               CounterTester.java
+  #18 = NameAndType        #8:#9          // "<init>":()V
+  #19 = Utf8               test_programs/counter/Counter
+  #20 = NameAndType        #24:#9         // count:()V
+  #21 = NameAndType        #25:#26        // getValue:()I
+  #22 = Utf8               test_programs/counter/CounterTester
+  #23 = Utf8               java/lang/Object
+  #24 = Utf8               count
+  #25 = Utf8               getValue
+  #26 = Utf8               ()I
+{
+  public test_programs.counter.CounterTester();
+    descriptor: ()V
+    flags: ACC_PUBLIC
+    Code:
+      stack=1, locals=1, args_size=1
+         0: aload_0
+         1: invokespecial #1                  // Method java/lang/Object."<init>":()V
+         4: return
+      LineNumberTable:
+        line 5: 0
+
+  public static void main(java.lang.String[]);
+    descriptor: ([Ljava/lang/String;)V
+    flags: ACC_PUBLIC, ACC_STATIC
+    Code:
+      stack=2, locals=3, args_size=1
+         0: new           #2                  // class test_programs/counter/Counter
+         3: dup
+         4: invokespecial #3                  // Method test_programs/counter/Counter."<init>":()V
+         7: astore_1
+         8: iconst_0
+         9: istore_2
+        10: iload_2
+        11: iconst_5
+        12: if_icmpge     25
+        15: aload_1
+        16: invokevirtual #4                  // Method test_programs/counter/Counter.count:()V
+        19: iinc          2, 1
+        22: goto          10
+        25: aload_1
+        26: invokevirtual #5                  // Method test_programs/counter/Counter.getValue:()I
+        29: istore_2
+        30: return
+      LineNumberTable:
+        line 9: 0
+        line 11: 8
+        line 13: 15
+        line 11: 19
+        line 16: 25
+        line 17: 30
+      StackMapTable: number_of_entries = 2
+        frame_type = 253 /* append */
+          offset_delta = 10
+          locals = [ class test_programs/counter/Counter, int ]
+        frame_type = 250 /* chop */
+          offset_delta = 14
+}
+SourceFile: "CounterTester.java"
