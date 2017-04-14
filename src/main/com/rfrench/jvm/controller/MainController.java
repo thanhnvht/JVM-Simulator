@@ -36,8 +36,6 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.*;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -400,11 +398,11 @@ public class MainController implements Initializable
     
     public void creditsMenuItem()
     {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Credits");
-        alert.setContentText("Icons made by: Freepik");
-        
-        alert.showAndWait();
+//        Alert alert = new Alert(AlertType.INFORMATION);
+//        alert.setTitle("Credits");
+//        alert.setContentText("Icons made by: Freepik");
+//        
+//        alert.showAndWait();
     }
         
     public Stack getButtonStack()

@@ -297,11 +297,39 @@
 	    }, 	    
 
 	    {
+	        "Name":"ALOAD",
+	        "Opcode":"19",
+	        "Total Operands": 1,
+	        "Tooltip" : "ALOAD - Load a Reference from local variable. Operand indicates which local variable to load"
+	    }, 	
+
+	    {
 	        "Name":"ALOAD_0",
 	        "Opcode":"2A",
 	        "Total Operands": 0,
 	        "Tooltip" : "ALOAD_0 - Load a Reference from local variable 0"
 	    }, 	    
+
+	    {
+	        "Name":"ALOAD_1",
+	        "Opcode":"2B",
+	        "Total Operands": 0,
+	        "Tooltip" : "ALOAD_1 - Load a Reference from local variable 1"
+	    }, 
+
+	    {
+	        "Name":"ALOAD_2",
+	        "Opcode":"2C",
+	        "Total Operands": 0,
+	        "Tooltip" : "ALOAD_2 - Load a Reference from local variable 2"
+	    }, 
+
+	    {
+	        "Name":"ALOAD_3",
+	        "Opcode":"2D",
+	        "Total Operands": 0,
+	        "Tooltip" : "ALOAD_3 - Load a Reference from local variable 3"
+	    }, 
 
 	    {
 	        "Name":"INVOKESPECIAL",
@@ -314,7 +342,15 @@
 	    	"Name" : "INVOKESTATIC",
 	    	"Opcode" : "B8",
 	    	"Total Operands" : 2,
-	    	"Tooltip" : "INVOKESTATIC - Invoke a static method. Includes an operand. Operand is reference to constant pool to method to invoke."
+	    	"Tooltip" : "INVOKESTATIC - Invoke a static method. Push method reference onto operand stack"
+
+	    },
+
+	    {
+	    	"Name" : "INVOKEVIRTUAL",
+	    	"Opcode" : "B6",
+	    	"Total Operands" : 2,
+	    	"Tooltip" : "INVOKEVIRTUAL - Invoke a virtual method. Push method reference onto operand stack"
 
 	    },
 
@@ -382,6 +418,13 @@
 	    },
 
 	    {
+	    	"Name" : "NEW",
+	    	"Opcode" : "BB",
+	    	"Total Operands" : 2,
+	    	"Tooltip" : "NEW - Create a new Object. Object type is references in constant pool"
+	    }
+
+	    {
 	    	"Name" : "NEWARRAY",
 	    	"Opcode" : "BC",
 	    	"Total Operands" : 1,
@@ -431,6 +474,34 @@
 	    },
 
 	    {
+	    	"Name" : "ASTORE_0",
+	    	"Opcode" : "4B",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "ASTORE_0 - Store a reference to an array into local variable frame 0"
+	    },
+
+	    {
+	    	"Name" : "ASTORE_1",
+	    	"Opcode" : "4C",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "ASTORE_1 - Store a reference to an array into local variable frame 1"
+	    },
+
+	    {
+	    	"Name" : "ASTORE_2",
+	    	"Opcode" : "4C",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "ASTORE_2 - Store a reference to an array into local variable frame 2"
+	    },
+
+    	{
+	    	"Name" : "ASTORE_3",
+	    	"Opcode" : "4D",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "ASTORE_3 - Store a reference to an array into local variable frame 3"
+	    },
+
+	    {
 	    	"Name" : "IMUL",
 	    	"Opcode" : "68",
 	    	"Total Operands" : 0,
@@ -456,6 +527,20 @@
 	    	"Opcode" : "02",
 	    	"Total Operands" : 0,
 	    	"Tooltip" : "ICONST_M1 - Push -1 onto the operand stack"
+	    },
+
+	    {
+	    	"Name" : "GETFIELD",
+	    	"Opcode" : "B4",
+	    	"Total Operands" : 2,
+	    	"Tooltip" : "GETFIELD - Get Field value from referenced object"
+	    },
+
+	    {
+	    	"Name" : "IRETURN",
+	    	"Opcode" : "AC",
+	    	"Total Operands" : 0,
+	    	"Tooltip" : "IRETURN - Return an int from a method"
 	    },
 	]
 }

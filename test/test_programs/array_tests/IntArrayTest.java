@@ -9,6 +9,8 @@ public class IntArrayTest {
         int[] test = new int[]{12 ,-100, 43, 12};
         
         int x = test[3];
+        
+        test[0] = 146;
     }
     
 }

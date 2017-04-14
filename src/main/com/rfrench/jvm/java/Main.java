@@ -27,7 +27,7 @@ package main.com.rfrench.jvm.java;
 import main.com.rfrench.jvm.ui.MainScene;
 import javafx.application.Application;
 import javafx.stage.Stage;
-import main.com.rfrench.jvm.controller.StageController;
+import main.com.rfrench.jvm.controller.SplashController;
 
 /*
     Program Title: Main.java
@@ -54,7 +54,7 @@ public class Main extends Application
                 
         ExecutionEngine execution_engine = new ExecutionEngine(main_scene, method_area, heap);                                       
                 
-        StageController stage_controller = new StageController(primaryStage, main_scene);        
+        SplashController stage_controller = new SplashController(primaryStage, main_scene);        
     }
         
     public static void main(String[] args)

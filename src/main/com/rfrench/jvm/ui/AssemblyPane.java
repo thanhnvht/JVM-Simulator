@@ -13,10 +13,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import main.com.rfrench.jvm.java.JVMClass;
 import static main.com.rfrench.jvm.java.Main.JSON_FILE_PATH;
 import main.com.rfrench.jvm.java.MethodArea;
 import org.json.simple.JSONArray;
@@ -31,14 +29,12 @@ import org.json.simple.parser.ParseException;
     Version: 1.0
 */
 
-// TODO : ADD ACCORDION FOR LOOKUPSWITCH BYTECODE, ADD TABLE WITHING ACCORDION
-
 public class AssemblyPane 
 {                   
     private ArrayList<ArrayList<Label>> java_program_labels_list;    
     private ArrayList<Label> java_program_labels;
             
-    private final int NUMBER_OF_METHODS;
+    private int NUMBER_OF_METHODS;
    
     private ArrayList<ListView> java_program_listview_list;
     private ListView java_program_listview;
@@ -46,19 +42,21 @@ public class AssemblyPane
     private TabPane bytecode_pane;
     private ArrayList<Tab> bytecode_tab_list;
     private Tab bytecode_tab;
-    
-    private TextArea code_area;
-       
+           
     private MethodArea method_area;
+    
+    private JVMClass current_class;
         
     
     public AssemblyPane(TabPane bytecode_pane, MethodArea method_area)
     {                          
         this.bytecode_pane = bytecode_pane;
         this.method_area = method_area;
+                
+        current_class = method_area.getJVMClass(0);
         
-        NUMBER_OF_METHODS = method_area.getNumberOfMethods();
-                   
+        NUMBER_OF_METHODS = current_class.getNumberOfMethods();
+        
         setupTabs();
         setupListView();                                                       
         setupLabels();   
@@ -78,15 +76,28 @@ public class AssemblyPane
         }   
     }        
     
+    public void addNewAssembly(TabPane bytecode_pane, MethodArea method_area, int class_number)
+    {    
+        this.bytecode_pane = bytecode_pane;
+        
+        current_class = method_area.getJVMClass(class_number);
+        NUMBER_OF_METHODS = current_class.getNumberOfMethods();
+        
+        setupTabs();
+        setupListView();
+        setupLabels();
+        setupTooltips();
+    }
+    
     private void setupLabels()
     {      
-        java_program_labels_list = new ArrayList<ArrayList<Label>>();
+        java_program_labels_list = new ArrayList<ArrayList<Label>>();                
         
         for (int i = 0; i < NUMBER_OF_METHODS; i++) 
         {
-            ArrayList<String> bytecode_text = method_area.getMethod(i).getMethodBytecode();
+            ArrayList<String> bytecode_text = current_class.getMethod(i).getMethodBytecode();
                         
-            ArrayList<String> line_numbers = method_area.getMethod(i).getMethodLineNumbers();
+            ArrayList<String> line_numbers = current_class.getMethod(i).getMethodLineNumbers();
 
             ListView listview = java_program_listview_list.get(i);
             
@@ -125,11 +136,11 @@ public class AssemblyPane
         for (int i = 0; i < NUMBER_OF_METHODS; i++) 
         {
 
-            int NUMBER_OF_BYTECODES = method_area.getMethod(i).getMethodBytecode().size();
+            int NUMBER_OF_BYTECODES = current_class.getMethod(i).getMethodBytecode().size();
 
             for (int j = 0; j < NUMBER_OF_BYTECODES; j++) {
 
-                String word = method_area.getMethod(i).getMethodBytecode().get(j);
+                String word = current_class.getMethod(i).getMethodBytecode().get(j);
 
                 //Remove Operand from Bytecode
                 if (word.indexOf(' ') != - 1) 
@@ -199,7 +210,10 @@ public class AssemblyPane
         for(int i = 0; i < NUMBER_OF_METHODS; i++)
         {
             bytecode_tab = new Tab();
-            bytecode_tab.setText("Method " + (i+1));
+            
+            String method_name = current_class.getMethod(i).getMethodName();
+            
+            bytecode_tab.setText(method_name);
             bytecode_tab_list.add(bytecode_tab);
             bytecode_pane.getTabs().add(bytecode_tab);
         }

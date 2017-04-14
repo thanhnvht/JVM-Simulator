@@ -33,7 +33,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import main.com.rfrench.jvm.controller.SceneController;
+import main.com.rfrench.jvm.controller.MainController;
 import main.com.rfrench.jvm.java.JVMClassLoader;
 
 /*
@@ -50,7 +50,7 @@ public class MainScene
     public static final double WIDTH_TENTH = SCREEN_SIZE.getWidth() / 100;
     public static final double HEIGHT_TENTH = SCREEN_SIZE.getHeight() / 100;
    
-    private SceneController controller;
+    private MainController controller;
     
     private AnchorPane root_pane;
           
@@ -61,13 +61,12 @@ public class MainScene
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(getClass().getResource("/main/com/rfrench/jvm/controller/MainScene.fxml"));   
             Parent content = loader.load();
-            controller = loader.<SceneController>getController();            
+            controller = loader.<MainController>getController();            
             
             controller.setMainScene(this);
             controller.setClassLoader(class_loader);
             controller.setMethodArea(method_area);
             controller.setStage(primary_stage);
-            controller.setupAssemblyCodePane(method_area);
             controller.setupLocalVariableFrame(method_area);
             controller.setupBytecodeInfoPane();
             controller.setupOperandStackPane();
@@ -88,7 +87,7 @@ public class MainScene
         return root_pane;
     }
     
-    public SceneController getFXMLController()
+    public MainController getFXMLController()
     {
         return controller;
     }

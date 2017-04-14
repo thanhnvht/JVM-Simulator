@@ -16,18 +16,18 @@
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.com.rfrench.jvm.controller.SceneController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.com.rfrench.jvm.controller.MainController">
    <children>
-      <TabPane fx:id="bytecode_pane" layoutX="5.0" layoutY="130.0" prefHeight="857.0" prefWidth="418.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="class_pane" layoutX="5.0" layoutY="130.0" prefHeight="857.0" prefWidth="418.0" tabClosingPolicy="UNAVAILABLE">
          <tabs>
-            <Tab text="Bytecode">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="805.0" prefWidth="418.0">
-                     <children>
-                        <ListView prefHeight="816.0" prefWidth="418.0" />
-                     </children>
-                  </AnchorPane>
-              </content>
+            <Tab fx:id="class_tab" text="Class">
+               <content>
+                  <TabPane fx:id="bytecode_pane" prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
+                    <tabs>
+                      <Tab text="Bytecode" />
+                    </tabs>
+                  </TabPane>
+               </content>
             </Tab>
          </tabs></TabPane>
       <MenuBar layoutX="2.0" prefHeight="32.0" prefWidth="1922.0">
@@ -134,6 +134,7 @@
           </Tab>
         </tabs>
       </TabPane>
+      <StackPane fx:id="error_pane" layoutX="441.0" layoutY="36.0" prefHeight="91.0" prefWidth="1020.0" />
    </children>
    <stylesheets>
       <URL value="@../resources/css/main_screen.css" />

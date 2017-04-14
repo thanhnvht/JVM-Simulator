@@ -46,6 +46,8 @@ public class MethodArea
     private ArrayList<String> constant_pool;    
     private ArrayList<Method> methods;
     
+    private ArrayList<JVMClass> classes;
+        
     private Stack operand_stack;
     private Stack call_stack;
     
@@ -67,21 +69,27 @@ public class MethodArea
         hasMethods = false;
         
         setupArrayDataTypesMap();
-    }
         
-    
+        classes = new ArrayList<JVMClass>();                     
+        
+    }
+            
     public MethodArea(JVMClassLoader class_loader)
     {     
+        System.out.println("in here");
+        
         operand_stack = new Stack();        
         call_stack = new Stack();   
                         
         constant_pool = class_loader.getConstantPoolData();        
         methods = class_loader.getMethods();
-        
+                
         NUMBER_OF_METHODS = methods.size();
         
         bytecode_details_map = class_loader.getByteCodeDetails();
         
+        classes = new ArrayList<JVMClass>();
+                        
         hasMethods = true;
     }                        
     
@@ -110,12 +118,15 @@ public class MethodArea
                         
         constant_pool = class_loader.getConstantPoolData();        
         methods = class_loader.getMethods();
+        classes.add(class_loader.getJVMClass());
         
         NUMBER_OF_METHODS = methods.size();
         
         bytecode_details_map = class_loader.getByteCodeDetails();
         
         hasMethods = true;
+        
+        
     }
     
     public void setConstantPoolData(ArrayList<String> constant_pool_data)
@@ -181,4 +192,15 @@ public class MethodArea
         return hasMethods;
     }
     
+    public JVMClass getJVMClass(int index)
+    {
+        JVMClass c = classes.get(index);
+        
+        return c;
+    }    
+    
+    public void addJVMClass(JVMClass c)
+    {
+        classes.add(c);
+    }
 }

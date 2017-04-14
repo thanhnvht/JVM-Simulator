@@ -1,6 +1,6 @@
 Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/test/test_programs/array_tests/IntArrayTest.class
-  Last modified 18-Feb-2017; size 331 bytes
-  MD5 checksum b39b594cad4bc819b868436b8b989d91
+  Last modified 19-Feb-2017; size 341 bytes
+  MD5 checksum 7edef7f6af39fdbdff841c7f85dfeacf
   Compiled from "IntArrayTest.java"
 public class test_programs.array_tests.IntArrayTest
   minor version: 0
@@ -61,10 +61,15 @@ Constant pool:
         25: iconst_3
         26: iaload
         27: istore_2
-        28: return
+        28: aload_1
+        29: iconst_0
+        30: sipush        146
+        33: iastore
+        34: return
       LineNumberTable:
         line 9: 0
         line 11: 24
-        line 12: 28
+        line 13: 28
+        line 14: 34
 }
 SourceFile: "IntArrayTest.java"

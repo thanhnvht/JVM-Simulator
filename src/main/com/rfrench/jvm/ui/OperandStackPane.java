@@ -39,7 +39,7 @@ import javafx.scene.text.TextAlignment;
     Version: 1.0
 */
 
-public class OperandStackPane 
+public class OperandStackPane implements JVMStackPane
 {    
     private Canvas operand_stack_canvas;
     private GraphicsContext gc;
@@ -58,14 +58,21 @@ public class OperandStackPane
         this.operand_stack_canvas = operand_stack_canvas;
         this.gc = this.operand_stack_canvas.getGraphicsContext2D();
      
-        RECT_WIDTH = 350;
-        RECT_HEIGHT = 50;
+        RECT_WIDTH = operand_stack_canvas.getWidth() * 0.8;
+        RECT_HEIGHT = operand_stack_canvas.getHeight() * 0.05;
         RECT_X_OFFSET = (operand_stack_canvas.getWidth() - RECT_WIDTH) / 2;
         CANVAS_HEIGHT = operand_stack_canvas.getHeight();         
         
         operand_stack_text = new Stack();
     }
 
+    public void push (int operand_value)
+    {
+        String string_value = Integer.toString(operand_value);
+        
+        push(string_value);
+    }
+    
     public void push(String operand_element_text)
     {
         int current_stack_size = operand_stack_text.size();
@@ -113,6 +120,11 @@ public class OperandStackPane
     }
         
     public int getCurrentStackSize()
+    {
+        return operand_stack_text.size();
+    }
+    
+    public int stackSize()
     {
         return operand_stack_text.size();
     }

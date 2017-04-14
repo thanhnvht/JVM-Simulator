@@ -285,6 +285,7 @@ public class Method
         
         method_keywords.add("INVOKESPECIAL");
         method_keywords.add("INVOKESTATIC");
+        method_keywords.add("NEW");
         
         Matcher matcher = setupMatcher(method_keywords, word);      
         
@@ -445,11 +446,12 @@ public class Method
         int memory_elements_taken = 0;
         
         List<String> operand_keywords = new ArrayList<String>();        
-        operand_keywords.add("NEWARRAY");                
+        operand_keywords.add("NEWARRAY");      
         Matcher matcher = setupMatcher(operand_keywords, word);     
         
         if(matcher.find())
-        {
+        {            
+
             memory_elements_taken = 2;
             
             int operand_index = index + 1;           
@@ -464,6 +466,7 @@ public class Method
         return memory_elements_taken;
     }
         
+    
     private boolean checkIfStackOpcode(String word, int index)
     {
         boolean stack_opcode = false;

@@ -1,4 +1,4 @@
-Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/src/main/com/rfrench/jvm/simulated_programs/IFEQ.class
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/test/test_programs/branch_tests/IFEQ.class
   Last modified 13-Feb-2017; size 368 bytes
   MD5 checksum c88731dc2efbaf2cb0b91899523e1192
   Compiled from "IFEQ.java"

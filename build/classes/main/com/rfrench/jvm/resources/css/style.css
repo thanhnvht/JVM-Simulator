@@ -23,7 +23,7 @@
 {    
     -fx-border-color: black;
     -fx-text-fill: white;
-    -fx-background-color: #003333; 
+    -fx-background-color: #333333; 
     -fx-min-width: 300px;
     -fx-min-height: 50px;
 }

@@ -1,16 +1,16 @@
-Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/src/main/com/rfrench/jvm/simulated_programs/MultipleMethodTest.class
-  Last modified 12-Feb-2017; size 478 bytes
-  MD5 checksum e049c0c778e8a4723135eb79951bfcb7
+Classfile /C:/Users/Ryan/Google Drive/Bangor/_Y03/ICP 3099/jvm_prototype/test/test_programs/method_tests/MultipleMethodTest.class
+  Last modified 13-Apr-2017; size 465 bytes
+  MD5 checksum 827f307755e881174926a7af9f22dc90
   Compiled from "MultipleMethodTest.java"
-public class main.com.rfrench.jvm.simulated_programs.MultipleMethodTest
+public class test_programs.method_tests.MultipleMethodTest
   minor version: 0
   major version: 52
   flags: ACC_PUBLIC, ACC_SUPER
 Constant pool:
    #1 = Methodref          #5.#16         // java/lang/Object."<init>":()V
-   #2 = Methodref          #4.#17         // main/com/rfrench/jvm/simulated_programs/MultipleMethodTest.method_1:()V
-   #3 = Methodref          #4.#18         // main/com/rfrench/jvm/simulated_programs/MultipleMethodTest.method_2:()V
-   #4 = Class              #19            // main/com/rfrench/jvm/simulated_programs/MultipleMethodTest
+   #2 = Methodref          #4.#17         // test_programs/method_tests/MultipleMethodTest.method_1:()V
+   #3 = Methodref          #4.#18         // test_programs/method_tests/MultipleMethodTest.method_2:()V
+   #4 = Class              #19            // test_programs/method_tests/MultipleMethodTest
    #5 = Class              #20            // java/lang/Object
    #6 = Utf8               <init>
    #7 = Utf8               ()V
@@ -25,10 +25,10 @@ Constant pool:
   #16 = NameAndType        #6:#7          // "<init>":()V
   #17 = NameAndType        #12:#7         // method_1:()V
   #18 = NameAndType        #13:#7         // method_2:()V
-  #19 = Utf8               main/com/rfrench/jvm/simulated_programs/MultipleMethodTest
+  #19 = Utf8               test_programs/method_tests/MultipleMethodTest
   #20 = Utf8               java/lang/Object
 {
-  public main.com.rfrench.jvm.simulated_programs.MultipleMethodTest();
+  public test_programs.method_tests.MultipleMethodTest();
     descriptor: ()V
     flags: ACC_PUBLIC
     Code:

@@ -70,6 +70,8 @@ public class JVMClassLoader
     
     private BiMap<Integer, Integer> java_line_numbers;
     
+    private JVMClass aClass;
+    
     private String FILE_PATH;    
 
     public JVMClassLoader()
@@ -86,12 +88,28 @@ public class JVMClassLoader
         this.FILE_PATH = FILE_PATH;
     }
           
-    public void readFile(String file_path)
+    public void readJavaInfoFile(String file_path)
     {
         try
         {
             this.FILE_PATH = file_path;
             
+            createMethods();                    
+            
+            createClass();
+        }
+
+        catch(FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+            
+    }
+        
+    private void createMethods()
+    {
+        try
+        {                        
             JSONArray bytecode_json = createJSONParser();           
             createByteCodeDetailsHashMap(bytecode_json);                            
             extractNumberOfMethods();
@@ -108,10 +126,11 @@ public class JVMClassLoader
             {
                 writeMethodDetails(method_names_list.get(i), method_access_type_list.get(i), is_method_instance_list.get(i));
                 parseLineNumbers(i);               
-                parseMethodCode(i);                                                                
+                parseMethodCode(i);          
+                
                 Method m = new Method(i, this);
                 
-                methods.add(m);
+                methods.add(m);                
             }
         }
         
@@ -121,7 +140,44 @@ public class JVMClassLoader
         }
     }
         
+    private void createClass() throws FileNotFoundException
+    {        
+        aClass = new JVMClass();
+    
+        String FQN = extractFQN(); 
+        aClass.setFQN(FQN);
         
+        String class_name = extractClassName();
+        aClass.setClassName(class_name);
+        
+        aClass.setMethods(methods);    
+        
+        aClass.setFilePath(getClassPath());                
+    }    
+        
+    private String getClassPath() throws FileNotFoundException
+    {
+        Scanner sc = new Scanner(new File(FILE_PATH));
+        
+        String class_path = "";
+        String keyword = "Classfile";
+        boolean found = false;
+        
+        while(sc.hasNext() && !found)
+        {
+            String word = sc.next();
+            
+            if(word.equals(keyword))
+            {
+                found = true;
+                class_path = sc.nextLine();
+              
+            }
+        }
+        
+        return class_path;
+    }
+    
     private JSONArray createJSONParser() throws IOException, ParseException
     {                        
         JSONParser parser = new JSONParser();            
@@ -196,42 +252,55 @@ public class JVMClassLoader
             }
         }
     }  
-    
-    private String findFQN() throws FileNotFoundException
+            
+    private String extractFQN() throws FileNotFoundException
     {
         Scanner sc = new Scanner(new File(FILE_PATH));
-        
-        String first_keyword = "public";
+                
         String second_keyword = "class";
         
-        String FQN = null;
+        String FQN = "";
         
         boolean FQN_found = false;
                         
         while(sc.hasNext() && !FQN_found)
         {
             String word = sc.next();
-            
-            if(word.equals(first_keyword))
+                             
+            if(word.equals(second_keyword))
             {
-                word = sc.next();
-                
-                if(word.equals(second_keyword))
-                {
-                    FQN = sc.next();
-                    FQN_found = true;
-                }
-            }
+                FQN = sc.next();
+                FQN_found = true;
+            }            
+        }
+                        
+        return FQN;
+    }
+       
+    private String extractClassName() throws FileNotFoundException
+    {
+        String FQN = extractFQN();
+        
+        String[] temp_names = FQN.split("/.");
+        
+        int class_name_index = temp_names.length - 1;
+        
+        String class_name = temp_names[class_name_index];
+        
+        if(class_name.contains((".")))
+        {
+            class_name = class_name.substring(class_name.lastIndexOf(".") + 1);
         }
         
-        return FQN;
+                
+        return class_name;
     }
     
     private ArrayList<Boolean> checkInstanceMethod(ArrayList<String> method_names) throws FileNotFoundException
     {
         ArrayList<Boolean> is_instance_method = new ArrayList<Boolean>();
         
-        String FQN = findFQN();
+        String FQN = extractFQN();
         
         for(int i = 0; i < NUMBER_OF_METHODS; i++)
         {
@@ -412,12 +481,13 @@ public class JVMClassLoader
                 while(word.equals(KEYWORD))
                 {
                     String java_line_string = sc.next();
+                    
                     int java_line = Integer.parseInt(java_line_string.substring(0, java_line_string.indexOf(":")));
+                    
                     int bytecode_line = Integer.parseInt(sc.next());
                     
                     java_line_numbers.put(java_line, bytecode_line);
-                    
-                    
+                                        
                     word = sc.next();
                 }
                 
@@ -444,6 +514,11 @@ public class JVMClassLoader
         NUMBER_OF_METHODS = method_count;               
     }
        
+    public JVMClass getJVMClass()
+    {
+        return aClass;
+    }
+    
     public int getNumberOfMethods()
     {
         return NUMBER_OF_METHODS;

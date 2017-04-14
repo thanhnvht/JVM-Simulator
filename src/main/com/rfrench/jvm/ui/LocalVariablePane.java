@@ -25,10 +25,12 @@
 package main.com.rfrench.jvm.ui;
 
 import java.util.ArrayList;
+import java.util.Random;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.text.TextAlignment;
 
 /*
@@ -50,6 +52,8 @@ public class LocalVariablePane
         
     private ArrayList<ArrayList<String>> method_local_frames_list;
     
+    private ArrayList<Paint> frame_colours;
+    
     private ArrayList<String> local_frame_text;    
 
     
@@ -60,28 +64,55 @@ public class LocalVariablePane
         this.local_var_canvas = local_var_canvas;
         this.gc = this.local_var_canvas.getGraphicsContext2D();
        
-        RECT_WIDTH = 350;
-        RECT_HEIGHT = 50;
+        RECT_WIDTH = local_var_canvas.getWidth() * 0.8;
+        RECT_HEIGHT = local_var_canvas.getHeight() * 0.05;
         RECT_X_OFFSET = 75;
         CANVAS_HEIGHT = local_var_canvas.getHeight(); 
         
         number_of_frames = 0;
         
         method_local_frames_list = new ArrayList<ArrayList<String>>();
+        
+        setupFrameColors();
     }
     
+    private void setupFrameColors()
+    {
+        frame_colours = new ArrayList<Paint>();
+        
+        frame_colours.add(Color.YELLOW);
+        frame_colours.add(Color.YELLOWGREEN);
+        frame_colours.add(Color.DARKGOLDENROD);
+        frame_colours.add(Color.DARKORANGE);
+        frame_colours.add(Color.SANDYBROWN);
+        frame_colours.add(Color.CHOCOLATE);
+    }
+        
     public void addMethodLocalFrame(String[] frame_text, int current_method_count, int max_local_var)    
     {        
         local_frame_text = new ArrayList<String>();
 
         gc.setTextAlign(TextAlignment.CENTER);
         gc.setTextBaseline(VPos.CENTER);
-                        
+                    
+        int colour_index = current_method_count;
+        
+        if(current_method_count > frame_colours.size())
+        {
+            colour_index = current_method_count % frame_colours.size();
+            
+        }
+        
+        System.out.println("current method count: " + current_method_count);
+        System.out.println("Adding stuff, colour index is: " + colour_index);
+        
+        Paint frame_colour = frame_colours.get(colour_index);
+        
         for(int i = 0; i < max_local_var; i++)
         {           
             double rect_y_pos = CANVAS_HEIGHT - ((number_of_frames * RECT_HEIGHT) + 100);
            
-            gc.setFill(Color.YELLOW);        
+            gc.setFill(frame_colour);        
             gc.fillRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH, RECT_HEIGHT);
             gc.setStroke(Color.BLACK);
             gc.strokeRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH, RECT_HEIGHT);
@@ -147,8 +178,15 @@ public class LocalVariablePane
         System.out.println("index: " + index_frame_to_update);
         
         double rect_y_pos = CANVAS_HEIGHT - ((index_frame_to_update * RECT_HEIGHT) + 100);
+        int colour_index = current_method_count;
+        
+        if(current_method_count > frame_colours.size())
+        {
+            colour_index = current_method_count % frame_colours.size();
             
-        gc.setFill(Color.YELLOW);        
+        }       
+        Paint frame_colour = frame_colours.get(colour_index);
+        gc.setFill(frame_colour); 
         gc.setStroke(Color.BLACK);
         gc.clearRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH, RECT_HEIGHT);
         gc.fillRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH, RECT_HEIGHT);

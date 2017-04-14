@@ -24,6 +24,7 @@
 package main.com.rfrench.jvm.java;
 
 import com.google.common.collect.BiMap;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,7 +41,7 @@ public class Heap
     private BiMap ARRAY_TYPES_MAP = MethodArea.ARRAY_TYPES_MAP;
 
     private Map<Integer, Object> ARRAYS_MAP;
-
+   
     private static int array_count;
     
     public Heap()

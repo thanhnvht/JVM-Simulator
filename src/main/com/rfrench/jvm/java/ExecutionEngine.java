@@ -25,7 +25,7 @@
 package main.com.rfrench.jvm.java;
 
 import java.util.ArrayList;
-import main.com.rfrench.jvm.controller.SceneController;
+import main.com.rfrench.jvm.controller.MainController;
 import main.com.rfrench.jvm.ui.MainScene;
 
 /*
@@ -39,18 +39,21 @@ public class ExecutionEngine
 {
     
     private int PC;
-    
-    private boolean branched;
+        
     private int current_method_count = 0;
+    
     private Heap heap;
     private MethodArea method_area;
+    
+    private boolean branched;
     private boolean method_invoked;
     private boolean method_return;
     private boolean move_tab;
-    private boolean pause_program = false;
-    
+    private boolean pause_program = false;    
     private boolean program_complete = false;
-    private SceneController scene_controller;
+    
+    
+    private MainController scene_controller;
                       
 
     public ExecutionEngine(MainScene main_scene, MethodArea method_area, Heap heap) 
@@ -66,11 +69,10 @@ public class ExecutionEngine
         
         main_scene.getFXMLController().setExecutionEngine(this);
     }
-    
-    
+        
     public void executeInstruction()
-    {
-        Method m = method_area.getMethod(current_method_count);
+    {          
+        Method m = method_area.getJVMClass(0).getMethod(current_method_count);
         
         branched = false;
         method_invoked = false;
@@ -103,10 +105,20 @@ public class ExecutionEngine
                 case ("1B"):  ILOAD(1);        break;  //ILOAD_1
                 case ("1C"):  ILOAD(2);        break;  //ILOAD_2
                 case ("1D"):  ILOAD(3);        break;  //ILOAD_3
+                case ("19"):  ALOAD(-1);       break;  //HAVE TO ChANGE SO -1 means GET OPERAND
+                case ("2A"):  ALOAD(0);        break;
+                case ("2B"):  ALOAD(1);        break;
+                case ("2C"):  ALOAD(2);        break;
+                case ("2D"):  ALOAD(3);        break;
                 case ("2E"):  IALOAD();        break;
-                case ("34"):  CALOAD();        break;
-                case ("36"):  ISTORE(-1);      break;  //ISTORE
+                case ("34"):  CALOAD();        break; 
+                case ("3A"):  ASTORE(-1);      break; //HAVE TO ChANGE SO -1 means GET OPERAND
+                case ("4B"):  ASTORE(0);       break;
+                case ("4C"):  ASTORE(1);       break;
+                case ("4D"):  ASTORE(2);       break;
+                case ("4E"):  ASTORE(3);       break;
                 case ("37"):  LSTORE(-1);      break;
+                case ("36"):  ISTORE(-1);      break;  //ISTORE
                 case ("3B"):  ISTORE(0);       break;  //ISTORE_0
                 case ("3C"):  ISTORE(1);       break;  //ISTORE_1
                 case ("3D"):  ISTORE(2);       break;  //ISTORE_2
@@ -130,7 +142,7 @@ public class ExecutionEngine
                 case ("9C"):  IFGE();          break;
                 case ("9D"):  IFGT();          break;
                 case ("9E"):  IFLE();          break;
-//                case ("B6"):  INVOKEVIRTUAL(); break;
+                case ("B6"):  INVOKEVIRTUAL(); break;
 //                case ("80"):  IOR();           break;
 //                case ("AC"):  IRETURN();       break;
                 case ("13"):  LDC_W();         break;
@@ -145,9 +157,9 @@ public class ExecutionEngine
                 case ("9F"):  IF_ICMPEQ();     break;
 //                case ("0xC4"):  WIDE();          break;
                 case ("B1"):  RETURN();        break;
-                case ("2A"):  ALOAD_0();       break;
                 case ("B7"):  INVOKESPECIAL(); break;
                 case ("B8"):  INVOKESTATIC();  break;
+                case ("BB"):  NEW();           break;
                 case ("BC"):  NEWARRAY();      break;
                 case ("AB"):  LOOKUPSWITCH();  break;
             }
@@ -160,21 +172,37 @@ public class ExecutionEngine
         else
         {
             scene_controller.hightlightLine(current_method_count, PC);
+            
+            scene_controller.complete();
+            
 //            main_controller.updateRegisterLabels(PC);
             System.out.println("Program Done!!");
             program_complete = true;
         }
     }
     
-    private void ALOAD_0()
+    private void ALOAD(int index)
     {
-        //String reference = method_area.getMethod(current_method_count).getMethodName();
-        String reference = method_area.getMethod(current_method_count).getLocalVariable(0);
+        if(index == -1)
+        {
+            
+        }
         
-        System.out.println("Reference: " + reference);
+        else
+        {
+            //String reference = method_area.getMethod(current_method_count).getMethodName();
+            String reference = method_area.getMethod(current_method_count).getLocalVariable(index);
+
+            System.out.println("Reference: " + reference);
+
+            method_area.pushOperandStack(0); //have put 0 for now. will hav to change to address of reference
+            scene_controller.ALOAD_0(reference);
+        }
+    }
+    
+    private void ASTORE(int index)
+    {
         
-        method_area.pushOperandStack(0); //have put 0 for now. will hav to change to address of reference
-        scene_controller.ALOAD_0(reference);
     }
     
     private void BASTORE()
@@ -255,6 +283,7 @@ public class ExecutionEngine
         method_area.pushOperandStack(add_result);
                              
         String arithmetic_symbol = "+";
+        
         scene_controller.IARITHMETIC(arithmetic_symbol);
     }
     private void IALOAD()
@@ -468,6 +497,7 @@ public class ExecutionEngine
         
         scene_controller.branchComparisionNonZero();
     }
+    
     private void IF_ICMPNE()
     {
         int offset = branchGetOffset();
@@ -483,6 +513,7 @@ public class ExecutionEngine
         
         scene_controller.branchComparisionNonZero();
     }
+    
     private void IINC()
     {
         Method m = method_area.getMethod(current_method_count);
@@ -517,6 +548,7 @@ public class ExecutionEngine
         
         scene_controller.ILOAD(frame_index);
     }
+    
     private void IMUL()
     {
         int value_1 = method_area.popOperandStack();
@@ -529,10 +561,12 @@ public class ExecutionEngine
         String arithmetic_symbol = "*";
         scene_controller.IARITHMETIC(arithmetic_symbol);
     }
+    
     private void INVOKESPECIAL()
     {
         INVOKESTATIC();
     }
+    
     private void INVOKESTATIC()
     {
         Method old_method = method_area.getMethod(current_method_count);
@@ -545,9 +579,11 @@ public class ExecutionEngine
         //JVM Specifcation states Constant Pool start index is 1 rather than 0, hence -1 to value
         int value = (first_operand + second_operand) - 1;
         
+        System.out.println("Method reference number to invoke: " + value);
+        
         current_method_count++;
         
-        Method new_method = method_area.getMethod(current_method_count);
+        Method new_method = method_area.getMethod(current_method_count); //CHANGE TO JVM CLASS.GETMETHOD
         
         int current_stack_size = method_area.getOperandStackSize();
         
@@ -570,6 +606,7 @@ public class ExecutionEngine
         
         method_invoked = true;
     }
+    
     private void INVOKEVIRTUAL()
     {
         
@@ -579,6 +616,7 @@ public class ExecutionEngine
     {
 
     }
+    
     private void IREM()
     {
         int value_1 = method_area.popOperandStack();
@@ -591,6 +629,7 @@ public class ExecutionEngine
         String arithmetic_symbol = "%";
         scene_controller.IARITHMETIC(arithmetic_symbol);
     }
+    
     private void IRETURN()
     {
         
@@ -612,6 +651,7 @@ public class ExecutionEngine
  
         scene_controller.ISTORE(current_method_count, frame_index, value);
     }
+    
     private void ISUB()
     {
         int value_1 = method_area.popOperandStack();
@@ -624,10 +664,12 @@ public class ExecutionEngine
         String arithmetic_symbol = "-";
         scene_controller.IARITHMETIC(arithmetic_symbol);
     }    
+    
     private void LASTORE()
     {
         IASTORE();
     }
+    
     private void LDC2_W() 
     {
         Method m = method_area.getMethod(current_method_count);
@@ -676,6 +718,7 @@ public class ExecutionEngine
         
         scene_controller.LOOKUPSWITCH(switch_cases, switch_branches);
     }
+    
     private void LSTORE(int frame_index)
     {
         //SHOULD STORE INTO 2 LOCAL VARS INSTEAD OF ONE
@@ -694,6 +737,68 @@ public class ExecutionEngine
         
         scene_controller.ISTORE(current_method_count, frame_index, value);
     }
+    
+    private void NEW()
+    {
+        System.out.println("NEW Bytecode");
+        
+        ArrayList<Integer> current_method_opcodes = method_area.getMethod(current_method_count).getMethodOpcodes();
+        
+        PC++; 
+        int indexbyte1 = current_method_opcodes.get(PC);
+        PC++;
+        int indexbyte2 = current_method_opcodes.get(PC);
+        
+        int constant_pool_index = indexbyte1 + indexbyte2;
+        
+        String new_cp_path = parseClassReference(constant_pool_index);                
+                     
+        Compiler cmp = new Compiler(new_cp_path);
+                
+        String javap_file_path = cmp.getSavedFilePath();
+        
+        System.out.println("created javap path: " + javap_file_path);
+        
+        JVMClassLoader cl  = new JVMClassLoader();
+        
+        cl.readJavaInfoFile(javap_file_path);
+        
+        method_area.addJVMClass(cl.getJVMClass());
+                
+        //push object ref
+        int object_ref = 3234; // random shit for now
+        method_area.pushOperandStack(object_ref);
+        
+        String class_name = method_area.getConstantPool().get(constant_pool_index);
+        
+        class_name = class_name.substring(class_name.lastIndexOf("/") + 1);
+        
+        scene_controller.NEW(Integer.toString(object_ref), class_name);
+    }
+        
+    private String parseClassReference(int constant_pool_index)
+    {
+        String class_ref = method_area.getConstantPool().get(constant_pool_index);
+        
+        String[] temp_array = class_ref.split(" ");
+        
+        int class_index = temp_array.length - 1;
+        
+        class_ref = temp_array[class_index];
+                
+        String invoke_object_name = class_ref.substring(class_ref.lastIndexOf("/") + 1);
+                     
+        JVMClass c = method_area.getJVMClass(0);
+
+        String cp_path = c.getFilePath();
+                
+        String new_cp_path = cp_path.substring(2, cp_path.lastIndexOf("/") + 1) + invoke_object_name + ".java";
+        
+        new_cp_path = new_cp_path.replaceAll("/", "\\\\");  
+        
+        return new_cp_path;
+    }
+    
     private void NEWARRAY()
     {
         final int ARRAY_SIZE = method_area.popOperandStack();
