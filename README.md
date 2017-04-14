@@ -4,7 +4,7 @@
 # JVM - Simulator
 
 ## Description
-A tool to show how Java code is executed within the JVM. Shows a subset of the main mechanisms within the JVM and how they change during runtime. Also shows how Java code and Bytecode correspond with each other. 
+A tool to show how Java code is executed within the Java Virtual Machine (JVM). It shows a subset of the main mechanisms within the JVM and how they change during runtime. It also details how Java code and Bytecode correspond with each other whilst executing a .class file.
 
 The JVM-Simulator can simulate Java files that contain:
 * Arithmetic
@@ -16,12 +16,13 @@ The JVM-Simulator can simulate Java files that contain:
 
 It cannot simulate:
 * Strings
+* Floats and Doubles
 * I/O
 * Object creation
 * Advanced OO operations
 
 ## Motivation
-This project aims were to visualise the JVM components in order to more easily teach its functionality. 
+This project aims were to visualise the JVM components in order to more easily teach the JVM's functionality. Most information regarding the JVM is only in text format. Hence, by varying the types of information regarding the JVM, prospective JVM learneres have more resources to learn from.
 
 ## Installation
 To install, go to *Realeses*, download the latest version, then run the .jar file
@@ -30,7 +31,7 @@ To install, go to *Realeses*, download the latest version, then run the .jar fil
 Manually create your own Java source files, then load them into the simulator. These files must be able to be compiled by javac.
 
 ## Test Example
-
+```java
 public class Test
 {
 	public static void main (String[]args)
@@ -43,7 +44,7 @@ public class Test
 		}
 	}
 }
-
+```
 ## Authors
 Ryan French - Main Developer
 
@@ -71,6 +72,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ## Acknowledgments
-I would like to thank Steve Marriott for his guidance and ideas throughout development
+I would like to thank Steve Marriott for his guidance and ideas. 
 
 
