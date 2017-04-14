@@ -22,7 +22,7 @@ It cannot simulate:
 * Advanced OO operations
 
 ## Motivation
-This project aims were to visualise the JVM components in order to more easily teach the JVM's functionality. Most information regarding the JVM is only in text format. Hence, by varying the types of information regarding the JVM, prospective JVM learneres have more resources to learn from.
+This project aims were to visualise the JVM components in order to more easily teach the JVM's functionality. Most information regarding the JVM is only in text format. Hence, by varying the types of information regarding the JVM, prospective JVM learners have more resources to learn from.
 
 ## Installation
 To install, go to *Realeses*, download the latest version, then run the .jar file
@@ -72,6 +72,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ## Acknowledgments
-I would like to thank Steve Marriott for his guidance and ideas. 
+I would like to thank Steve Marriott for his guidance and ideas throughout the project. 
 
 
