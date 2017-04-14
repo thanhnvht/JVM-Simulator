@@ -1,9 +1,9 @@
 
 [![forthebadge](http://forthebadge.com/images/badges/60-percent-of-the-time-works-every-time.svg)](http://forthebadge.com)
 
-#JVM - Simulator
+# JVM - Simulator
 
-##Description
+## Description
 A tool to show how Java code is executed within the JVM. Shows a subset of the main mechanisms within the JVM and how they change during runtime. Also shows how Java code and Bytecode correspond with each other. 
 
 The JVM-Simulator can simulate Java files that contain:
@@ -20,22 +20,34 @@ It cannot simulate:
 * Object creation
 * Advanced OO operations
 
-
-##Code Example
-
-##Motivation
+## Motivation
 This project aims were to visualise the JVM components in order to more easily teach its functionality. 
 
-##Installation
+## Installation
 To install, go to *Realeses*, download the latest version, then run the .jar file
 
-##Tests
+## Tests
 Manually create your own Java source files, then load them into the simulator. These files must be able to be compiled by javac.
 
-##Authors
+## Test Example
+
+public class Test
+{
+	public static void main (String[]args)
+	{
+		int x = 10;
+
+		for(int i = 0; i < 5; i++)
+		{
+			x = x * 2;
+		}
+	}
+}
+
+## Authors
 Ryan French - Main Developer
 
-##License
+## License
 MIT License
 
 Copyright (c) 2017 Ryan French
@@ -58,7 +70,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-##Acknowledgments
+## Acknowledgments
 I would like to thank Steve Marriott for his guidance and ideas throughout development
 
 
