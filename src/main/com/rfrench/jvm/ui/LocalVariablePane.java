@@ -25,7 +25,6 @@
 package main.com.rfrench.jvm.ui;
 
 import java.util.ArrayList;
-import java.util.Random;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -141,14 +140,17 @@ public class LocalVariablePane
     public void removeFrameUI(int current_method_count)
     {                       
         int number_of_local_vars = method_local_frames_list.get(current_method_count).size();
-                        
+                
+        System.out.println("no: " + number_of_local_vars);
+        
         for(int i = 0; i < number_of_local_vars; i++)
         {
+            number_of_frames--;
+            
             double rect_y_pos = CANVAS_HEIGHT - ((number_of_frames * RECT_HEIGHT) + 100);
             
             gc.clearRect(RECT_X_OFFSET, rect_y_pos, RECT_WIDTH+1, RECT_HEIGHT);
-            
-            number_of_frames--;
+                        
         }
     }
     

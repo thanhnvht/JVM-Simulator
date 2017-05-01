@@ -180,7 +180,7 @@ public class Compiler
                 if(!error_found)
                 {
                     error_found = true;
-                    System.out.println("* JavaP Script Error *");
+                    System.out.println("JAVAP SCRIPT ERROR");
                 }
                 
                 System.out.println(line);

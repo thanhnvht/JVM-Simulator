@@ -56,6 +56,12 @@ public class ExecutionEngine
     private MainController scene_controller;
                       
 
+    /**
+     * Constructor for Execution Engine
+     * @param main_scene Main GUI of Program
+     * @param method_area Method Area containing Java file data
+     * @param heap Heap memory area
+     */
     public ExecutionEngine(MainScene main_scene, MethodArea method_area, Heap heap) 
     {                
         this.scene_controller = main_scene.getFXMLController();      
@@ -70,6 +76,9 @@ public class ExecutionEngine
         main_scene.getFXMLController().setExecutionEngine(this);
     }
         
+    /**
+     * Execute the next instruction for the file
+     */
     public void executeInstruction()
     {          
         Method m = method_area.getJVMClass(0).getMethod(current_method_count);
@@ -144,7 +153,7 @@ public class ExecutionEngine
                 case ("9E"):  IFLE();          break;
                 case ("B6"):  INVOKEVIRTUAL(); break;
 //                case ("80"):  IOR();           break;
-//                case ("AC"):  IRETURN();       break;
+                case ("AC"):  IRETURN();       break;
                 case ("13"):  LDC_W();         break;
                 case ("00"):  NOP();           break;
                 case ("57"):  POP();           break;
@@ -181,6 +190,10 @@ public class ExecutionEngine
         }
     }
     
+    /**
+     * Load an array reference
+     * @param index index in heap of array
+     */
     private void ALOAD(int index)
     {
         if(index == -1)
@@ -200,11 +213,18 @@ public class ExecutionEngine
         }
     }
     
+    /**
+     * Store an array value
+     * @param index 
+     */
     private void ASTORE(int index)
     {
-        
+        IASTORE();
     }
     
+    /**
+     * Store a byte value
+     */
     private void BASTORE()
     {
         IASTORE();    
@@ -432,6 +452,7 @@ public class ExecutionEngine
         
         scene_controller.branchComparisionNonZero();
     }
+
     
     
     private void IF_ICMPGE()
@@ -632,7 +653,21 @@ public class ExecutionEngine
     
     private void IRETURN()
     {
+        int previous_method_count = current_method_count;
+    
+        if(current_method_count > 0)
+        {
+            current_method_count--;
+            PC = method_area.popCallStack();
+        }
+            
+        int value = method_area.popOperandStack();
+
+        method_area.pushOperandStack(value);
         
+        scene_controller.RETURN(previous_method_count);
+                                        
+        method_return = true;   
     }
     
     private void ISTORE(int frame_index)
